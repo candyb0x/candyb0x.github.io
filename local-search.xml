@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>目录爆破工具集合</title>
+    <link href="/2024/05/30/%E7%9B%AE%E5%BD%95%E7%88%86%E7%A0%B4%E5%B7%A5%E5%85%B7%E9%9B%86%E5%90%88/"/>
+    <url>/2024/05/30/%E7%9B%AE%E5%BD%95%E7%88%86%E7%A0%B4%E5%B7%A5%E5%85%B7%E9%9B%86%E5%90%88/</url>
+    
+    <content type="html"><![CDATA[<h1 id="dirsearch"><a href="#dirsearch" class="headerlink" title="dirsearch"></a>dirsearch</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">dirsearch -u http://192.168.31.230/<br></code></pre></td></tr></table></figure><ul><li><p>常用命令参数</p><blockquote><p>-u               攻击目标url地址，可以指定多个，通过逗号分隔<br>-l                url列表文件，比如你可以建一个 targets.txt，里面包含需要攻击的网址<br>-e               站点文件类型列表，如：php,asp，有默认配置：php,aspx,jsp,html,js，基本主流的格式都包含了<br>-X               不需要扫描的站点文件类型列表<br>-w               用指定爆破字典执行，若存在多个通过逗号分隔<br>-t               指定线程数<br>-i               仅现实指定的状态码，指定多个通过逗号分隔<br>-x               不显示指定的状态码，指定多个通过逗号分隔<br>–exclude-sizes&#x3D;SIZES               不显示的响应包大小（Example: 123B,4KB）<br>–exclude-texts&#x3D;TEXTS               不显示的响应包关键字 (Example: “Not found”, “Error”）<br>-m               指定请求方式，默认GET</p></blockquote></li><li><p>输出报告格式</p><blockquote><p>–simple-report&#x3D;OUTPUTFILE               简洁报告<br>–plain-text-report&#x3D;OUTPUTFILE               纯文本格式报告<br>–json-report&#x3D;OUTPUTFILE               json格式报告<br>–xml-report&#x3D;OUTPUTFILE               xml格式报告<br>–markdown-report&#x3D;OUTPUTFILE               markdown格式报告</p></blockquote></li></ul><h1 id="gobuster"><a href="#gobuster" class="headerlink" title="gobuster"></a>gobuster</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">gobuster <span class="hljs-built_in">dir</span> -u http://192.168.31.230 --wordlist=/usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt<br></code></pre></td></tr></table></figure><ul><li><p>全局参数</p><blockquote><p>–debug                                              打开debug模式(调试模式)<br>–delay duration          每个线程在请求之间等待的时间（举例：–delay 1500ms）<br>–no-color                                                      禁用颜色输出<br>–no-error                                                        不显示错误<br>-z，–no-progress                                                 不显示进度<br>-o，-output string                                             输出结果到文件<br>-p，–pattern string                                        包含替换模式的文件<br>-q，–quiet                                      不打印banner信息和其他无用信息<br>-t，–threads int                                        指定线程数量（默认10）<br>-v，–verbose                                    详细输出日志（错误信息也会展示）<br>-w，–wordlist string                   指定字典路径，指定-可以通过标准输入中读取</p></blockquote></li><li><p>模式</p><blockquote><p>dir         经典目录暴力破解模式<br>dns        DNS子域暴力破解模式<br>s3         枚举打开的 S3 存储桶并查找是否存在和存储桶列表<br>gcs        枚举打开的谷歌云存储桶<br>vhost     虚拟主机暴力破解模式（与DNS不同！）<br>fuzz        使用模糊测试模式。替换URL、Headers和请求体中的关键词FUZZ<br>tftp          暴力破解 tftp 文件</p></blockquote></li></ul><p>详细用法不在过多介绍,每个模式又对应了不同的参数用法</p><h1 id="dirb"><a href="#dirb" class="headerlink" title="dirb"></a>dirb</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">dirb &lt;url_base&gt; [&lt;wordlist_file(s)&gt;] [options]<br>dirb http://192.168.31.230<br></code></pre></td></tr></table></figure><blockquote><p>-a 设置user-agent<br>-p &lt;proxy[:port]&gt;设置代理<br>-c 设置cookie<br>-z 添加毫秒延迟，避免洪水攻击<br>-o 输出结果<br>-X 在每个字典的后面添加一个后缀<br>-H 添加请求头<br>-i 不区分大小写搜索<br>-N 忽略不必要的状态码<br>-r 不递归搜索</p></blockquote><h1 id="feroxbuster"><a href="#feroxbuster" class="headerlink" title="feroxbuster"></a>feroxbuster</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">feroxbuster -u http://192.168.31.230/<br></code></pre></td></tr></table></figure><blockquote><p>-u &lt;URL&gt;: 指定要扫描的目标 URL。</p><p>-w &lt;wordlist&gt;: 指定要使用的字典文件。</p><p>-t &lt;threads&gt;: 设置并行线程数。</p><p>-x &lt;status codes&gt;: 指定要忽略的 HTTP 状态码（用逗号分隔）。</p><p>-r: 启用递归扫描。</p><p>-o &lt;file&gt;: 将扫描结果输出到文件。</p><p>-v: 启用详细输出模式。</p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>工具教程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>web攻防</tag>
+      
+      <tag>使用教程</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>dc-5打靶日记</title>
     <link href="/2024/05/30/dc-5%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/"/>
     <url>/2024/05/30/dc-5%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/</url>
