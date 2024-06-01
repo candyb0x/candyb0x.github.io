@@ -16,27 +16,30 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1. 下载安装zsh sudo apt install zsh  设置终端默认启动zsh 12345chsh -s &#x2F;bin&#x2F;zshchsh -s &#96;which zsh&#96;#如果要切换回去bash：chsh -s &#x2F;bin&#x2F;bash  2. 安装oh-my-zsh git clone https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh.git  cd oh-my-zs">
+    <meta name="description" content="1. docker安装直接通过官方提供的脚本进行安装。 1curl -s https:&#x2F;&#x2F;get.docker.com&#x2F; | sh  如果由于网络等原因无法安装的，可以选择其他安装方法，包括但不限于apt软件源直接安装(可能会出现一些问题，可能是由于某些包没有安装)，可以参考以下官方安装的软件。  通过官方脚本安装的不要忘记启动docker服务了 1systemctl start docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zsh基本配置">
-<meta property="og:url" content="http://example.com/2024/05/18/zsh%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:title" content="vulhub搭建过程">
+<meta property="og:url" content="http://example.com/2024/06/01/vulhub%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="1. 下载安装zsh sudo apt install zsh  设置终端默认启动zsh 12345chsh -s &#x2F;bin&#x2F;zshchsh -s &#96;which zsh&#96;#如果要切换回去bash：chsh -s &#x2F;bin&#x2F;bash  2. 安装oh-my-zsh git clone https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh.git  cd oh-my-zs">
+<meta property="og:description" content="1. docker安装直接通过官方提供的脚本进行安装。 1curl -s https:&#x2F;&#x2F;get.docker.com&#x2F; | sh  如果由于网络等原因无法安装的，可以选择其他安装方法，包括但不限于apt软件源直接安装(可能会出现一些问题，可能是由于某些包没有安装)，可以参考以下官方安装的软件。  通过官方脚本安装的不要忘记启动docker服务了 1systemctl start docker">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850505.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850135.png">
-<meta property="article:published_time" content="2024-05-18T13:46:47.000Z">
-<meta property="article:modified_time" content="2024-06-01T12:27:32.977Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011948924.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012008504.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012012521.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012013644.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012022337.png">
+<meta property="article:published_time" content="2024-06-01T12:25:19.000Z">
+<meta property="article:modified_time" content="2024-06-01T12:27:59.804Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="工具配置">
 <meta property="article:tag" content="环境搭建">
-<meta property="article:tag" content="美化">
+<meta property="article:tag" content="web攻防">
+<meta property="article:tag" content="渗透学习">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850505.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011948924.png">
   
   
   
-  <title>zsh基本配置 - Welcome Candy Box</title>
+  <title>vulhub搭建过程 - Welcome Candy Box</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="zsh基本配置"></span>
+            <span id="subtitle" data-typed-text="vulhub搭建过程"></span>
           
         </div>
 
@@ -213,8 +216,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-05-18 21:46" pubdate>
-          2024年5月18日 晚上
+        <time datetime="2024-06-01 20:25" pubdate>
+          2024年6月1日 晚上
         </time>
       </span>
     
@@ -225,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          513 字
+          711 字
         
       </span>
     
@@ -236,7 +239,7 @@
         
         
         
-          5 分钟
+          6 分钟
         
       </span>
     
@@ -273,63 +276,73 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">zsh基本配置</h1>
+            <h1 id="seo-header">vulhub搭建过程</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="1-下载安装zsh"><a href="#1-下载安装zsh" class="headerlink" title="1. 下载安装zsh"></a>1. 下载安装zsh</h1><blockquote>
-<p>sudo apt install zsh</p>
-</blockquote>
-<p>设置终端默认启动zsh</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">chsh -s /bin/zsh<br>chsh -s `<span class="hljs-built_in">which</span> zsh`<br><br><span class="hljs-comment">#如果要切换回去bash：</span><br>chsh -s /bin/bash<br></code></pre></td></tr></table></figure>
+                <h1 id="1-docker安装"><a href="#1-docker安装" class="headerlink" title="1. docker安装"></a>1. docker安装</h1><p>直接通过官方提供的脚本进行安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -s https://get.docker.com/ | sh<br></code></pre></td></tr></table></figure>
 
-<h1 id="2-安装oh-my-zsh"><a href="#2-安装oh-my-zsh" class="headerlink" title="2. 安装oh-my-zsh"></a>2. 安装oh-my-zsh</h1><blockquote>
-<p>git clone <a target="_blank" rel="noopener" href="https://github.com/robbyrussell/oh-my-zsh.git">https://github.com/robbyrussell/oh-my-zsh.git</a> </p>
-<p>cd oh-my-zsh</p>
-<p>cd tools</p>
-<p>.&#x2F;install.sh</p>
-</blockquote>
-<h1 id="3-配置主题"><a href="#3-配置主题" class="headerlink" title="3. 配置主题"></a>3. 配置主题</h1><p>oh-my-zsh 集成了大量的主题, 位于<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes">Themes · ohmyzsh&#x2F;ohmyzsh Wiki (github.com)</a></p>
-<p>配置主题, 可以通过修改<code>~/.zshrc</code>中的环境变量<code>ZSH_THEME</code>实现更换主题</p>
+<p>如果由于网络等原因无法安装的，可以选择其他安装方法，包括但不限于apt软件源直接安装(可能会出现一些问题，可能是由于某些包没有安装)，可以参考以下官方安装的软件。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011948924.png" srcset="/img/loading.gif" lazyload alt="image-20240601194857864"></p>
+<p>通过官方脚本安装的不要忘记启动docker服务了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl start docker<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-vulhub环境搭建"><a href="#2-vulhub环境搭建" class="headerlink" title="2. vulhub环境搭建"></a>2. vulhub环境搭建</h1><h2 id="2-1-环境下载"><a href="#2-1-环境下载" class="headerlink" title="2.1 环境下载"></a>2.1 环境下载</h2><p>直接从相应的仓库克隆出相应的环境即可，执行下方命令；如果存在各种不同的问题下载不了，也可以到vulhub的github仓库中直接下载源文件放到linux虚拟机中；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/vulhub/vulhub.git<br></code></pre></td></tr></table></figure>
+
+<p>后续如果由于仓库作者更新了新的漏洞环境，我们也可以通过进行<code>vulhub</code>文件夹执行下面的命令来更新漏洞环境</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">git pull</span><br></code></pre></td></tr></table></figure>
+
+<p>因为可能执行不成功，最暴力的方法就是，删掉！再下一个！！！git clone不成功就之下下载仓库放到虚拟机上。</p>
+<h2 id="2-2-环境启动"><a href="#2-2-环境启动" class="headerlink" title="2.2 环境启动"></a>2.2 环境启动</h2><p>随便进入一个漏洞环境进行演示，假设我们进入<code>/vulhub/django/CVE-2018-14574</code>中，执行该CVE的环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ./vulhub/django/CVE-2018-14574<br></code></pre></td></tr></table></figure>
+
+<p>通过以下命令编译拉取环境，这个过程稍微有点久，但是每个环境只需要拉取一次，下次就不用再拉取了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker compose build<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012008504.png" srcset="/img/loading.gif" lazyload alt="image-20240601200836455"></p>
+<p>我只能说着实久，得想点什么别的办法才是。（查资料说，似乎更换docker镜像源可以缓解这个问题，可以尝试一下，测试后，似乎快一点，没太大感觉）</p>
+<p>运行环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker compose up -d<br></code></pre></td></tr></table></figure>
+
+<p>环境启动后，通过以下命令查看端口映射，以及开放服务的端口进行访问</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker ps<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012012521.png" srcset="/img/loading.gif" lazyload alt="image-20240601201222483"></p>
+<p>最后得知是8000端口映射到8000端口，反正就是8000端口，我们访问开启这个环境的机器的ip地址的8000端口即可达到启动服务的页面。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012013644.png" srcset="/img/loading.gif" lazyload alt="image-20240601201332617"></p>
+<h2 id="2-3-关闭环境"><a href="#2-3-关闭环境" class="headerlink" title="2.3 关闭环境"></a>2.3 关闭环境</h2><p>当我们对我们所要进行实验的环境测试完毕后，到相应漏洞的文件夹执行以下命令关闭环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker compose down -v<br></code></pre></td></tr></table></figure>
+
+<h1 id="3-docker换源方式"><a href="#3-docker换源方式" class="headerlink" title="3. docker换源方式"></a>3. docker换源方式</h1><ol>
+<li>新建或者编辑<code>/etc/docker/daemon.json</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo vim /etc/docker/daemon.json<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在<code>daemon.json</code>添加或者编译以下内容</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">&#123;<br>    <span class="hljs-string">&quot;registry-mirrors&quot;</span>: [<span class="hljs-string">&quot;http://hub-mirror.c.163.com&quot;</span>]	<span class="hljs-comment"># 使用163源docker源</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
 <blockquote>
-<p>ZSH_THEME&#x3D;”bira”</p>
+<p>1.网易:<a target="_blank" rel="noopener" href="http://hub-mirror.c.163.com/">http://hub-mirror.c.163.com</a></p>
+<p>2.Docker中国区官方镜像:<a target="_blank" rel="noopener" href="https://registry.docker-cn.com/">https://registry.docker-cn.com</a></p>
+<p>3.中国科技大学:<a target="_blank" rel="noopener" href="https://docker.mirrors.ustc.edu.cn/">https://docker.mirrors.ustc.edu.cn</a></p>
+<p>4.阿里云容器 服务:<a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/%E9%A6%96%E9%A1%B5%E7%82%B9%E5%87%BB%E2%80%9C%E5%88%9B%E5%BB%BA%E6%88%91%E7%9A%84%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E2%80%9D">https://cr.console.aliyun.com/首页点击“创建我的容器镜像”</a>  得到一个专属的镜像加速地址，类似于“<a target="_blank" rel="noopener" href="https://1234abcd.mirror.aliyuncs.com”(要自己创建,每个人不一样)/">https://1234abcd.mirror.aliyuncs.com”(要自己创建，每个人不一样)</a></p>
 </blockquote>
-<p>如果觉得主题太多，可以选择使用随机模式, 不过这就比较刺激了。</p>
-<blockquote>
-<p>SH_THEME&#x3D;”random”</p>
-</blockquote>
-<h1 id="4-on-my-zsh自动补全插件"><a href="#4-on-my-zsh自动补全插件" class="headerlink" title="4. on-my-zsh自动补全插件"></a>4. on-my-zsh自动补全插件</h1><p>将相应的插件<code>git</code>克隆<code>zsh-autosuggestions</code>仓库到你的本地<code>.oh-my-zsh/custom/plugins</code>目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions<br></code></pre></td></tr></table></figure>
+<ol start="3">
+<li>重启docker服务</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl restart docker<br></code></pre></td></tr></table></figure>
 
-<p>然后修改本地的<code>~/.zshrc</code>文件中的<code>plugins</code>选项，加入<code>zsh-autosuggestions</code>，如图所示：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim ~/.zshrc<br></code></pre></td></tr></table></figure>
+<ol start="4">
+<li>查看换源是否成功</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker info<br></code></pre></td></tr></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850505.png" srcset="/img/loading.gif" lazyload alt="image-20240601185003427"></p>
-<p>然后在运行以下命令，重新加载当前用户的 <code>~/.zshrc</code> 文件即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<h1 id="5-on-my-zsh高亮插件"><a href="#5-on-my-zsh高亮插件" class="headerlink" title="5. on-my-zsh高亮插件"></a>5. on-my-zsh高亮插件</h1><p>将相应的插件<code>git</code>克隆<code>zsh-syntax-highlighting</code>仓库到你的本地<code>.oh-my-zsh/custom/plugins</code>目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-syntax-highlighting<br></code></pre></td></tr></table></figure>
-
-<p>然后修改本地的<code>~/.zshrc</code>文件中的<code>plugins</code>选项，加入<code>zsh-syntax-highlighting</code>，如图所示：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850135.png" srcset="/img/loading.gif" lazyload alt="image-20240601185043104"></p>
-<p>然后在运行以下命令，重新加载当前用户的 <code>~/.zshrc</code> 文件即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<h1 id="6-zsh导致的问题"><a href="#6-zsh导致的问题" class="headerlink" title="6.zsh导致的问题"></a>6.zsh导致的问题</h1><h2 id="文件名解析错误"><a href="#文件名解析错误" class="headerlink" title="文件名解析错误"></a>文件名解析错误</h2><h3 id="zsh-no-matches-found-list-fullordering"><a href="#zsh-no-matches-found-list-fullordering" class="headerlink" title="zsh: no matches found: list[fullordering]"></a>zsh: no matches found: list[fullordering]</h3><p>在使用 Zsh（Z shell）时，如果你看到错误消息 <code>zsh: no matches found: list[fullordering]</code>，这通常是由于 Zsh 的文件名模式匹配（globbing）功能导致的。当你在命令行中使用方括号（<code>[]</code>）时，Zsh 会尝试将其解释为文件名模式匹配，而不是你可能预期的普通字符串或数组访问。</p>
-<p>可以通过在<code>~/.zshrc</code>文件中添加以下内容解决</p>
-<blockquote>
-<p>set noglob	#禁用文件名模式匹配</p>
-</blockquote>
-<p>除了上述的解决方法还有</p>
-<p>通过转义中括号的方法，还没有尝试可行性</p>
-<blockquote>
-<p>执行命令时，将list[fullordering]，写成list\[fullordering\]</p>
-</blockquote>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://yuyucong.github.io/linux/2018/02/08/shell/">Tmux &#x2F; zsh &#x2F; oh-my-zsh教程 - 风车车的博客 | Windmill Blog (yuyucong.github.io)</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012022337.png" srcset="/img/loading.gif" lazyload alt="image-20240601202217291"></p>
 
                 
               </div>
@@ -363,11 +376,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" class="print-no-link">#工具配置</a>
-      
         <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="print-no-link">#环境搭建</a>
       
-        <a href="/tags/%E7%BE%8E%E5%8C%96/" class="print-no-link">#美化</a>
+        <a href="/tags/web%E6%94%BB%E9%98%B2/" class="print-no-link">#web攻防</a>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" class="print-no-link">#渗透学习</a>
       
     </div>
   
@@ -379,8 +392,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>zsh基本配置</div>
-      <div>http://example.com/2024/05/18/zsh基本配置/</div>
+      <div>vulhub搭建过程</div>
+      <div>http://example.com/2024/06/01/vulhub搭建过程/</div>
     </div>
     <div class="license-meta">
       
@@ -392,7 +405,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年5月18日</div>
+          <div>2024年6月1日</div>
         </div>
       
       
@@ -424,18 +437,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/05/23/dc-3%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="dc-3打靶日记">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">dc-3打靶日记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/05/18/tmux%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="tmux基本使用">
-                        <span class="hidden-mobile">tmux基本使用</span>
+                      <a href="/2024/05/31/dc-6%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="dc-6打靶日记">
+                        <span class="hidden-mobile">dc-6打靶日记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
