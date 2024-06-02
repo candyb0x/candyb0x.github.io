@@ -16,30 +16,25 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1. docker安装直接通过官方提供的脚本进行安装。 1curl -s https:&#x2F;&#x2F;get.docker.com&#x2F; | sh  如果由于网络等原因无法安装的，可以选择其他安装方法，包括但不限于apt软件源直接安装(可能会出现一些问题，可能是由于某些包没有安装)，可以参考以下官方安装的软件。  通过官方脚本安装的不要忘记启动docker服务了 1systemctl start docker">
+    <meta name="description" content="下载与设置首先将其源码下载下来或者git clone下来到本地pwn_waf 需要修改的地方是makefile文件，我们要修改日志存放的位置，这边推荐的位置就是在pwn题目的目录下创建一个隐藏文件夹（以点.开头的文件夹名称）。也是为了避免和下面注意一样的坑。  注意：这里的LOG_PATH路径设置有个坑，这里的路径设置跟xinetd配置文件设计的方式有关 service ctf{disable &amp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vulhub搭建过程">
-<meta property="og:url" content="http://candyb0x.github.io/2024/06/01/vulhub%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/index.html">
+<meta property="og:title" content="pwn_waf使用教程">
+<meta property="og:url" content="http://candyb0x.github.io/2024/06/02/pwn-waf%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="1. docker安装直接通过官方提供的脚本进行安装。 1curl -s https:&#x2F;&#x2F;get.docker.com&#x2F; | sh  如果由于网络等原因无法安装的，可以选择其他安装方法，包括但不限于apt软件源直接安装(可能会出现一些问题，可能是由于某些包没有安装)，可以参考以下官方安装的软件。  通过官方脚本安装的不要忘记启动docker服务了 1systemctl start docker">
+<meta property="og:description" content="下载与设置首先将其源码下载下来或者git clone下来到本地pwn_waf 需要修改的地方是makefile文件，我们要修改日志存放的位置，这边推荐的位置就是在pwn题目的目录下创建一个隐藏文件夹（以点.开头的文件夹名称）。也是为了避免和下面注意一样的坑。  注意：这里的LOG_PATH路径设置有个坑，这里的路径设置跟xinetd配置文件设计的方式有关 service ctf{disable &amp;">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011948924.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012008504.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012012521.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012013644.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012022337.png">
-<meta property="article:published_time" content="2024-06-01T12:25:19.000Z">
-<meta property="article:modified_time" content="2024-06-01T12:27:59.804Z">
+<meta property="article:published_time" content="2024-06-02T10:51:41.000Z">
+<meta property="article:modified_time" content="2024-06-02T10:53:21.462Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="环境搭建">
-<meta property="article:tag" content="web攻防">
-<meta property="article:tag" content="渗透学习">
+<meta property="article:tag" content="工具配置">
+<meta property="article:tag" content="使用教程">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="流量监听">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011948924.png">
   
   
   
-  <title>vulhub搭建过程 - Welcome Candy Box</title>
+  <title>pwn_waf使用教程 - Welcome Candy Box</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -205,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="vulhub搭建过程"></span>
+            <span id="subtitle" data-typed-text="pwn_waf使用教程"></span>
           
         </div>
 
@@ -216,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-06-01 20:25" pubdate>
-          2024年6月1日 晚上
+        <time datetime="2024-06-02 18:51" pubdate>
+          2024年6月2日 晚上
         </time>
       </span>
     
@@ -228,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          711 字
+          1.1k 字
         
       </span>
     
@@ -239,7 +234,7 @@
         
         
         
-          6 分钟
+          10 分钟
         
       </span>
     
@@ -276,73 +271,40 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">vulhub搭建过程</h1>
+            <h1 id="seo-header">pwn_waf使用教程</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="1-docker安装"><a href="#1-docker安装" class="headerlink" title="1. docker安装"></a>1. docker安装</h1><p>直接通过官方提供的脚本进行安装。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -s https://get.docker.com/ | sh<br></code></pre></td></tr></table></figure>
-
-<p>如果由于网络等原因无法安装的，可以选择其他安装方法，包括但不限于apt软件源直接安装(可能会出现一些问题，可能是由于某些包没有安装)，可以参考以下官方安装的软件。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011948924.png" srcset="/img/loading.gif" lazyload alt="image-20240601194857864"></p>
-<p>通过官方脚本安装的不要忘记启动docker服务了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl start docker<br></code></pre></td></tr></table></figure>
-
-<h1 id="2-vulhub环境搭建"><a href="#2-vulhub环境搭建" class="headerlink" title="2. vulhub环境搭建"></a>2. vulhub环境搭建</h1><h2 id="2-1-环境下载"><a href="#2-1-环境下载" class="headerlink" title="2.1 环境下载"></a>2.1 环境下载</h2><p>直接从相应的仓库克隆出相应的环境即可，执行下方命令；如果存在各种不同的问题下载不了，也可以到vulhub的github仓库中直接下载源文件放到linux虚拟机中；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/vulhub/vulhub.git<br></code></pre></td></tr></table></figure>
-
-<p>后续如果由于仓库作者更新了新的漏洞环境，我们也可以通过进行<code>vulhub</code>文件夹执行下面的命令来更新漏洞环境</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">git pull</span><br></code></pre></td></tr></table></figure>
-
-<p>因为可能执行不成功，最暴力的方法就是，删掉！再下一个！！！git clone不成功就之下下载仓库放到虚拟机上。</p>
-<h2 id="2-2-环境启动"><a href="#2-2-环境启动" class="headerlink" title="2.2 环境启动"></a>2.2 环境启动</h2><p>随便进入一个漏洞环境进行演示，假设我们进入<code>/vulhub/django/CVE-2018-14574</code>中，执行该CVE的环境</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ./vulhub/django/CVE-2018-14574<br></code></pre></td></tr></table></figure>
-
-<p>通过以下命令编译拉取环境，这个过程稍微有点久，但是每个环境只需要拉取一次，下次就不用再拉取了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker compose build<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012008504.png" srcset="/img/loading.gif" lazyload alt="image-20240601200836455"></p>
-<p>我只能说着实久，得想点什么别的办法才是。（查资料说，似乎更换docker镜像源可以缓解这个问题，可以尝试一下，测试后，似乎快一点，没太大感觉）</p>
-<p>运行环境</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker compose up -d<br></code></pre></td></tr></table></figure>
-
-<p>环境启动后，通过以下命令查看端口映射，以及开放服务的端口进行访问</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker ps<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012012521.png" srcset="/img/loading.gif" lazyload alt="image-20240601201222483"></p>
-<p>最后得知是8000端口映射到8000端口，反正就是8000端口，我们访问开启这个环境的机器的ip地址的8000端口即可达到启动服务的页面。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012013644.png" srcset="/img/loading.gif" lazyload alt="image-20240601201332617"></p>
-<h2 id="2-3-关闭环境"><a href="#2-3-关闭环境" class="headerlink" title="2.3 关闭环境"></a>2.3 关闭环境</h2><p>当我们对我们所要进行实验的环境测试完毕后，到相应漏洞的文件夹执行以下命令关闭环境</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker compose down -v<br></code></pre></td></tr></table></figure>
-
-<h1 id="3-docker换源方式"><a href="#3-docker换源方式" class="headerlink" title="3. docker换源方式"></a>3. docker换源方式</h1><ol>
-<li>新建或者编辑<code>/etc/docker/daemon.json</code></li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo vim /etc/docker/daemon.json<br></code></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>在<code>daemon.json</code>添加或者编译以下内容</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">&#123;<br>    <span class="hljs-string">&quot;registry-mirrors&quot;</span>: [<span class="hljs-string">&quot;http://hub-mirror.c.163.com&quot;</span>]	<span class="hljs-comment"># 使用163源docker源</span><br>&#125;<br></code></pre></td></tr></table></figure>
-
+                <h1 id="下载与设置"><a href="#下载与设置" class="headerlink" title="下载与设置"></a>下载与设置</h1><p>首先将其源码下载下来或者git clone下来到本地<a target="_blank" rel="noopener" href="https://github.com/i0gan/pwn_waf">pwn_waf</a></p>
+<p>需要修改的地方是makefile文件，我们要修改日志存放的位置，这边推荐的位置就是在pwn题目的目录下创建一个隐藏文件夹（以点.开头的文件夹名称）。也是为了避免和下面注意一样的坑。</p>
 <blockquote>
-<p>1.网易:<a target="_blank" rel="noopener" href="http://hub-mirror.c.163.com/">http://hub-mirror.c.163.com</a></p>
-<p>2.Docker中国区官方镜像:<a target="_blank" rel="noopener" href="https://registry.docker-cn.com/">https://registry.docker-cn.com</a></p>
-<p>3.中国科技大学:<a target="_blank" rel="noopener" href="https://docker.mirrors.ustc.edu.cn/">https://docker.mirrors.ustc.edu.cn</a></p>
-<p>4.阿里云容器 服务:<a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/%E9%A6%96%E9%A1%B5%E7%82%B9%E5%87%BB%E2%80%9C%E5%88%9B%E5%BB%BA%E6%88%91%E7%9A%84%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E2%80%9D">https://cr.console.aliyun.com/首页点击“创建我的容器镜像”</a>  得到一个专属的镜像加速地址，类似于“<a target="_blank" rel="noopener" href="https://1234abcd.mirror.aliyuncs.com”(要自己创建,每个人不一样)/">https://1234abcd.mirror.aliyuncs.com”(要自己创建，每个人不一样)</a></p>
+<p>注意：这里的LOG_PATH路径设置有个坑，这里的路径设置跟xinetd配置文件设计的方式有关</p>
+<p>service ctf<br>{<br>disable &#x3D; no<br>socket_type &#x3D; stream<br>protocol    &#x3D; tcp<br>wait        &#x3D; no<br>user        &#x3D; root<br>type        &#x3D; UNLISTED<br>port        &#x3D; 9999<br>bind        &#x3D; 0.0.0.0<br>server      &#x3D; &#x2F;usr&#x2F;sbin&#x2F;chroot<br>server_args &#x3D; –userspec&#x3D;1000:1000 &#x2F;home&#x2F;ctf .&#x2F;pwn<br>banner_fail &#x3D; &#x2F;etc&#x2F;banner_fail<br>per_source	&#x3D; 10<br>rlimit_cpu	&#x3D; 20<br>}</p>
+<p>如果配置文件与上述类似，这种就是通过&#x2F;usr&#x2F;sbin&#x2F;chroot启动，将文件活动的根进行了一个更改，上述就是默认的初始路径为<code>/home/ctf</code>，且只能操作该目录下的文件（不要企图用..&#x2F;，这个玩意不行！不行！），所以在配置路径时，要以<code>/home/ctf</code>拼接进行配置，假设LOG_PATH&#x3D;&#x2F;home&#x2F;ctf&#x2F;.pwn_waf，则最后日志写入的文件位置为<code>/home/ctf/home/ctf/.pwn_waf</code>，然后又由于没有创建该文件，导致最后nc连接时回出现<code>Open log [/tmp/.waf/13_57_07_36de8.log] file failed!</code>错误</p>
+<p>个人发疯：就是这个破问题，浪费了差不多三天的时间，最后突然悟了想着试试，顶不住了（希望不会有人也是因为这个问题浪费时间）</p>
 </blockquote>
-<ol start="3">
-<li>重启docker服务</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl restart docker<br></code></pre></td></tr></table></figure>
+<h1 id="编译与利用"><a href="#编译与利用" class="headerlink" title="编译与利用"></a>编译与利用</h1><p>编译流量监听的程序，这里只编译流量监听部分。如果有需要拦截转发等功能的可以在自行编译，这个流量窃听在我看来是比较有用的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">make catch<br></code></pre></td></tr></table></figure>
 
-<ol start="4">
-<li>查看换源是否成功</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker info<br></code></pre></td></tr></table></figure>
+<p>然后就会在项目当前的文件夹下得到一个<code>catch</code>文件，这个文件会实现流量监听功能，同时还会保证原pwn题服务；</p>
+<blockquote>
+<p>对于这个保证原pwn题服务是怎么实现的呢，经过最后方法实现的猜测：（原pwn文件要放到日志目录下，并改名为<code>pwn</code>）</p>
+<p>首先是这个catch文件监听nc连接，然后将连接的数据转发到原pwn程序，得到返回值返回到连接的用户中</p>
+</blockquote>
+<p>然后我们将该<code>catch</code>文件传到部署pwn题的服务器上（哪个目录下都行不碍事，可以的话就先放在待会写日志的那个文件夹下），先保存下来原来的pwn题目文件（可以放到本机上，放置后面因为误删导致各种问题）；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">chmod</span> +x catch	<span class="hljs-comment"># 赋予catch可执行权限</span><br><span class="hljs-built_in">mkdir</span> /home/ctf/.pwn-waf	<span class="hljs-comment"># 创建放置日志文件夹</span><br><span class="hljs-comment"># chmod 777 /home/ctf/.pwn-waf	# 能给777最好，不能给777可以尝试更改文件夹的归属到部署pwn题目的用户（两者必须要能实现其一才行）</span><br><span class="hljs-built_in">chown</span> ctf:ctf .pwn-waf/	<span class="hljs-comment"># 假设部署pwn题目的用户为ctf</span><br><span class="hljs-built_in">cp</span> /home/ctf/orange_cat_diary /home/ctf/.pwn-waf	<span class="hljs-comment"># 保存源pwn题程序备份</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406012022337.png" srcset="/img/loading.gif" lazyload alt="image-20240601202217291"></p>
+<p>然后我们用<code>catch</code>文件来替代原来部署的pwn题目，并改名为原来的pwn题目程序的程序名称</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> /home/ctf/.pwn-waf/catch /home/ctf/orange_cat_diary	<span class="hljs-comment">#修改源pwn题目</span><br></code></pre></td></tr></table></figure>
+
+<p>然后再在存放日志的文件夹中，复制一份源pwn题程序并改名为pwn（这是为了让<code>catch</code>能找到原来的pwn题目）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> /home/ctf/.pwn-waf/orange_cat_diary /home/ctf/.pwn-waf/pwn<br><span class="hljs-built_in">chown</span> ctf:ctf /home/ctf/.pwn-waf/pwn	<span class="hljs-comment"># 能给777最好，不能给777可以尝试更改文件夹的归属到部署pwn题目的用户（两者必须要能实现其一才行）</span><br></code></pre></td></tr></table></figure>
+
+<p>至此，其实工作就已经完成了。</p>
+<p>其实到这里还不算完全结束，对于像上述注意事项的那种pwn题目部署方式，在本地进行测试时，还需要创建一个文件夹，即<code>LOG_PATH</code>对应路径的文件夹，因为在服务器的本地，根路径还是根路径，只有通过nc连接的时候根路径才会修改为<code>/home/ctf</code>，所以我们还要创建一个文件夹，并将程序的源文件复制到相应的文件夹并改名为pwn才行。</p>
+<p>去测试一下新pwn程序（catch改名的那个程序能不能运行），成功运行后，打开日志填写文件夹看看有没有记录流量。</p>
+<p>如果以上都成功了，接下来才是重头戏，nc连接测试，只要相应文件夹有日志就成功了。</p>
 
                 
               </div>
@@ -361,7 +323,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">环境搭建</a>
+  <a href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="category-chain-item">工具教程</a>
   
   
 
@@ -376,11 +338,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="print-no-link">#环境搭建</a>
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" class="print-no-link">#工具配置</a>
       
-        <a href="/tags/web%E6%94%BB%E9%98%B2/" class="print-no-link">#web攻防</a>
+        <a href="/tags/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" class="print-no-link">#使用教程</a>
       
-        <a href="/tags/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" class="print-no-link">#渗透学习</a>
+        <a href="/tags/pwn/" class="print-no-link">#pwn</a>
+      
+        <a href="/tags/%E6%B5%81%E9%87%8F%E7%9B%91%E5%90%AC/" class="print-no-link">#流量监听</a>
       
     </div>
   
@@ -392,8 +356,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>vulhub搭建过程</div>
-      <div>http://candyb0x.github.io/2024/06/01/vulhub搭建过程/</div>
+      <div>pwn_waf使用教程</div>
+      <div>http://candyb0x.github.io/2024/06/02/pwn-waf使用教程/</div>
     </div>
     <div class="license-meta">
       
@@ -405,13 +369,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年6月1日</div>
+          <div>2024年6月2日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年6月1日</div>
+          <div>2024年6月2日</div>
         </div>
       
       
@@ -442,18 +406,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/06/02/pwn-waf%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="pwn_waf使用教程">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">pwn_waf使用教程</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/05/31/dc-6%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="dc-6打靶日记">
-                        <span class="hidden-mobile">dc-6打靶日记</span>
+                      <a href="/2024/06/01/vulhub%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/" title="vulhub搭建过程">
+                        <span class="hidden-mobile">vulhub搭建过程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

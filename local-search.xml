@@ -4,6 +4,37 @@
   
   
   <entry>
+    <title>pwn_waf使用教程</title>
+    <link href="/2024/06/02/pwn-waf%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"/>
+    <url>/2024/06/02/pwn-waf%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<h1 id="下载与设置"><a href="#下载与设置" class="headerlink" title="下载与设置"></a>下载与设置</h1><p>首先将其源码下载下来或者git clone下来到本地<a href="https://github.com/i0gan/pwn_waf">pwn_waf</a></p><p>需要修改的地方是makefile文件，我们要修改日志存放的位置，这边推荐的位置就是在pwn题目的目录下创建一个隐藏文件夹（以点.开头的文件夹名称）。也是为了避免和下面注意一样的坑。</p><blockquote><p>注意：这里的LOG_PATH路径设置有个坑，这里的路径设置跟xinetd配置文件设计的方式有关</p><p>service ctf<br>{<br>disable &#x3D; no<br>socket_type &#x3D; stream<br>protocol    &#x3D; tcp<br>wait        &#x3D; no<br>user        &#x3D; root<br>type        &#x3D; UNLISTED<br>port        &#x3D; 9999<br>bind        &#x3D; 0.0.0.0<br>server      &#x3D; &#x2F;usr&#x2F;sbin&#x2F;chroot<br>server_args &#x3D; –userspec&#x3D;1000:1000 &#x2F;home&#x2F;ctf .&#x2F;pwn<br>banner_fail &#x3D; &#x2F;etc&#x2F;banner_fail<br>per_source&#x3D; 10<br>rlimit_cpu&#x3D; 20<br>}</p><p>如果配置文件与上述类似，这种就是通过&#x2F;usr&#x2F;sbin&#x2F;chroot启动，将文件活动的根进行了一个更改，上述就是默认的初始路径为<code>/home/ctf</code>，且只能操作该目录下的文件（不要企图用..&#x2F;，这个玩意不行！不行！），所以在配置路径时，要以<code>/home/ctf</code>拼接进行配置，假设LOG_PATH&#x3D;&#x2F;home&#x2F;ctf&#x2F;.pwn_waf，则最后日志写入的文件位置为<code>/home/ctf/home/ctf/.pwn_waf</code>，然后又由于没有创建该文件，导致最后nc连接时回出现<code>Open log [/tmp/.waf/13_57_07_36de8.log] file failed!</code>错误</p><p>个人发疯：就是这个破问题，浪费了差不多三天的时间，最后突然悟了想着试试，顶不住了（希望不会有人也是因为这个问题浪费时间）</p></blockquote><h1 id="编译与利用"><a href="#编译与利用" class="headerlink" title="编译与利用"></a>编译与利用</h1><p>编译流量监听的程序，这里只编译流量监听部分。如果有需要拦截转发等功能的可以在自行编译，这个流量窃听在我看来是比较有用的。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">make catch<br></code></pre></td></tr></table></figure><p>然后就会在项目当前的文件夹下得到一个<code>catch</code>文件，这个文件会实现流量监听功能，同时还会保证原pwn题服务；</p><blockquote><p>对于这个保证原pwn题服务是怎么实现的呢，经过最后方法实现的猜测：（原pwn文件要放到日志目录下，并改名为<code>pwn</code>）</p><p>首先是这个catch文件监听nc连接，然后将连接的数据转发到原pwn程序，得到返回值返回到连接的用户中</p></blockquote><p>然后我们将该<code>catch</code>文件传到部署pwn题的服务器上（哪个目录下都行不碍事，可以的话就先放在待会写日志的那个文件夹下），先保存下来原来的pwn题目文件（可以放到本机上，放置后面因为误删导致各种问题）；</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">chmod</span> +x catch<span class="hljs-comment"># 赋予catch可执行权限</span><br><span class="hljs-built_in">mkdir</span> /home/ctf/.pwn-waf<span class="hljs-comment"># 创建放置日志文件夹</span><br><span class="hljs-comment"># chmod 777 /home/ctf/.pwn-waf# 能给777最好，不能给777可以尝试更改文件夹的归属到部署pwn题目的用户（两者必须要能实现其一才行）</span><br><span class="hljs-built_in">chown</span> ctf:ctf .pwn-waf/<span class="hljs-comment"># 假设部署pwn题目的用户为ctf</span><br><span class="hljs-built_in">cp</span> /home/ctf/orange_cat_diary /home/ctf/.pwn-waf<span class="hljs-comment"># 保存源pwn题程序备份</span><br></code></pre></td></tr></table></figure><p>然后我们用<code>catch</code>文件来替代原来部署的pwn题目，并改名为原来的pwn题目程序的程序名称</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> /home/ctf/.pwn-waf/catch /home/ctf/orange_cat_diary<span class="hljs-comment">#修改源pwn题目</span><br></code></pre></td></tr></table></figure><p>然后再在存放日志的文件夹中，复制一份源pwn题程序并改名为pwn（这是为了让<code>catch</code>能找到原来的pwn题目）</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> /home/ctf/.pwn-waf/orange_cat_diary /home/ctf/.pwn-waf/pwn<br><span class="hljs-built_in">chown</span> ctf:ctf /home/ctf/.pwn-waf/pwn<span class="hljs-comment"># 能给777最好，不能给777可以尝试更改文件夹的归属到部署pwn题目的用户（两者必须要能实现其一才行）</span><br></code></pre></td></tr></table></figure><p>至此，其实工作就已经完成了。</p><p>其实到这里还不算完全结束，对于像上述注意事项的那种pwn题目部署方式，在本地进行测试时，还需要创建一个文件夹，即<code>LOG_PATH</code>对应路径的文件夹，因为在服务器的本地，根路径还是根路径，只有通过nc连接的时候根路径才会修改为<code>/home/ctf</code>，所以我们还要创建一个文件夹，并将程序的源文件复制到相应的文件夹并改名为pwn才行。</p><p>去测试一下新pwn程序（catch改名的那个程序能不能运行），成功运行后，打开日志填写文件夹看看有没有记录流量。</p><p>如果以上都成功了，接下来才是重头戏，nc连接测试，只要相应文件夹有日志就成功了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>工具教程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>工具配置</tag>
+      
+      <tag>使用教程</tag>
+      
+      <tag>pwn</tag>
+      
+      <tag>流量监听</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>vulhub搭建过程</title>
     <link href="/2024/06/01/vulhub%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/"/>
     <url>/2024/06/01/vulhub%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
