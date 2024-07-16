@@ -16,30 +16,33 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="首先我们需要寻找了两个资源，一个是clash for Linux，另一个是Country.mmdb，由于clash的作者已经删库跑路了，所以我们下载野生资源的时候注意不要下到木马病毒了！可以下载放到沙箱上跑跑看看。 一、安装Clash这里，上述的资源给了Clash for Linux的执行程序以及Country.mmdb文件，这是Linux执行Clash所必须的程序。我们将clash-linux-">
+    <meta name="description" content="一、安装docker环境首先，我们需要一个docker环境，直接通过命令安装即可，也可以通过官方的安装脚本安装也可以。 1sudo apt install docker -y  二、vulfocus镜像 这里主要是讨论以下网上教程都在使用的两种方法（反正我两种都没安装上） 方法一：直接通过官方的docker镜像拉取，这种方法在同步环境的时候会报“服务器内部错误，请联系管理员”，似乎是由于镜像并不是">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Clash-for-Linux搭建教程">
-<meta property="og:url" content="http://candyb0x.github.io/2024/07/16/Clash-for-Linux%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:title" content="vulfocus靶场搭建教程">
+<meta property="og:url" content="http://candyb0x.github.io/2024/07/16/vulfocus%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="首先我们需要寻找了两个资源，一个是clash for Linux，另一个是Country.mmdb，由于clash的作者已经删库跑路了，所以我们下载野生资源的时候注意不要下到木马病毒了！可以下载放到沙箱上跑跑看看。 一、安装Clash这里，上述的资源给了Clash for Linux的执行程序以及Country.mmdb文件，这是Linux执行Clash所必须的程序。我们将clash-linux-">
+<meta property="og:description" content="一、安装docker环境首先，我们需要一个docker环境，直接通过命令安装即可，也可以通过官方的安装脚本安装也可以。 1sudo apt install docker -y  二、vulfocus镜像 这里主要是讨论以下网上教程都在使用的两种方法（反正我两种都没安装上） 方法一：直接通过官方的docker镜像拉取，这种方法在同步环境的时候会报“服务器内部错误，请联系管理员”，似乎是由于镜像并不是">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407161955002.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162008705.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162027504.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162042050.png">
-<meta property="article:published_time" content="2024-07-16T12:44:21.000Z">
-<meta property="article:modified_time" content="2024-07-16T12:45:27.285Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162109481.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162116641.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162134460.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162137521.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162144943.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162145390.png">
+<meta property="article:published_time" content="2024-07-16T13:48:51.000Z">
+<meta property="article:modified_time" content="2024-07-16T13:51:03.331Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="环境搭建">
 <meta property="article:tag" content="工具教程">
 <meta property="article:tag" content="使用教程">
-<meta property="article:tag" content="代理">
+<meta property="article:tag" content="靶场搭建">
+<meta property="article:tag" content="dockerhub">
+<meta property="article:tag" content="docker报错">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407161955002.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162109481.png">
   
   
   
-  <title>Clash-for-Linux搭建教程 - Welcome Candy Box</title>
+  <title>vulfocus靶场搭建教程 - Welcome Candy Box</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -205,7 +208,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Clash-for-Linux搭建教程"></span>
+            <span id="subtitle" data-typed-text="vulfocus靶场搭建教程"></span>
           
         </div>
 
@@ -216,7 +219,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-07-16 20:44" pubdate>
+        <time datetime="2024-07-16 21:48" pubdate>
           2024年7月16日 晚上
         </time>
       </span>
@@ -228,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          944 字
+          1.1k 字
         
       </span>
     
@@ -239,7 +242,7 @@
         
         
         
-          8 分钟
+          10 分钟
         
       </span>
     
@@ -276,69 +279,68 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Clash-for-Linux搭建教程</h1>
+            <h1 id="seo-header">vulfocus靶场搭建教程</h1>
             
             
               <div class="markdown-body">
                 
-                <p>首先我们需要寻找了两个资源，一个是clash for Linux，另一个是Country.mmdb，由于clash的作者已经删库跑路了，所以我们下载野生资源的时候注意不要下到木马病毒了！可以下载放到沙箱上跑跑看看。</p>
-<h1 id="一、安装Clash"><a href="#一、安装Clash" class="headerlink" title="一、安装Clash"></a>一、安装Clash</h1><p>这里，上述的资源给了Clash for Linux的执行程序以及Country.mmdb文件，这是Linux执行Clash所必须的程序。我们将<code>clash-linux-amd64-v1.17.0</code>和<code>Country.mmdb</code>文件下载下来放到我们的Linux系统中，具体的放置方法因人而异，只要放上去了就行！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407161955002.png" srcset="/img/loading.gif" lazyload alt="image-20240716195500914"></p>
-<p>现在我们的文件已经下载好放置到<code>~/clash/</code>文件夹中，由于clash程序默认将配置文件放置到<code>~/.config/clash/</code>中，但是由于作者删库的原因，已经不能通过网络下载到配置文件了，所以我们才需要自己下载<code>Country.mmdb</code>文件放置到<code>~/.config/clash/</code>中（没有相应目录的话，自己创建一个就行）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> ~/clash/Country.mmdb ~/.config/clash/<br></code></pre></td></tr></table></figure>
+                <h1 id="一、安装docker环境"><a href="#一、安装docker环境" class="headerlink" title="一、安装docker环境"></a>一、安装docker环境</h1><p>首先，我们需要一个docker环境，直接通过命令安装即可，也可以通过官方的安装脚本安装也可以。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt install docker -y<br></code></pre></td></tr></table></figure>
 
-<h1 id="二、配置文件编写"><a href="#二、配置文件编写" class="headerlink" title="二、配置文件编写"></a>二、配置文件编写</h1><p>Clash使用YAML格式的配置文件，所以我们在<code>~/.config/clash/</code>创建一个相应的文件<code>config.yaml</code>，然后将我们订阅链接生成的配置文件内容复制到该文件下，也就是平时自己使用clash for windows中配置选项栏中的配置内容，将其中的内容复制粘贴到<code>config.yaml</code>文件中</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162008705.png" srcset="/img/loading.gif" lazyload alt="image-20240716200812666"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">touch</span> ~/.config/clash/config.yaml<br>vim ~/.config/clash/config.yaml<br></code></pre></td></tr></table></figure>
+<h1 id="二、vulfocus镜像"><a href="#二、vulfocus镜像" class="headerlink" title="二、vulfocus镜像"></a>二、vulfocus镜像</h1><blockquote>
+<p>这里主要是讨论以下网上教程都在使用的两种方法（反正我两种都没安装上）</p>
+<p>方法一：直接通过官方的docker镜像拉取，这种方法在同步环境的时候会报“服务器内部错误，请联系管理员”，似乎是由于镜像并不是最新的镜像；</p>
+<p>方法二：修改docker镜像源<code>https://dockerproxy.com/</code>，然后拉去镜像dockerproxy.com&#x2F;vulfocus&#x2F;vulfocus:latest，这个方法也离谱，我直接拉去不到；</p>
+<p>如果你们也有我上述的问题，可以尝试一下我下面的方案</p>
+</blockquote>
+<p>上面有阐述到，通过官方镜像拉去vulfocus镜像的时候报错的原因似乎是因为镜像不是最新版本；我们直接来到dockerhub中查看vulfocus查看tag</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162109481.png" srcset="/img/loading.gif" lazyload alt="image-20240716210945416"></p>
+<p>发现标签<code>latest</code>和<code>0.3.2.11</code>均为两年前发布，大小也均为475.84MB，但是我们最后拉去到镜像中的时候会发现其实这两个似乎不是相同的镜像；</p>
+<p>通过以下两条命令将两个镜像均拉去到本地；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker pull vulfocus/vulfocus:latest<br>sudo docker pull vulfocus/vulfocus:0.3.2.11<br></code></pre></td></tr></table></figure>
 
-<p>然后将相应的内容粘贴到文件中即可。</p>
-<h1 id="三、执行Clash"><a href="#三、执行Clash" class="headerlink" title="三、执行Clash"></a>三、执行Clash</h1><p>两种clash的启动方式：</p>
-<ul>
-<li>方式一：配置文件<code>config.yaml</code>在<code>~/.config/clash/</code>文件夹中</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 直接执行</span><br>./clash-linux-amd64-v1.17.0<br></code></pre></td></tr></table></figure>
+<p>但是我们在拉取<code>vulfocus/vulfocus:0.3.2.11</code>时可能会遇到以下问题或io timeout问题等等（如果你们确实没有任何问题就直接跳过配置代理的过程）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162116641.png" srcset="/img/loading.gif" lazyload alt="image-20240716211610603"></p>
+<p>经过无数次docker镜像源更换与测试我发现，这并不是docker镜像源的问题，而是vulfocus&#x2F;vulfocus:0.3.2.11似乎只有dockerhub才能拉取到，所以似乎无法直接通过修改docker源来解决问题。这时候我们需要为Linux系统配置代理，详细教程参考：<a href="https://candyb0x.github.io/2024/07/16/Clash-for-Linux%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/">Clash-for-Linux搭建教程</a>；</p>
+<p>配置完Linux系统代理后，我们还需要单独为docker配置代理才能够让拉取通过代理进行，以下时Docker代理配置的方法</p>
+<h3 id="1-创建Docker守护进程配置目录"><a href="#1-创建Docker守护进程配置目录" class="headerlink" title="1. 创建Docker守护进程配置目录"></a>1. 创建Docker守护进程配置目录</h3><p>如果目录不存在，先创建目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo <span class="hljs-built_in">mkdir</span> -p /etc/systemd/system/docker.service.d<br></code></pre></td></tr></table></figure>
 
+<h3 id="2-创建代理配置文件"><a href="#2-创建代理配置文件" class="headerlink" title="2. 创建代理配置文件"></a>2. 创建代理配置文件</h3><p>在<code>/etc/systemd/system/docker.service.d</code>目录下创建一个名为<code>http-proxy.conf</code>的文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo vim /etc/systemd/system/docker.service.d/http-proxy.conf<br></code></pre></td></tr></table></figure>
 
+<h3 id="3-添加代理配置"><a href="#3-添加代理配置" class="headerlink" title="3. 添加代理配置"></a>3. 添加代理配置</h3><p>在文件中添加以下内容（根据你的代理配置调整）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTP_PROXY=http://127.0.0.1:7890/&quot;</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTPS_PROXY=http://127.0.0.1:7890/&quot;</span><br></code></pre></td></tr></table></figure>
 
-<ul>
-<li>方式二：配置文件<code>config.yaml</code>不在<code>~/.config/clash/</code>文件夹中</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 指定配置文件位置执行</span><br>./clash-linux-amd64-v1.17.0 -d /path/to/your/config/directory<br></code></pre></td></tr></table></figure>
+<h3 id="4-重新加载系统守护进程"><a href="#4-重新加载系统守护进程" class="headerlink" title="4. 重新加载系统守护进程"></a>4. 重新加载系统守护进程</h3><p>保存并关闭文件后，重新加载systemd守护进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl daemon-reload<br></code></pre></td></tr></table></figure>
 
+<h3 id="5-重启Docker服务"><a href="#5-重启Docker服务" class="headerlink" title="5. 重启Docker服务"></a>5. 重启Docker服务</h3><p>重启Docker服务以使配置生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl restart docker<br></code></pre></td></tr></table></figure>
 
+<h3 id="6-验证配置"><a href="#6-验证配置" class="headerlink" title="6. 验证配置"></a>6. 验证配置</h3><p>你可以通过检查Docker服务的环境变量来验证配置是否正确：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl show --property=Environment docker<br></code></pre></td></tr></table></figure>
 
-<h1 id="四、代理检测"><a href="#四、代理检测" class="headerlink" title="四、代理检测"></a>四、代理检测</h1><p>执行了clash后，重新开启一个命令行，我们先对clash进行简单的测试看看是否已经通过了代理；</p>
-<p>对于docker pull、git clone等等执行的代理还需要进行额外的配置，详细方案可以自行搜索，不是非常复杂；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -x http://127.0.0.1:7890 http://www.google.com<br></code></pre></td></tr></table></figure>
+<p>这应该会显示你刚刚配置的代理环境变量。</p>
+<p>这里还有<strong>比较重要的一步</strong>就是我们需要将<code>/etc/docker/daemon.json</code>注册的镜像全部删掉，这样是为了防止docker pull从这些镜像中寻找<code>vulfocus/vulfocus:0.3.2.11</code>，然后再次重启一下docker</p>
+<figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nsis">sudo <span class="hljs-params">system</span>ctl daemon-reload<br>sudo <span class="hljs-params">system</span>ctl restart docker<br></code></pre></td></tr></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162027504.png" srcset="/img/loading.gif" lazyload alt="image-20240716202716450"></p>
-<p>出现上述内容和代理匹配的内容已经可以确定代理有效；</p>
-<h1 id="五、Clash自启动"><a href="#五、Clash自启动" class="headerlink" title="五、Clash自启动"></a>五、Clash自启动</h1><h3 id="1-创建Clash的systemd服务文件"><a href="#1-创建Clash的systemd服务文件" class="headerlink" title="1. 创建Clash的systemd服务文件"></a>1. 创建Clash的systemd服务文件</h3><p>首先，确保Clash可执行文件和配置文件已经正确配置并可以正常运行。</p>
-<h4 id="创建服务文件"><a href="#创建服务文件" class="headerlink" title="创建服务文件"></a>创建服务文件</h4><p>使用以下命令创建一个新的systemd服务文件：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">bash<br>复制代码<br>sudo nano <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>clash.service<br></code></pre></td></tr></table></figure>
+<p>配置完成后我们再次拉取一下<code>vulfocus/vulfocus:0.3.2.11</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker pull vulfocus/vulfocus:0.3.2.11<br></code></pre></td></tr></table></figure>
 
-<h4 id="添加以下内容到服务文件中"><a href="#添加以下内容到服务文件中" class="headerlink" title="添加以下内容到服务文件中"></a>添加以下内容到服务文件中</h4><p>将以下内容复制并粘贴到刚创建的<code>clash.service</code>文件中。根据实际路径调整<code>ExecStart</code>和<code>WorkingDirectory</code>：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Clash Daemon<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">ExecStart</span>=/usr/local/bin/clash -d /path/to/your/config/directory<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br><span class="hljs-attr">RestartSec</span>=<span class="hljs-number">10</span><br><span class="hljs-attr">WorkingDirectory</span>=/path/to/your/config/directory<br><span class="hljs-attr">User</span>=nobody<br><span class="hljs-attr">Group</span>=nogroup<br><span class="hljs-attr">CapabilityBoundingSet</span>=CAP_NET_ADMIN CAP_NET_BIND_SERVICE<br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162134460.png" srcset="/img/loading.gif" lazyload alt="image-20240716213423425"></p>
+<p>拉取成功，等待其下载完毕即可；</p>
+<p>然后我们通过命令查看以下镜像<code>vulfocus/vulfocus:latest</code>和<code>vulfocus/vulfocus:0.3.2.11</code>的区别</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker images<br></code></pre></td></tr></table></figure>
 
-<p>确保替换<code>/usr/local/bin/clash</code>为Clash可执行文件的路径，<code>/path/to/your/config/directory</code>为你的Clash配置文件所在的目录。以下，是我的配置文件；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash">[Unit]<br>Description=Clash Daemon<br>After=network.target<br><br>[Service]<br>Type=simple<br>ExecStart=/home/candy/clash/clash-linux-amd64-v1.17.0 -d /home/candy/.config/clash<br>Restart=on-failure<br>RestartSec=10<br>WorkingDirectory=/home/candy/.config/clash<br>User=candy<br>Group=candy<br>CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE<br><br>[Install]<br>WantedBy=multi-user.target<br></code></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162137521.png" srcset="/img/loading.gif" lazyload alt="image-20240716213749442"></p>
+<p>可以发现这两个镜像的创造时间并不一致，而且<code>vulfocus/vulfocus:0.3.2.11</code>镜像反而才是最新的，虽然dockerhub中均显示是两年前，但是事实证明<code>vulfocus/vulfocus:0.3.2.11</code>镜像应该才是我们所需的镜像，这也是为什么拉取<code>vulfocus/vulfocus:latest</code>镜像会报错“服务器内部错误，请联系管理员”了。</p>
+<h1 id="三、启动镜像"><a href="#三、启动镜像" class="headerlink" title="三、启动镜像"></a>三、启动镜像</h1><p>通过以下命令启动镜像即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker run -d -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock -e VUL_IP=0.0.0.0 vulfocus/vulfocus:0.3.2.11<br></code></pre></td></tr></table></figure>
 
-
-
-<h3 id="2-重新加载systemd守护进程"><a href="#2-重新加载systemd守护进程" class="headerlink" title="2. 重新加载systemd守护进程"></a>2. 重新加载systemd守护进程</h3><p>保存并关闭文件后，重新加载systemd守护进程：</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">sudo systemctl daemon-reload</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="3-启用Clash服务"><a href="#3-启用Clash服务" class="headerlink" title="3. 启用Clash服务"></a>3. 启用Clash服务</h3><p>使用以下命令启用Clash服务，使其在开机时自启动：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sudo systemctl <span class="hljs-built_in">enable</span> clash<br></code></pre></td></tr></table></figure>
-
-<h3 id="4-启动Clash服务"><a href="#4-启动Clash服务" class="headerlink" title="4. 启动Clash服务"></a>4. 启动Clash服务</h3><p>现在可以手动启动Clash服务，确保其正常运行：</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">sudo systemctl <span class="hljs-literal">start</span> clash<br></code></pre></td></tr></table></figure>
-
-<h3 id="5-验证服务状态"><a href="#5-验证服务状态" class="headerlink" title="5. 验证服务状态"></a>5. 验证服务状态</h3><p>使用以下命令查看Clash服务的状态，确保其正常运行：</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">sudo systemctl status clash</span><br></code></pre></td></tr></table></figure>
-
-<p>如果服务正在运行且没有错误信息，说明配置成功。Clash程序将会在系统启动时自动启动。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162042050.png" srcset="/img/loading.gif" lazyload alt="image-20240716204240003"></p>
+<p>然后通过ip地址的80端口即可直接访问靶场，默认账户用户名和密码分别为<code>admin/admin</code>，登录后，来到镜像管理中一件同步即可得到vulfocus中的靶场；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162144943.png" srcset="/img/loading.gif" lazyload alt="image-20240716214456763"><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162145390.png" srcset="/img/loading.gif" lazyload alt="image-20240716214541142"></p>
+<p>好了，到这里也应该结束了，剩下的修改密码什么之类的自己看看也就能找到了！下班咯~~~~</p>
 
                 
               </div>
@@ -372,13 +374,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="print-no-link">#环境搭建</a>
-      
         <a href="/tags/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="print-no-link">#工具教程</a>
       
         <a href="/tags/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" class="print-no-link">#使用教程</a>
       
-        <a href="/tags/%E4%BB%A3%E7%90%86/" class="print-no-link">#代理</a>
+        <a href="/tags/%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA/" class="print-no-link">#靶场搭建</a>
+      
+        <a href="/tags/dockerhub/" class="print-no-link">#dockerhub</a>
+      
+        <a href="/tags/docker%E6%8A%A5%E9%94%99/" class="print-no-link">#docker报错</a>
       
     </div>
   
@@ -390,8 +394,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Clash-for-Linux搭建教程</div>
-      <div>http://candyb0x.github.io/2024/07/16/Clash-for-Linux搭建教程/</div>
+      <div>vulfocus靶场搭建教程</div>
+      <div>http://candyb0x.github.io/2024/07/16/vulfocus靶场搭建教程/</div>
     </div>
     <div class="license-meta">
       
@@ -440,18 +444,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/07/16/vulfocus%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" title="vulfocus靶场搭建教程">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">vulfocus靶场搭建教程</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/07/12/hackNos-Os-ByteSec%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="hackNos-Os-ByteSec打靶日记">
-                        <span class="hidden-mobile">hackNos-Os-ByteSec打靶日记</span>
+                      <a href="/2024/07/16/Clash-for-Linux%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" title="Clash-for-Linux搭建教程">
+                        <span class="hidden-mobile">Clash-for-Linux搭建教程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
