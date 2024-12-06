@@ -246,7 +246,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2024/12/06/Windows%20%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" target="_self">
         <div>
-          内容来自：https://zhuanlan.zhihu.com/p/626445631 一、收集本机信息1.1 手动信息收集1.1.1 查询网络配置信息1ifconfig /all	# 查询网络配置信息  1.1.2 查询操作系统及软件信息123456systeminfo	# 查询操作系统及软件信息(可查询出补丁，可利用系统自身存在的漏洞进行后续的提权。)systeminfo | findstr
+          一、收集本机信息1.1 手动信息收集1.1.1 查询网络配置信息1ifconfig /all	# 查询网络配置信息  1.1.2 查询操作系统及软件信息123456systeminfo	# 查询操作系统及软件信息(可查询出补丁，可利用系统自身存在的漏洞进行后续的提权。)systeminfo | findstr /B /C:“OS 名称” /C:“OS 版本”echo %PROCESSOR_ARCH
         </div>
       </a>
 
