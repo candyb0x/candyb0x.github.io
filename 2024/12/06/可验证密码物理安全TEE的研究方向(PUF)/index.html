@@ -23,25 +23,14 @@
 <meta property="og:site_name" content="Welcome Candy Box">
 <meta property="og:description" content="原文下载：Research_Directions_for_Verifiable_Crypto-Physically_Secure_TEEs.pdf  本文只详细阅读第三章节-遗忘根信任生成，剩下的章节请自行阅读分析  一、研究背景如何通过遗忘方式生成签名密钥（根信任），签名密钥在生成的时候不被任何第三方所知？ PUFs 和 True Random Number Generators(TRNG) 是">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/a4b804c4193ad985badbb9a62fe95daf.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/95bd514d8593c40c0da46d4ac5cb60a2.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/e47799d4d22b4f4b6a9bdfbf9363e954.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/f66b3a76949b0ab55c50ce8fca0c9ef2.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/f594830f5512ba6be719ce347282b20f.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/95bd514d8593c40c0da46d4ac5cb60a2.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/501359effb97ea441e95aefaf1cd01b8.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/95bd514d8593c40c0da46d4ac5cb60a2.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/90d43c5030a0fbb7e72879878b69fa64.svg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/__latex/c8a8fa889b1cbc4c38e808e175fdce23.svg">
 <meta property="article:published_time" content="2024-12-06T05:51:22.000Z">
-<meta property="article:modified_time" content="2024-12-06T05:52:22.915Z">
+<meta property="article:modified_time" content="2024-12-06T14:58:29.738Z">
 <meta property="article:author" content="Candy">
 <meta property="article:tag" content="PUF">
 <meta property="article:tag" content="硬件安全">
 <meta property="article:tag" content="PUF特性">
 <meta property="article:tag" content="PUF攻击">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/__latex/a4b804c4193ad985badbb9a62fe95daf.svg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -253,7 +242,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          1.3k 字
         
       </span>
     
@@ -327,12 +316,12 @@
 <p>PUFs 具有大量的 CRPs 被定义为“强”PUFs 或者认证 PUFs，强 PUFs 理论上更容易受到攻击，最为显著的就是机器学习攻击，并且也还没有被认为是安全的。</p>
 <p>PUFs 具有少量的 CRPs 被定义为“弱”PUFs 或者密钥 PUFs，由于少量的 CRPs 不能被机器学习攻击所利用，从而使得其安全性较高，现已在商业中广泛应用，尤其是物联网（IoT）设备；</p>
 <h3 id="2-1-3-PUF-特性"><a href="#2-1-3-PUF-特性" class="headerlink" title="2.1.3 PUF 特性"></a>2.1.3 PUF 特性</h3><p>PUF 的定义：</p>
-<p><img src="https://cdn.nlark.com/yuque/__latex/a4b804c4193ad985badbb9a62fe95daf.svg" srcset="/img/loading.gif" lazyload alt="image"></p>
-<p>特性 1（可计算性）：给出一个 PUF <strong>函数</strong><img src="https://cdn.nlark.com/yuque/__latex/95bd514d8593c40c0da46d4ac5cb60a2.svg" srcset="/img/loading.gif" lazyload alt="image">** **和一个挑战 x，能够很容易计算出响应 <img src="https://cdn.nlark.com/yuque/__latex/e47799d4d22b4f4b6a9bdfbf9363e954.svg" srcset="/img/loading.gif" lazyload alt="image">。</p>
-<p>特性 2（唯一性）：PUF 函数 <img src="https://cdn.nlark.com/yuque/__latex/f66b3a76949b0ab55c50ce8fca0c9ef2.svg" srcset="/img/loading.gif" lazyload alt="image">包含一些关于嵌入 PUF 物理设备的唯一属性。</p>
-<p>特性 3（可重复性）：响应<img src="https://cdn.nlark.com/yuque/__latex/f594830f5512ba6be719ce347282b20f.svg" srcset="/img/loading.gif" lazyload alt="image">在很小的误差范围内是可重复的。</p>
-<p>特性 4（不可克隆性）：给定一个PUF<img src="https://cdn.nlark.com/yuque/__latex/95bd514d8593c40c0da46d4ac5cb60a2.svg" srcset="/img/loading.gif" lazyload alt="image">，很难构造这样一个过程 <img src="https://cdn.nlark.com/yuque/__latex/501359effb97ea441e95aefaf1cd01b8.svg" srcset="/img/loading.gif" lazyload alt="image">，直至一个小误差。</p>
-<p>特性 5（防篡改）：<font style="color:rgb(42, 43, 46);">改变嵌入</font><img src="https://cdn.nlark.com/yuque/__latex/95bd514d8593c40c0da46d4ac5cb60a2.svg" srcset="/img/loading.gif" lazyload alt="image"><font style="color:rgb(42, 43, 46);">的物理实体对</font><img src="https://cdn.nlark.com/yuque/__latex/90d43c5030a0fbb7e72879878b69fa64.svg" srcset="/img/loading.gif" lazyload alt="image"><font style="color:rgb(42, 43, 46);">进行变换，使得大概率</font><img src="https://cdn.nlark.com/yuque/__latex/c8a8fa889b1cbc4c38e808e175fdce23.svg" srcset="/img/loading.gif" lazyload alt="image"><font style="color:rgb(42, 43, 46);">，甚至不会产生很小的误差。</font></p>
+<p>$ Π: x→y:Π(x) &#x3D; y $</p>
+<p>特性 1（可计算性）：给出一个 PUF <strong>函数</strong>$ Π $** **和一个挑战 x，能够很容易计算出响应 $ y&#x3D;Π(x) $。</p>
+<p>特性 2（唯一性）：PUF 函数 $ Π(x) $包含一些关于嵌入 PUF 物理设备的唯一属性。</p>
+<p>特性 3（可重复性）：响应$ y &#x3D; Π(x) $在很小的误差范围内是可重复的。</p>
+<p>特性 4（不可克隆性）：给定一个PUF$ Π $，很难构造这样一个过程 $ Γ\neqΠ\quad∀x∈x：Γ(x)≈Π(x) $，直至一个小误差。</p>
+<p>特性 5（防篡改）：<font style="color:rgb(42, 43, 46);">改变嵌入</font>$ Π $<font style="color:rgb(42, 43, 46);">的物理实体对</font>$ Π→Π’ $<font style="color:rgb(42, 43, 46);">进行变换，使得大概率</font>$ ∃x∈x:Π(x) \neq Π’(x) $<font style="color:rgb(42, 43, 46);">，甚至不会产生很小的误差。</font></p>
 <h3 id="2-1-4-PUFs-的混淆"><a href="#2-1-4-PUFs-的混淆" class="headerlink" title="2.1.4 PUFs 的混淆"></a>2.1.4 PUFs 的混淆</h3><p><font style="color:rgb(42, 43, 46);">芯片也会老化，随着时间的推移，PUF的响应也会因为其物理组件的退化而发生变化。因此，对于可靠的puf来说，混乱有好有坏。</font></p>
 <ol>
 <li><font style="color:rgb(42, 43, 46);">工艺制造变化</font><br><font style="color:rgb(42, 43, 46);">在芯片制造过程中引入了两种主要类型的变化：(1)沉积和&#x2F;或扩散掺杂剂的工艺参数的变化(2)由于光刻工艺的有限分辨率而导致的晶体管尺寸的变化。</font></li>
@@ -507,6 +496,12 @@
 
 
 
+  
+
+
+
+
+  
   
 
 
@@ -701,6 +696,49 @@
   });
 </script>
 
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 
