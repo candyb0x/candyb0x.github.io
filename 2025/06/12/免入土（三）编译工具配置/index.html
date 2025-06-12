@@ -16,32 +16,31 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="首先我们需要寻找了两个资源，一个是clash for Linux，另一个是Country.mmdb，由于clash的作者已经删库跑路了，所以我们下载野生资源的时候注意不要下到木马病毒了！可以下载放到沙箱上跑跑看看。 一、安装Clash这里，上述的资源给了Clash for Linux的执行程序以及Country.mmdb文件，这是Linux执行Clash所必须的程序。我们将clash-linux-">
+    <meta name="description" content="一、前言本文主要介绍的内容是关于 Visual Studio 配置和对程序的一些处理，主要是为了防止生成的免杀木马容易被溯源或者被查杀软件查杀。 二、Visual Studio 配置 生成 release 的时候使用 MT，不要使用多线程 DLL(&#x2F;MD)    关闭生成编译信息（防止溯源定位）  如果不关闭该选项的话可能会导致生成的 exe 文件中包含编译路径和相关计算机的用户名">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Clash-for-Linux搭建教程">
-<meta property="og:url" content="http://candyb0x.github.io/2024/07/16/Clash-for-Linux%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:title" content="免入土（三）编译工具配置">
+<meta property="og:url" content="http://candyb0x.github.io/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%B8%89%EF%BC%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="首先我们需要寻找了两个资源，一个是clash for Linux，另一个是Country.mmdb，由于clash的作者已经删库跑路了，所以我们下载野生资源的时候注意不要下到木马病毒了！可以下载放到沙箱上跑跑看看。 一、安装Clash这里，上述的资源给了Clash for Linux的执行程序以及Country.mmdb文件，这是Linux执行Clash所必须的程序。我们将clash-linux-">
+<meta property="og:description" content="一、前言本文主要介绍的内容是关于 Visual Studio 配置和对程序的一些处理，主要是为了防止生成的免杀木马容易被溯源或者被查杀软件查杀。 二、Visual Studio 配置 生成 release 的时候使用 MT，不要使用多线程 DLL(&#x2F;MD)    关闭生成编译信息（防止溯源定位）  如果不关闭该选项的话可能会导致生成的 exe 文件中包含编译路径和相关计算机的用户名">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407161955002.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162008705.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162027504.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162042050.png">
-<meta property="article:published_time" content="2024-07-16T12:44:21.000Z">
-<meta property="article:modified_time" content="2025-05-16T04:48:45.842Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1747123439513-5a19cd48-ffcb-4ae2-9703-f9a481ee5082.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1747123003278-38034a1c-d1a2-47d6-8326-a3edfbd0915e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1749696717769-d782ffc1-d3de-4071-bba0-d490a1046cd4.png">
+<meta property="article:published_time" content="2025-06-12T06:08:17.000Z">
+<meta property="article:modified_time" content="2025-06-12T06:10:22.839Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="使用教程">
-<meta property="article:tag" content="环境搭建">
-<meta property="article:tag" content="代理">
-<meta property="article:tag" content="工具教程">
+<meta property="article:tag" content="工具配置">
+<meta property="article:tag" content="免杀对抗">
+<meta property="article:tag" content="Visual Studio">
+<meta property="article:tag" content="防溯源">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407161955002.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1747123439513-5a19cd48-ffcb-4ae2-9703-f9a481ee5082.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Clash-for-Linux搭建教程 - Welcome Candy Box</title>
+  <title>免入土（三）编译工具配置 - Welcome Candy Box</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -219,7 +218,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Clash-for-Linux搭建教程"></span>
+            <span id="subtitle" data-typed-text="免入土（三）编译工具配置"></span>
           
         </div>
 
@@ -235,8 +234,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-07-16 20:44" pubdate>
-          2024年7月16日 晚上
+        <time datetime="2025-06-12 14:08" pubdate>
+          2025年6月12日 下午
         </time>
       </span>
     
@@ -247,7 +246,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          944 字
+          643 字
         
       </span>
     
@@ -258,7 +257,7 @@
         
         
         
-          8 分钟
+          6 分钟
         
       </span>
     
@@ -303,69 +302,53 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Clash-for-Linux搭建教程</h1>
+            <h1 id="seo-header">免入土（三）编译工具配置</h1>
             
             
               <div class="markdown-body">
                 
-                <p>首先我们需要寻找了两个资源，一个是clash for Linux，另一个是Country.mmdb，由于clash的作者已经删库跑路了，所以我们下载野生资源的时候注意不要下到木马病毒了！可以下载放到沙箱上跑跑看看。</p>
-<h1 id="一、安装Clash"><a href="#一、安装Clash" class="headerlink" title="一、安装Clash"></a>一、安装Clash</h1><p>这里，上述的资源给了Clash for Linux的执行程序以及Country.mmdb文件，这是Linux执行Clash所必须的程序。我们将<code>clash-linux-amd64-v1.17.0</code>和<code>Country.mmdb</code>文件下载下来放到我们的Linux系统中，具体的放置方法因人而异，只要放上去了就行！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407161955002.png" srcset="/img/loading.gif" lazyload alt="image-20240716195500914"></p>
-<p>现在我们的文件已经下载好放置到<code>~/clash/</code>文件夹中，由于clash程序默认将配置文件放置到<code>~/.config/clash/</code>中，但是由于作者删库的原因，已经不能通过网络下载到配置文件了，所以我们才需要自己下载<code>Country.mmdb</code>文件放置到<code>~/.config/clash/</code>中（没有相应目录的话，自己创建一个就行）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> ~/clash/Country.mmdb ~/.config/clash/<br></code></pre></td></tr></table></figure>
+                <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>本文主要介绍的内容是关于 Visual Studio 配置和对程序的一些处理，主要是为了防止生成的免杀木马容易被溯源或者被查杀软件查杀。</p>
+<h1 id="二、Visual-Studio-配置"><a href="#二、Visual-Studio-配置" class="headerlink" title="二、Visual Studio 配置"></a>二、Visual Studio 配置</h1><ol>
+<li>生成 release 的时候使用 MT，不要使用多线程 DLL(&#x2F;MD)</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1747123439513-5a19cd48-ffcb-4ae2-9703-f9a481ee5082.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol>
+<li>关闭生成编译信息（防止溯源定位）</li>
+</ol>
+<p>如果不关闭该选项的话可能会导致生成的 exe 文件中包含编译路径和相关计算机的用户名</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1747123003278-38034a1c-d1a2-47d6-8326-a3edfbd0915e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1749696717769-d782ffc1-d3de-4071-bba0-d490a1046cd4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>若未关闭上述设置则会出现如上图的调试信息，可定位编译生成的<code>.pdb</code>文件的位置，泄露物理路径。</p>
+<h1 id="三、程序黑框处理"><a href="#三、程序黑框处理" class="headerlink" title="三、程序黑框处理"></a>三、程序黑框处理</h1><h2 id="3-1-pragma-预处理指令"><a href="#3-1-pragma-预处理指令" class="headerlink" title="3.1 pragma 预处理指令"></a>3.1 pragma 预处理指令</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> comment(linker, <span class="hljs-string">&quot;/subsystem:\&quot;Windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;</span>)</span><br></code></pre></td></tr></table></figure>
 
-<h1 id="二、配置文件编写"><a href="#二、配置文件编写" class="headerlink" title="二、配置文件编写"></a>二、配置文件编写</h1><p>Clash使用YAML格式的配置文件，所以我们在<code>~/.config/clash/</code>创建一个相应的文件<code>config.yaml</code>，然后将我们订阅链接生成的配置文件内容复制到该文件下，也就是平时自己使用clash for windows中配置选项栏中的配置内容，将其中的内容复制粘贴到<code>config.yaml</code>文件中</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162008705.png" srcset="/img/loading.gif" lazyload alt="image-20240716200812666"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">touch</span> ~/.config/clash/config.yaml<br>vim ~/.config/clash/config.yaml<br></code></pre></td></tr></table></figure>
+<h2 id="3-2-API-隐藏窗口"><a href="#3-2-API-隐藏窗口" class="headerlink" title="3.2 API 隐藏窗口"></a>3.2 API 隐藏窗口</h2><ol>
+<li><strong>FreeConsole 函数</strong></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">FreeConsole</span>();<br></code></pre></td></tr></table></figure>
 
-<p>然后将相应的内容粘贴到文件中即可。</p>
-<h1 id="三、执行Clash"><a href="#三、执行Clash" class="headerlink" title="三、执行Clash"></a>三、执行Clash</h1><p>两种clash的启动方式：</p>
-<ul>
-<li>方式一：配置文件<code>config.yaml</code>在<code>~/.config/clash/</code>文件夹中</li>
+<ol>
+<li><strong>GetForegroundWindow + ShowWindow 函数</strong></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">HWND hwnd = <span class="hljs-built_in">GetForegroundWindow</span>();<br><span class="hljs-built_in">ShowWindow</span>(hwnd, SW_HIDE);<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>创建子进程</strong></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>* argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 判断启动参数是否为 go，如果是则表明这是子进程，窗口已隐藏</span><br>    <span class="hljs-keyword">if</span> (argc == <span class="hljs-number">2</span> &amp;&amp; <span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;go&quot;</span>) == <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-built_in">MessageBoxA</span>(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;隐藏窗口&quot;</span>, <span class="hljs-string">&quot;隐藏窗口&quot;</span>, <span class="hljs-number">0</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 获取当前程序完整路径</span><br>    <span class="hljs-type">char</span> path[MAX_PATH * <span class="hljs-number">4</span>];<br>    <span class="hljs-built_in">GetModuleFileNameA</span>(<span class="hljs-literal">NULL</span>, path, MAX_PATH * <span class="hljs-number">4</span>);<br>    <span class="hljs-comment">// 路径加上参数 go</span><br>    <span class="hljs-built_in">strcat_s</span>(path, <span class="hljs-string">&quot; go&quot;</span>);<br><br>    STARTUPINFOA StartInfo;<br>    PROCESS_INFORMATION pinfo;<br>    <span class="hljs-built_in">memset</span>(&amp;StartInfo, <span class="hljs-number">0</span>, <span class="hljs-built_in">sizeof</span>(STARTUPINFO));<br>    StartInfo.cb = <span class="hljs-built_in">sizeof</span>(STARTUPINFO);<br>    <span class="hljs-comment">//StartInfo.dwFlags = STARTF_USESHOWWINDOW;</span><br>    <span class="hljs-comment">//StartInfo.wShowWindow = SW_HIDE;</span><br>    BOOL result = <span class="hljs-built_in">CreateProcessA</span>(<span class="hljs-literal">NULL</span>, path, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, FALSE, CREATE_NO_WINDOW, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;StartInfo, &amp;pinfo);<br>    <br>    <span class="hljs-keyword">if</span> (!result) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;创建子进程失败：%d\n&quot;</span>, <span class="hljs-built_in">GetLastError</span>());<br>        <span class="hljs-built_in">Sleep</span>(<span class="hljs-number">10000</span>);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>使用该方式隐藏窗口效果等同于 FreeConsole 函数，启动窗口一闪而过，但是隐蔽方式比 FreeConsole 函数要好，但是在某些杀软的复杂环境下可能会阻止进程创建子进程从而导致程序执行失败。</p>
+<h2 id="3-3-WinMain"><a href="#3-3-WinMain" class="headerlink" title="3.3 WinMain()"></a>3.3 WinMain()</h2><ul>
+<li>hInstance：当前实例的句柄。</li>
+<li>hPrevInstance：先前实例的句柄，在现代的Windows系统中这个参数总是NULL。</li>
+<li>lpCmdLine：命令行参数，是一个指向以空字符结尾的字符串的指针。</li>
+<li>nCmdShow：指定窗口应该以何种形式显示。</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 直接执行</span><br>./clash-linux-amd64-v1.17.0<br></code></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> WINAPI <span class="hljs-title">WinMain</span><span class="hljs-params">(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, <span class="hljs-type">int</span> nCmdShow)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// ... 其他初始化工作 ...</span><br><br>  <span class="hljs-comment">// 创建窗口并显示</span><br>  HWND hWnd = <span class="hljs-built_in">CreateWindow</span>(<span class="hljs-comment">/* 创建窗口的参数 */</span>);<br>  <span class="hljs-built_in">ShowWindow</span>(hWnd, SW_HIDE);  <span class="hljs-comment">// 将窗口隐藏起来</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-
-
-<ul>
-<li>方式二：配置文件<code>config.yaml</code>不在<code>~/.config/clash/</code>文件夹中</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 指定配置文件位置执行</span><br>./clash-linux-amd64-v1.17.0 -d /path/to/your/config/directory<br></code></pre></td></tr></table></figure>
-
-
-
-<h1 id="四、代理检测"><a href="#四、代理检测" class="headerlink" title="四、代理检测"></a>四、代理检测</h1><p>执行了clash后，重新开启一个命令行，我们先对clash进行简单的测试看看是否已经通过了代理；</p>
-<p>对于docker pull、git clone等等执行的代理还需要进行额外的配置，详细方案可以自行搜索，不是非常复杂；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -x http://127.0.0.1:7890 http://www.google.com<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162027504.png" srcset="/img/loading.gif" lazyload alt="image-20240716202716450"></p>
-<p>出现上述内容和代理匹配的内容已经可以确定代理有效；</p>
-<h1 id="五、Clash自启动"><a href="#五、Clash自启动" class="headerlink" title="五、Clash自启动"></a>五、Clash自启动</h1><h3 id="1-创建Clash的systemd服务文件"><a href="#1-创建Clash的systemd服务文件" class="headerlink" title="1. 创建Clash的systemd服务文件"></a>1. 创建Clash的systemd服务文件</h3><p>首先，确保Clash可执行文件和配置文件已经正确配置并可以正常运行。</p>
-<h4 id="创建服务文件"><a href="#创建服务文件" class="headerlink" title="创建服务文件"></a>创建服务文件</h4><p>使用以下命令创建一个新的systemd服务文件：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">bash<br>复制代码<br>sudo nano <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>clash.service<br></code></pre></td></tr></table></figure>
-
-<h4 id="添加以下内容到服务文件中"><a href="#添加以下内容到服务文件中" class="headerlink" title="添加以下内容到服务文件中"></a>添加以下内容到服务文件中</h4><p>将以下内容复制并粘贴到刚创建的<code>clash.service</code>文件中。根据实际路径调整<code>ExecStart</code>和<code>WorkingDirectory</code>：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Clash Daemon<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">ExecStart</span>=/usr/local/bin/clash -d /path/to/your/config/directory<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br><span class="hljs-attr">RestartSec</span>=<span class="hljs-number">10</span><br><span class="hljs-attr">WorkingDirectory</span>=/path/to/your/config/directory<br><span class="hljs-attr">User</span>=nobody<br><span class="hljs-attr">Group</span>=nogroup<br><span class="hljs-attr">CapabilityBoundingSet</span>=CAP_NET_ADMIN CAP_NET_BIND_SERVICE<br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
-
-<p>确保替换<code>/usr/local/bin/clash</code>为Clash可执行文件的路径，<code>/path/to/your/config/directory</code>为你的Clash配置文件所在的目录。以下，是我的配置文件；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash">[Unit]<br>Description=Clash Daemon<br>After=network.target<br><br>[Service]<br>Type=simple<br>ExecStart=/home/candy/clash/clash-linux-amd64-v1.17.0 -d /home/candy/.config/clash<br>Restart=on-failure<br>RestartSec=10<br>WorkingDirectory=/home/candy/.config/clash<br>User=candy<br>Group=candy<br>CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE<br><br>[Install]<br>WantedBy=multi-user.target<br></code></pre></td></tr></table></figure>
-
-
-
-<h3 id="2-重新加载systemd守护进程"><a href="#2-重新加载systemd守护进程" class="headerlink" title="2. 重新加载systemd守护进程"></a>2. 重新加载systemd守护进程</h3><p>保存并关闭文件后，重新加载systemd守护进程：</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">sudo systemctl daemon-reload</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="3-启用Clash服务"><a href="#3-启用Clash服务" class="headerlink" title="3. 启用Clash服务"></a>3. 启用Clash服务</h3><p>使用以下命令启用Clash服务，使其在开机时自启动：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sudo systemctl <span class="hljs-built_in">enable</span> clash<br></code></pre></td></tr></table></figure>
-
-<h3 id="4-启动Clash服务"><a href="#4-启动Clash服务" class="headerlink" title="4. 启动Clash服务"></a>4. 启动Clash服务</h3><p>现在可以手动启动Clash服务，确保其正常运行：</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">sudo systemctl <span class="hljs-literal">start</span> clash<br></code></pre></td></tr></table></figure>
-
-<h3 id="5-验证服务状态"><a href="#5-验证服务状态" class="headerlink" title="5. 验证服务状态"></a>5. 验证服务状态</h3><p>使用以下命令查看Clash服务的状态，确保其正常运行：</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">sudo systemctl status clash</span><br></code></pre></td></tr></table></figure>
-
-<p>如果服务正在运行且没有错误信息，说明配置成功。Clash程序将会在系统启动时自动启动。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162042050.png" srcset="/img/loading.gif" lazyload alt="image-20240716204240003"></p>
+<h1 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h1><ol>
+<li>对于 visual studio 生成的程序处理，不要保存调试信息，以防反编译溯源本人。</li>
+<li>对于免杀马执行产生黑框的情况，可以采取 3 种方式进行解决，分别为 Pragma 启动 windows 子系统解决、FreeConsole()函数或GetForegroundWindow 函数解决黑框、通过 WinMain()将黑框隐藏。</li>
+</ol>
 
                 
               </div>
@@ -384,7 +367,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">环境搭建</a>
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
   
   
 
@@ -399,13 +382,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" class="print-no-link">#使用教程</a>
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" class="print-no-link">#工具配置</a>
       
-        <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="print-no-link">#环境搭建</a>
+        <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="print-no-link">#免杀对抗</a>
       
-        <a href="/tags/%E4%BB%A3%E7%90%86/" class="print-no-link">#代理</a>
+        <a href="/tags/Visual-Studio/" class="print-no-link">#Visual Studio</a>
       
-        <a href="/tags/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="print-no-link">#工具教程</a>
+        <a href="/tags/%E9%98%B2%E6%BA%AF%E6%BA%90/" class="print-no-link">#防溯源</a>
       
     </div>
   
@@ -417,8 +400,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Clash-for-Linux搭建教程</div>
-      <div>http://candyb0x.github.io/2024/07/16/Clash-for-Linux搭建教程/</div>
+      <div>免入土（三）编译工具配置</div>
+      <div>http://candyb0x.github.io/2025/06/12/免入土（三）编译工具配置/</div>
     </div>
     <div class="license-meta">
       
@@ -430,13 +413,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年7月16日</div>
+          <div>2025年6月12日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年5月16日</div>
+          <div>2025年6月12日</div>
         </div>
       
       
@@ -467,18 +450,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/07/16/vulfocus%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" title="vulfocus靶场搭建教程">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">vulfocus靶场搭建教程</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/07/12/hackNos-Os-ByteSec%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="hackNos-Os-ByteSec打靶日记">
-                        <span class="hidden-mobile">hackNos-Os-ByteSec打靶日记</span>
+                      <a href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89windows%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/" title="免入土（二）windows编程基础">
+                        <span class="hidden-mobile">免入土（二）windows编程基础</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
