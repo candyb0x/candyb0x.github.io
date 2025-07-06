@@ -16,35 +16,25 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、安装docker环境首先，我们需要一个docker环境，直接通过命令安装即可，也可以通过官方的安装脚本安装也可以。 1sudo apt install docker -y  二、vulfocus镜像 这里主要是讨论以下网上教程都在使用的两种方法（反正我两种都没安装上） 方法一：直接通过官方的docker镜像拉取，这种方法在同步环境的时候会报“服务器内部错误，请联系管理员”，似乎是由于镜像并不是">
+    <meta name="description" content="一、前言在免杀上也学习了一段时间，也是做出了几个不错的免杀马，是时候把静态免杀上的内容写一下了。 在静态免杀层面上，要做的工作就是尽可能使杀软不能够从字符串（shellcode和各种字符串）层面检测到，所以只要把字符串的工作做好，基本过静态就没什么问题；剩下的就是锦上添花，增加程序可信度和反调试、反沙箱的工作。 本文主要是给出学习过程中遇到的一些好用的工具，以及在静态免杀上所需要做的一些工作。 静">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vulfocus靶场搭建教程">
-<meta property="og:url" content="http://candyb0x.github.io/2024/07/16/vulfocus%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:title" content="免入土（四）静态免杀">
+<meta property="og:url" content="http://candyb0x.github.io/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="一、安装docker环境首先，我们需要一个docker环境，直接通过命令安装即可，也可以通过官方的安装脚本安装也可以。 1sudo apt install docker -y  二、vulfocus镜像 这里主要是讨论以下网上教程都在使用的两种方法（反正我两种都没安装上） 方法一：直接通过官方的docker镜像拉取，这种方法在同步环境的时候会报“服务器内部错误，请联系管理员”，似乎是由于镜像并不是">
+<meta property="og:description" content="一、前言在免杀上也学习了一段时间，也是做出了几个不错的免杀马，是时候把静态免杀上的内容写一下了。 在静态免杀层面上，要做的工作就是尽可能使杀软不能够从字符串（shellcode和各种字符串）层面检测到，所以只要把字符串的工作做好，基本过静态就没什么问题；剩下的就是锦上添花，增加程序可信度和反调试、反沙箱的工作。 本文主要是给出学习过程中遇到的一些好用的工具，以及在静态免杀上所需要做的一些工作。 静">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162109481.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162116641.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162134460.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162137521.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162144943.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162145390.png">
-<meta property="article:published_time" content="2024-07-16T13:48:51.000Z">
-<meta property="article:modified_time" content="2025-05-16T04:48:45.903Z">
+<meta property="article:published_time" content="2025-07-06T12:20:58.000Z">
+<meta property="article:modified_time" content="2025-07-06T12:33:16.792Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="工具教程">
-<meta property="article:tag" content="使用教程">
-<meta property="article:tag" content="靶场搭建">
-<meta property="article:tag" content="dockerhub">
-<meta property="article:tag" content="docker报错">
+<meta property="article:tag" content="免杀对抗">
+<meta property="article:tag" content="静态免杀">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162109481.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>vulfocus靶场搭建教程 - Welcome Candy Box</title>
+  <title>免入土（四）静态免杀 - Welcome Candy Box</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -222,7 +212,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="vulfocus靶场搭建教程"></span>
+            <span id="subtitle" data-typed-text="免入土（四）静态免杀"></span>
           
         </div>
 
@@ -238,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-07-16 21:48" pubdate>
-          2024年7月16日 晚上
+        <time datetime="2025-07-06 20:20" pubdate>
+          2025年7月6日 晚上
         </time>
       </span>
     
@@ -250,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.1k 字
+          1.4k 字
         
       </span>
     
@@ -261,7 +251,7 @@
         
         
         
-          10 分钟
+          12 分钟
         
       </span>
     
@@ -306,68 +296,98 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">vulfocus靶场搭建教程</h1>
+            <h1 id="seo-header">免入土（四）静态免杀</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="一、安装docker环境"><a href="#一、安装docker环境" class="headerlink" title="一、安装docker环境"></a>一、安装docker环境</h1><p>首先，我们需要一个docker环境，直接通过命令安装即可，也可以通过官方的安装脚本安装也可以。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt install docker -y<br></code></pre></td></tr></table></figure>
-
-<h1 id="二、vulfocus镜像"><a href="#二、vulfocus镜像" class="headerlink" title="二、vulfocus镜像"></a>二、vulfocus镜像</h1><blockquote>
-<p>这里主要是讨论以下网上教程都在使用的两种方法（反正我两种都没安装上）</p>
-<p>方法一：直接通过官方的docker镜像拉取，这种方法在同步环境的时候会报“服务器内部错误，请联系管理员”，似乎是由于镜像并不是最新的镜像；</p>
-<p>方法二：修改docker镜像源<code>https://dockerproxy.com/</code>，然后拉去镜像dockerproxy.com&#x2F;vulfocus&#x2F;vulfocus:latest，这个方法也离谱，我直接拉去不到；</p>
-<p>如果你们也有我上述的问题，可以尝试一下我下面的方案</p>
-</blockquote>
-<p>上面有阐述到，通过官方镜像拉去vulfocus镜像的时候报错的原因似乎是因为镜像不是最新版本；我们直接来到dockerhub中查看vulfocus查看tag</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162109481.png" srcset="/img/loading.gif" lazyload alt="image-20240716210945416"></p>
-<p>发现标签<code>latest</code>和<code>0.3.2.11</code>均为两年前发布，大小也均为475.84MB，但是我们最后拉去到镜像中的时候会发现其实这两个似乎不是相同的镜像；</p>
-<p>通过以下两条命令将两个镜像均拉去到本地；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker pull vulfocus/vulfocus:latest<br>sudo docker pull vulfocus/vulfocus:0.3.2.11<br></code></pre></td></tr></table></figure>
-
-<p>但是我们在拉取<code>vulfocus/vulfocus:0.3.2.11</code>时可能会遇到以下问题或io timeout问题等等（如果你们确实没有任何问题就直接跳过配置代理的过程）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162116641.png" srcset="/img/loading.gif" lazyload alt="image-20240716211610603"></p>
-<p>经过无数次docker镜像源更换与测试我发现，这并不是docker镜像源的问题，而是vulfocus&#x2F;vulfocus:0.3.2.11似乎只有dockerhub才能拉取到，所以似乎无法直接通过修改docker源来解决问题。这时候我们需要为Linux系统配置代理，详细教程参考：<a href="https://candyb0x.github.io/2024/07/16/Clash-for-Linux%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/">Clash-for-Linux搭建教程</a>；</p>
-<p>配置完Linux系统代理后，我们还需要单独为docker配置代理才能够让拉取通过代理进行，以下时Docker代理配置的方法</p>
-<h3 id="1-创建Docker守护进程配置目录"><a href="#1-创建Docker守护进程配置目录" class="headerlink" title="1. 创建Docker守护进程配置目录"></a>1. 创建Docker守护进程配置目录</h3><p>如果目录不存在，先创建目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo <span class="hljs-built_in">mkdir</span> -p /etc/systemd/system/docker.service.d<br></code></pre></td></tr></table></figure>
-
-<h3 id="2-创建代理配置文件"><a href="#2-创建代理配置文件" class="headerlink" title="2. 创建代理配置文件"></a>2. 创建代理配置文件</h3><p>在<code>/etc/systemd/system/docker.service.d</code>目录下创建一个名为<code>http-proxy.conf</code>的文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo vim /etc/systemd/system/docker.service.d/http-proxy.conf<br></code></pre></td></tr></table></figure>
-
-<h3 id="3-添加代理配置"><a href="#3-添加代理配置" class="headerlink" title="3. 添加代理配置"></a>3. 添加代理配置</h3><p>在文件中添加以下内容（根据你的代理配置调整）：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTP_PROXY=http://127.0.0.1:7890/&quot;</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTPS_PROXY=http://127.0.0.1:7890/&quot;</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="4-重新加载系统守护进程"><a href="#4-重新加载系统守护进程" class="headerlink" title="4. 重新加载系统守护进程"></a>4. 重新加载系统守护进程</h3><p>保存并关闭文件后，重新加载systemd守护进程：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl daemon-reload<br></code></pre></td></tr></table></figure>
-
-<h3 id="5-重启Docker服务"><a href="#5-重启Docker服务" class="headerlink" title="5. 重启Docker服务"></a>5. 重启Docker服务</h3><p>重启Docker服务以使配置生效：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl restart docker<br></code></pre></td></tr></table></figure>
-
-<h3 id="6-验证配置"><a href="#6-验证配置" class="headerlink" title="6. 验证配置"></a>6. 验证配置</h3><p>你可以通过检查Docker服务的环境变量来验证配置是否正确：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl show --property=Environment docker<br></code></pre></td></tr></table></figure>
-
-<p>这应该会显示你刚刚配置的代理环境变量。</p>
-<p>这里还有<strong>比较重要的一步</strong>就是我们需要将<code>/etc/docker/daemon.json</code>注册的镜像全部删掉，这样是为了防止docker pull从这些镜像中寻找<code>vulfocus/vulfocus:0.3.2.11</code>，然后再次重启一下docker</p>
-<figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nsis">sudo <span class="hljs-params">system</span>ctl daemon-reload<br>sudo <span class="hljs-params">system</span>ctl restart docker<br></code></pre></td></tr></table></figure>
-
-<p>配置完成后我们再次拉取一下<code>vulfocus/vulfocus:0.3.2.11</code></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker pull vulfocus/vulfocus:0.3.2.11<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162134460.png" srcset="/img/loading.gif" lazyload alt="image-20240716213423425"></p>
-<p>拉取成功，等待其下载完毕即可；</p>
-<p>然后我们通过命令查看以下镜像<code>vulfocus/vulfocus:latest</code>和<code>vulfocus/vulfocus:0.3.2.11</code>的区别</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker images<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162137521.png" srcset="/img/loading.gif" lazyload alt="image-20240716213749442"></p>
-<p>可以发现这两个镜像的创造时间并不一致，而且<code>vulfocus/vulfocus:0.3.2.11</code>镜像反而才是最新的，虽然dockerhub中均显示是两年前，但是事实证明<code>vulfocus/vulfocus:0.3.2.11</code>镜像应该才是我们所需的镜像，这也是为什么拉取<code>vulfocus/vulfocus:latest</code>镜像会报错“服务器内部错误，请联系管理员”了。</p>
-<h1 id="三、启动镜像"><a href="#三、启动镜像" class="headerlink" title="三、启动镜像"></a>三、启动镜像</h1><p>通过以下命令启动镜像即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker run -d -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock -e VUL_IP=0.0.0.0 vulfocus/vulfocus:0.3.2.11<br></code></pre></td></tr></table></figure>
-
-<p>然后通过ip地址的80端口即可直接访问靶场，默认账户用户名和密码分别为<code>admin/admin</code>，登录后，来到镜像管理中一件同步即可得到vulfocus中的靶场；</p>
-<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162144943.png" srcset="/img/loading.gif" lazyload alt="image-20240716214456763"><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407162145390.png" srcset="/img/loading.gif" lazyload alt="image-20240716214541142"></p>
-<p>好了，到这里也应该结束了，剩下的修改密码什么之类的自己看看也就能找到了！下班咯~~~~</p>
+                <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>在免杀上也学习了一段时间，也是做出了几个不错的免杀马，是时候把静态免杀上的内容写一下了。</p>
+<p>在静态免杀层面上，要做的工作就是尽可能使杀软不能够从字符串（shellcode和各种字符串）层面检测到，所以只要把字符串的工作做好，基本过静态就没什么问题；剩下的就是锦上添花，增加程序可信度和反调试、反沙箱的工作。</p>
+<p>本文主要是给出学习过程中遇到的一些好用的工具，以及在静态免杀上所需要做的一些工作。</p>
+<p>静态免杀在只要到位就行，不需要深究，因为无论你在静态免杀上做多大的功夫，遇上行为检测都是过不了的。</p>
+<h1 id="二、静态免杀"><a href="#二、静态免杀" class="headerlink" title="二、静态免杀"></a>二、静态免杀</h1><h2 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h2><p>静态免杀（Static AV Evasion）是攻击者在构造恶意程序或 Payload 时，<strong>为了绕过杀毒软件、EDR、WAF、沙箱等防御系统的静态检测机制</strong>，所采取的一系列文件级、结构级、内容级和逻辑级的隐藏与伪装手段。</p>
+<p>本质目标是：<strong>在不运行文件的前提下，让恶意载荷在磁盘上看起来像“正常程序”，以此骗过静态扫描引擎的查杀逻辑。</strong></p>
+<p>以下是一些检测机制的一些检测点，我们主要就是要对这些检测点的静态特征进行编码、加密、删除或修改；</p>
+<table>
+<thead>
+<tr>
+<th><strong>检测机制</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>YARA规则匹配</td>
+<td>静态签名规则，通过字节序列、字符串、正则、节偏移等匹配判断</td>
+</tr>
+<tr>
+<td>PE结构分析</td>
+<td>检查节数量、IAT异常、入口点特征、导入表错位、异常节大小</td>
+</tr>
+<tr>
+<td>签名哈希识别</td>
+<td>直接比对已知病毒样本的哈希、壳加密模板或通用工具特征</td>
+</tr>
+<tr>
+<td>敏感字符串检测</td>
+<td>检查是否包含关键函数、命令片段、URL、域名等（如 powershell、cmd.exe）</td>
+</tr>
+<tr>
+<td>模型分类识别</td>
+<td>基于训练模型判断结构是否异常、是否包含常见攻击组件</td>
+</tr>
+</tbody></table>
+<p>主要思路就是对各种字符串进行编码加密、对资源图标和签名进行替换或添加、对敏感 api 进行手动编写以及对程序加壳，除此之外，可以还可以通过现成的工具添加垃圾代码扰乱静态分析，完成这些，在静态方面基本已经能够实现免杀。</p>
+<ul>
+<li>字符串：shellcode、变量名、key、api 函数名等等；</li>
+<li>签名、资源块、程序图标：设置或者替换，使杀软无法通过这些进行识别；</li>
+<li>敏感 Windows Api 函数：通过自实现 Windows Api 函数的查找和调用绕过（严格来说算动态，在动态里也会说）；</li>
+<li>添加垃圾代码扰乱静态分析，降低熵值；</li>
+</ul>
+<h2 id="2-2-编码与加密"><a href="#2-2-编码与加密" class="headerlink" title="2.2 编码与加密"></a>2.2 编码与加密</h2><p>编码方式：Base64、UUID、ipv4、ipv6、mac、字节翻转等等</p>
+<p>加密方法：xor、AES、RC4、SHA、RSA 等等</p>
+<ul>
+<li><strong>shellcode</strong></li>
+</ul>
+<p>对于 shellcode 的编码和加密，首先先推荐一个项目 sgn：<a target="_blank" rel="noopener" href="https://github.com/EgeBalci/sgn%EF%BC%8C%E7%9B%B4%E5%88%B0%E7%9B%AE%E5%89%8D%E4%BD%8D%E7%BD%AE%E8%AF%A5%E9%A1%B9%E7%9B%AE%E6%89%80%E8%BF%9B%E8%A1%8C%E7%BC%96%E7%A0%81%E5%90%8E%E7%9A%84">https://github.com/EgeBalci/sgn，直到目前位置该项目所进行编码后的</a> shellcode 仍然是不可预测的，因此很好的避免了杀软对 shellcode 的检测；</p>
+<p>因此，shellcode 的编码和加密采用<code>sgn + </code>的方式进行即可，无论加什么都能够达到一个非常好的效果！（即使<code>sgn + Null</code>也一样）</p>
+<p>不需要花太多精力在编码和加密上，sgn 真的够用，结合一种加密或编码方式即可。<br>有那精力不如放在如何绕过杀软的行为检测上……</p>
+<ul>
+<li><strong>变量名和文件名</strong></li>
+</ul>
+<p>杀软对变量名的检测主要在于一个特别引人注目的变量名，如 shellcode、payload、LoadLibrary 等 api 函数等等；对于此类问题的防检测方法就是使用现成的或自己编写的混淆项目对我们编写好的代码进行混淆，这里也列举一些混淆的项目供大家参考：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a></li>
+<li><a target="_blank" rel="noopener" href="https://tigress.wtf/">https://tigress.wtf/</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitcode.com/gh_mirrors/cp/cpp-obfuscator">https://gitcode.com/gh_mirrors/cp/cpp-obfuscator</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/KomiMoe/Arkari">https://github.com/KomiMoe/Arkari</a></li>
+</ol>
+<h2 id="2-3-签名、图标-ico、资源节替换"><a href="#2-3-签名、图标-ico、资源节替换" class="headerlink" title="2.3 签名、图标 ico、资源节替换"></a>2.3 签名、图标 ico、资源节替换</h2><p>字面意思，很容易理解，网上也能搜索到一大堆文章；这里推荐几个工具和项目</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/langsasec/Sign-Sacker%EF%BC%88%E7%AD%BE%E5%90%8D+ico">https://github.com/langsasec/Sign-Sacker（签名+ico</a> 替换）</li>
+<li><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py%EF%BC%88%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%85%B7%EF%BC%89">https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py（签名工具）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip%EF%BC%88%E8%B5%84%E6%BA%90%E8%8A%82%E6%9B%BF%E6%8D%A2%EF%BC%89">https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip（资源节替换）</a></li>
+</ol>
+<h2 id="2-4-软件加壳"><a href="#2-4-软件加壳" class="headerlink" title="2.4 软件加壳"></a>2.4 软件加壳</h2><p>软件加壳原本的目的使为了反调试和反逆向的，在免杀中软件加壳可以用来防止静态查杀以及沙箱；软件加壳同样会带来一些特征，容易被杀软识别。</p>
+<p>因此，如果能够加一些比较好的商业壳，那对免杀肯定是大有益处的。如果没有商业壳，一些免费的软件壳也可以用来进行尝试，不保证有效果；</p>
+<p>常见的软件壳：UPX、VMP、Themida (Oreans Technology)、Armadillo (Silicon Realms)、Enigma Protector、Obsidium、ASPack、Enigma Virtual Box</p>
+<p>加壳工具：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://down.52pojie.cn/Tools/Packers/">https://down.52pojie.cn/Tools/Packers/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-2026356-1-1.html">https://www.52pojie.cn/thread-2026356-1-1.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.vmprotect.com.cn/download/">https://www.vmprotect.com.cn/download/</a></li>
+</ol>
+<h1 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/syg6921008/article/details/146990142">https://blog.csdn.net/syg6921008/article/details/146990142</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/EgeBalci/sgn">https://github.com/EgeBalci/sgn</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a></li>
+<li><a target="_blank" rel="noopener" href="https://tigress.wtf/">https://tigress.wtf/</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitcode.com/gh_mirrors/cp/cpp-obfuscator">https://gitcode.com/gh_mirrors/cp/cpp-obfuscator</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/langsasec/Sign-Sacker">https://github.com/langsasec/Sign-Sacker</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/KomiMoe/Arkari">https://github.com/KomiMoe/Arkari</a></li>
+<li><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py">https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip">https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip</a></li>
+<li><a target="_blank" rel="noopener" href="https://down.52pojie.cn/Tools/Packers/">https://down.52pojie.cn/Tools/Packers/</a></li>
+</ol>
 
                 
               </div>
@@ -386,7 +406,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">环境搭建</a>
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
   
   
 
@@ -401,15 +421,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="print-no-link">#工具教程</a>
+        <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="print-no-link">#免杀对抗</a>
       
-        <a href="/tags/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" class="print-no-link">#使用教程</a>
-      
-        <a href="/tags/%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA/" class="print-no-link">#靶场搭建</a>
-      
-        <a href="/tags/dockerhub/" class="print-no-link">#dockerhub</a>
-      
-        <a href="/tags/docker%E6%8A%A5%E9%94%99/" class="print-no-link">#docker报错</a>
+        <a href="/tags/%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/" class="print-no-link">#静态免杀</a>
       
     </div>
   
@@ -421,8 +435,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>vulfocus靶场搭建教程</div>
-      <div>http://candyb0x.github.io/2024/07/16/vulfocus靶场搭建教程/</div>
+      <div>免入土（四）静态免杀</div>
+      <div>http://candyb0x.github.io/2025/07/06/免入土（四）静态免杀/</div>
     </div>
     <div class="license-meta">
       
@@ -434,13 +448,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年7月16日</div>
+          <div>2025年7月6日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年5月16日</div>
+          <div>2025年7月6日</div>
         </div>
       
       
@@ -471,18 +485,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/07/26/CVE-2021-44228-Apache-Log4j2-JNDI%E6%B3%A8%E5%85%A5-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" title="(CVE-2021-44228)Apache-Log4j2-JNDI注入-远程代码执行漏洞">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">(CVE-2021-44228)Apache-Log4j2-JNDI注入-远程代码执行漏洞</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/07/16/Clash-for-Linux%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" title="Clash-for-Linux搭建教程">
-                        <span class="hidden-mobile">Clash-for-Linux搭建教程</span>
+                      <a href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%B8%89%EF%BC%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" title="免入土（三）编译工具配置">
+                        <span class="hidden-mobile">免入土（三）编译工具配置</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

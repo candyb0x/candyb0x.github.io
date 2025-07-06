@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>免入土（四）静态免杀</title>
+    <link href="/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/"/>
+    <url>/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/</url>
+    
+    <content type="html"><![CDATA[<h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>在免杀上也学习了一段时间，也是做出了几个不错的免杀马，是时候把静态免杀上的内容写一下了。</p><p>在静态免杀层面上，要做的工作就是尽可能使杀软不能够从字符串（shellcode和各种字符串）层面检测到，所以只要把字符串的工作做好，基本过静态就没什么问题；剩下的就是锦上添花，增加程序可信度和反调试、反沙箱的工作。</p><p>本文主要是给出学习过程中遇到的一些好用的工具，以及在静态免杀上所需要做的一些工作。</p><p>静态免杀在只要到位就行，不需要深究，因为无论你在静态免杀上做多大的功夫，遇上行为检测都是过不了的。</p><h1 id="二、静态免杀"><a href="#二、静态免杀" class="headerlink" title="二、静态免杀"></a>二、静态免杀</h1><h2 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h2><p>静态免杀（Static AV Evasion）是攻击者在构造恶意程序或 Payload 时，<strong>为了绕过杀毒软件、EDR、WAF、沙箱等防御系统的静态检测机制</strong>，所采取的一系列文件级、结构级、内容级和逻辑级的隐藏与伪装手段。</p><p>本质目标是：<strong>在不运行文件的前提下，让恶意载荷在磁盘上看起来像“正常程序”，以此骗过静态扫描引擎的查杀逻辑。</strong></p><p>以下是一些检测机制的一些检测点，我们主要就是要对这些检测点的静态特征进行编码、加密、删除或修改；</p><table><thead><tr><th><strong>检测机制</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>YARA规则匹配</td><td>静态签名规则，通过字节序列、字符串、正则、节偏移等匹配判断</td></tr><tr><td>PE结构分析</td><td>检查节数量、IAT异常、入口点特征、导入表错位、异常节大小</td></tr><tr><td>签名哈希识别</td><td>直接比对已知病毒样本的哈希、壳加密模板或通用工具特征</td></tr><tr><td>敏感字符串检测</td><td>检查是否包含关键函数、命令片段、URL、域名等（如 powershell、cmd.exe）</td></tr><tr><td>模型分类识别</td><td>基于训练模型判断结构是否异常、是否包含常见攻击组件</td></tr></tbody></table><p>主要思路就是对各种字符串进行编码加密、对资源图标和签名进行替换或添加、对敏感 api 进行手动编写以及对程序加壳，除此之外，可以还可以通过现成的工具添加垃圾代码扰乱静态分析，完成这些，在静态方面基本已经能够实现免杀。</p><ul><li>字符串：shellcode、变量名、key、api 函数名等等；</li><li>签名、资源块、程序图标：设置或者替换，使杀软无法通过这些进行识别；</li><li>敏感 Windows Api 函数：通过自实现 Windows Api 函数的查找和调用绕过（严格来说算动态，在动态里也会说）；</li><li>添加垃圾代码扰乱静态分析，降低熵值；</li></ul><h2 id="2-2-编码与加密"><a href="#2-2-编码与加密" class="headerlink" title="2.2 编码与加密"></a>2.2 编码与加密</h2><p>编码方式：Base64、UUID、ipv4、ipv6、mac、字节翻转等等</p><p>加密方法：xor、AES、RC4、SHA、RSA 等等</p><ul><li><strong>shellcode</strong></li></ul><p>对于 shellcode 的编码和加密，首先先推荐一个项目 sgn：<a href="https://github.com/EgeBalci/sgn%EF%BC%8C%E7%9B%B4%E5%88%B0%E7%9B%AE%E5%89%8D%E4%BD%8D%E7%BD%AE%E8%AF%A5%E9%A1%B9%E7%9B%AE%E6%89%80%E8%BF%9B%E8%A1%8C%E7%BC%96%E7%A0%81%E5%90%8E%E7%9A%84">https://github.com/EgeBalci/sgn，直到目前位置该项目所进行编码后的</a> shellcode 仍然是不可预测的，因此很好的避免了杀软对 shellcode 的检测；</p><p>因此，shellcode 的编码和加密采用<code>sgn + </code>的方式进行即可，无论加什么都能够达到一个非常好的效果！（即使<code>sgn + Null</code>也一样）</p><p>不需要花太多精力在编码和加密上，sgn 真的够用，结合一种加密或编码方式即可。<br>有那精力不如放在如何绕过杀软的行为检测上……</p><ul><li><strong>变量名和文件名</strong></li></ul><p>杀软对变量名的检测主要在于一个特别引人注目的变量名，如 shellcode、payload、LoadLibrary 等 api 函数等等；对于此类问题的防检测方法就是使用现成的或自己编写的混淆项目对我们编写好的代码进行混淆，这里也列举一些混淆的项目供大家参考：</p><ol><li><a href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a></li><li><a href="https://tigress.wtf/">https://tigress.wtf/</a></li><li><a href="https://gitcode.com/gh_mirrors/cp/cpp-obfuscator">https://gitcode.com/gh_mirrors/cp/cpp-obfuscator</a></li><li><a href="https://github.com/KomiMoe/Arkari">https://github.com/KomiMoe/Arkari</a></li></ol><h2 id="2-3-签名、图标-ico、资源节替换"><a href="#2-3-签名、图标-ico、资源节替换" class="headerlink" title="2.3 签名、图标 ico、资源节替换"></a>2.3 签名、图标 ico、资源节替换</h2><p>字面意思，很容易理解，网上也能搜索到一大堆文章；这里推荐几个工具和项目</p><ol><li><a href="https://github.com/langsasec/Sign-Sacker%EF%BC%88%E7%AD%BE%E5%90%8D+ico">https://github.com/langsasec/Sign-Sacker（签名+ico</a> 替换）</li><li><a href="https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py%EF%BC%88%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%85%B7%EF%BC%89">https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py（签名工具）</a></li><li><a href="https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip%EF%BC%88%E8%B5%84%E6%BA%90%E8%8A%82%E6%9B%BF%E6%8D%A2%EF%BC%89">https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip（资源节替换）</a></li></ol><h2 id="2-4-软件加壳"><a href="#2-4-软件加壳" class="headerlink" title="2.4 软件加壳"></a>2.4 软件加壳</h2><p>软件加壳原本的目的使为了反调试和反逆向的，在免杀中软件加壳可以用来防止静态查杀以及沙箱；软件加壳同样会带来一些特征，容易被杀软识别。</p><p>因此，如果能够加一些比较好的商业壳，那对免杀肯定是大有益处的。如果没有商业壳，一些免费的软件壳也可以用来进行尝试，不保证有效果；</p><p>常见的软件壳：UPX、VMP、Themida (Oreans Technology)、Armadillo (Silicon Realms)、Enigma Protector、Obsidium、ASPack、Enigma Virtual Box</p><p>加壳工具：</p><ol><li><a href="https://down.52pojie.cn/Tools/Packers/">https://down.52pojie.cn/Tools/Packers/</a></li><li><a href="https://www.52pojie.cn/thread-2026356-1-1.html">https://www.52pojie.cn/thread-2026356-1-1.html</a></li><li><a href="https://www.vmprotect.com.cn/download/">https://www.vmprotect.com.cn/download/</a></li></ol><h1 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h1><ol><li><a href="https://blog.csdn.net/syg6921008/article/details/146990142">https://blog.csdn.net/syg6921008/article/details/146990142</a></li><li><a href="https://github.com/EgeBalci/sgn">https://github.com/EgeBalci/sgn</a></li><li><a href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a></li><li><a href="https://tigress.wtf/">https://tigress.wtf/</a></li><li><a href="https://gitcode.com/gh_mirrors/cp/cpp-obfuscator">https://gitcode.com/gh_mirrors/cp/cpp-obfuscator</a></li><li><a href="https://github.com/langsasec/Sign-Sacker">https://github.com/langsasec/Sign-Sacker</a></li><li><a href="https://github.com/KomiMoe/Arkari">https://github.com/KomiMoe/Arkari</a></li><li><a href="https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py">https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py</a></li><li><a href="https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip">https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip</a></li><li><a href="https://down.52pojie.cn/Tools/Packers/">https://down.52pojie.cn/Tools/Packers/</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>免杀对抗</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>免杀对抗</tag>
+      
+      <tag>静态免杀</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>免入土（三）编译工具配置</title>
     <link href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%B8%89%EF%BC%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/"/>
     <url>/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%B8%89%EF%BC%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/</url>
@@ -581,9 +608,9 @@
     
     <tags>
       
-      <tag>工具教程</tag>
-      
       <tag>内网渗透</tag>
+      
+      <tag>工具教程</tag>
       
     </tags>
     
@@ -792,9 +819,9 @@
       
       <tag>反序列化</tag>
       
-      <tag>Java反射</tag>
-      
       <tag>利用链</tag>
+      
+      <tag>Java反射</tag>
       
     </tags>
     
@@ -881,9 +908,9 @@
     
     <tags>
       
-      <tag>使用教程</tag>
-      
       <tag>工具教程</tag>
+      
+      <tag>使用教程</tag>
       
       <tag>靶场搭建</tag>
       
@@ -914,13 +941,13 @@
     
     <tags>
       
-      <tag>使用教程</tag>
+      <tag>工具教程</tag>
       
       <tag>环境搭建</tag>
       
-      <tag>代理</tag>
+      <tag>使用教程</tag>
       
-      <tag>工具教程</tag>
+      <tag>代理</tag>
       
     </tags>
     
@@ -1009,9 +1036,9 @@
     
     <tags>
       
-      <tag>web攻防</tag>
-      
       <tag>工具教程</tag>
+      
+      <tag>web攻防</tag>
       
       <tag>打靶日记</tag>
       
@@ -1189,9 +1216,9 @@
     
     <tags>
       
-      <tag>使用教程</tag>
-      
       <tag>工具配置</tag>
+      
+      <tag>使用教程</tag>
       
       <tag>pwn</tag>
       
@@ -1413,9 +1440,9 @@
     
     <tags>
       
-      <tag>环境搭建</tag>
-      
       <tag>工具配置</tag>
+      
+      <tag>环境搭建</tag>
       
       <tag>美化</tag>
       
@@ -1442,9 +1469,9 @@
     
     <tags>
       
-      <tag>环境搭建</tag>
-      
       <tag>工具配置</tag>
+      
+      <tag>环境搭建</tag>
       
       <tag>美化</tag>
       
@@ -1471,9 +1498,9 @@
     
     <tags>
       
-      <tag>环境搭建</tag>
-      
       <tag>工具配置</tag>
+      
+      <tag>环境搭建</tag>
       
     </tags>
     
@@ -1627,7 +1654,7 @@
     <link href="/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <url>/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
     
-    <content type="html"><![CDATA[<h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><h2 id="1-1-必备环境安装"><a href="#1-1-必备环境安装" class="headerlink" title="1.1 必备环境安装"></a>1.1 必备环境安装</h2><p><a href="https://nodejs.org/en/">Node.js — Run JavaScript Everywhere (nodejs.org)</a></p><p><a href="https://git-scm.com/downloads">Git - Downloads (git-scm.com)</a></p><p>这是必备的两个基本环境，请先安装这两个基本环境，网上均有教程，请参考其他教程进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659772.png" alt="image-20240505141421146"></p><p>运行这三条指令能够出现相应的版本号即可，不要求版本号相同。</p><h1 id="二、github-io仓库创建"><a href="#二、github-io仓库创建" class="headerlink" title="二、github.io仓库创建"></a>二、github.io仓库创建</h1><p>创建github page仓库的仓库名规则<code>&lt;用户名&gt;.github.io</code>如下图所示，并选择公开项目。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659455.png" alt="image-20240505141654227"></p><p>点击Actions，查看页面运行状态，等待其成功运行部署，这个过程可能会有点漫长可以稍等1分钟左右</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659541.png" alt="image-20240505141919262"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700350.png" alt="image-20240505141957864"></p><p>成功运行后，通过访问<code>https://&lt;用户名&gt;.github.io</code>基于访问看到基础页面。（如果报错，可以删除仓库重复上述过程，或者寻找其他大佬的文章解决错误）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700191.png" alt="image-20240505142102518"></p><p>这样初步的界面就已经搭建出来了，具有前端知识的大佬可以传自己的博客模板到新建的仓库即可看到自己的博客了，我这样的鼠鼠还得通过hexo去使用模板</p><h1 id="三、上传博客模板"><a href="#三、上传博客模板" class="headerlink" title="三、上传博客模板"></a>三、上传博客模板</h1><h2 id="3-1-安装Hexo"><a href="#3-1-安装Hexo" class="headerlink" title="3.1 安装Hexo"></a>3.1 安装Hexo</h2><p>使用 npm 一键安装 Hexo 博客程序：（此为全局安装命令，一般也推荐全局安装，局部安装我也没搞懂）</p><blockquote><p>npm install -g hexo-cli</p></blockquote><h2 id="3-2-Hexo本地"><a href="#3-2-Hexo本地" class="headerlink" title="3.2 Hexo本地"></a>3.2 Hexo本地</h2><p>首先在自己想要的地方创建一个空文件夹来初始化hexo</p><blockquote><p>hexo init      # 初始化<br>npm install    # 安装组件</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700645.png" alt="image-20240505142944417"></p><p>完成上述初始化后，在继续执行下方指令生成页面也本地预览，访问本地网址<a href="http://localhost:4000/">http://localhost:4000/</a></p><blockquote><p>hexo g   # 生成页面<br>hexo s   # 启动预览</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700266.png" alt="image-20240505143118833"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700068.png" alt="image-20240505143129696"></p><p>至此，本地hexo已经成功，我们将我们生成的模板上传到自己的github.io仓库中，即可实现访问我们的github page得到相应的博客模板</p><h2 id="3-3-部署到github"><a href="#3-3-部署到github" class="headerlink" title="3.3 部署到github"></a>3.3 部署到github</h2><p>修改刚才我们初始化hexo文件中的<code>_config.yml</code>文件中最后的配置</p><blockquote><p>deploy:</p><p>type: git</p><p>repo: <a href="mailto:&#x67;&#x69;&#x74;&#x40;&#x67;&#x69;&#x74;&#x68;&#117;&#98;&#46;&#x63;&#111;&#x6d;">&#x67;&#x69;&#x74;&#x40;&#x67;&#x69;&#x74;&#x68;&#117;&#98;&#46;&#x63;&#111;&#x6d;</a>:&lt;用户名&gt;&#x2F;&lt;用户名&gt;.github.io.git </p><p>branch: main(这个分支根据自己的主分支进行修改，有的人是master)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700501.png" alt="image-20240505150515357"></p><p>修改保存退出，然后再命令行执行指令</p><blockquote><p>npm install hexo-deployer-git –save</p><p>hexo d</p></blockquote><p>再次等待Actions运行成功，这个过程稍微一点漫长，成功后，访问我们的github page网页即可，即网址<code>https://&lt;用户名&gt;.github.io</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700814.png" alt="image-20240505144127778"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700127.png" alt="image-20240505144240827"></p><h1 id="四、发布文章"><a href="#四、发布文章" class="headerlink" title="四、发布文章"></a>四、发布文章</h1><p>进入博客所在目录执行命令:</p><blockquote><p>hexo new “&lt;文章名称&gt;”</p></blockquote><p>新建的文章的<code>.md</code>文件会被保存在<code>根目录/sorce/_posts/</code>下面，将文章内容写入<code>.md</code>文件中，再次生成页面，上传到github上即可</p><blockquote><p>hexo clean#清理</p><p>hexo g</p><p>hexo d</p></blockquote><h1 id="五、hexo模板主题切换"><a href="#五、hexo模板主题切换" class="headerlink" title="五、hexo模板主题切换"></a>五、hexo模板主题切换</h1><ol><li>选择自己喜欢的主题</li></ol><p>主题网址：<a href="https://hexo.io/themes/">Themes | Hexo</a></p><p>以下选择主题<a href="https://github.com/saicaca/hexo-theme-vivia">saicaca&#x2F;hexo-theme-vivia: A clean and minimalist theme for Hexo. (github.com)</a>举例安装主题</p><p>每个主题的安装方式都类似，但又有细微的差距，差距来源于他们的依赖以及插件的不同。</p><ol start="2"><li>阅读安装步骤</li></ol><p>每个主题都会列有相应的安装步骤，教你怎么装，跟着装就是了</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700723.png" alt="image-20240422161014628"></p><p>例如，上述主题的安装步骤</p><p>我推荐直接下载源代码，然后将源代码解压，放置到相应的hexo文件夹的themes文件夹下即可。</p><p>因为git clone命令不稳定，导致有时候下载不成功。npm下载嘛，没试过，因为不确定它会把主题下到哪儿去。</p><blockquote><p>进入hexo的博客文件夹执行下方命令即可。</p><p>git clone <a href="https://github.com/saicaca/hexo-theme-vivia.git">https://github.com/saicaca/hexo-theme-vivia.git</a> themes&#x2F;vivia7(存在名字可以做更改)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700897.png" alt="image-20240422161529504"></p><ol start="3"><li>安装相关依赖</li></ol><p>有些主题并不需要安装相关依赖，有些则需要，所以根据主题的要求进行安装即可，示例主题需要通过下方命令安装依赖，则在根目录执行下方命令即可。</p><blockquote><p>npm install colorjs.io stylus hexo-symbols-count-time</p></blockquote><ol start="3"><li>切换主题</li></ol><p>打开博客文件夹根目录下的<code>_config.yml</code>文件，对其中的<code>theme</code>字段的值进行修改，修改为刚才下载主题存储在themes文件夹下的主题文件夹的名称<code>hexo-theme-vivia</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701077.png" alt="image-20240422161736726"></p><p>另外，修改<code>language</code>字段的值为<code>zh-CN</code>，将语言切换到中文。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701498.png" alt="image-20240422161833753"></p><ol start="6"><li>再次部署博客即可</li></ol><blockquote><p>hexo g &amp;&amp; hexo clean &amp;&amp; hexo d</p></blockquote><p>注意：有些主题可能存在问题，自己再换一个就是啦。</p><p>最后最后，可能你想问，那我怎么修改主题中的各种文本和加标签呢？</p><p>答案：对主题的<code>.yml</code>文件或者根目录自带的<code>_config.yml</code>进行修改，达到自己想要的效果，可以参考官方文档<a href="https://hexo.io/zh-cn/docs/configuration">配置 | Hexo</a>，或者各位大佬的博客。</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><h2 id="1-1-必备环境安装"><a href="#1-1-必备环境安装" class="headerlink" title="1.1 必备环境安装"></a>1.1 必备环境安装</h2><p><a href="https://nodejs.org/en/">Node.js — Run JavaScript Everywhere (nodejs.org)</a></p><p><a href="https://git-scm.com/downloads">Git - Downloads (git-scm.com)</a></p><p>这是必备的两个基本环境，请先安装这两个基本环境，网上均有教程，请参考其他教程进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659772.png" alt="image-20240505141421146"></p><p>运行这三条指令能够出现相应的版本号即可，不要求版本号相同。</p><h1 id="二、github-io仓库创建"><a href="#二、github-io仓库创建" class="headerlink" title="二、github.io仓库创建"></a>二、github.io仓库创建</h1><p>创建github page仓库的仓库名规则<code>&lt;用户名&gt;.github.io</code>如下图所示，并选择公开项目。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659455.png" alt="image-20240505141654227"></p><p>点击Actions，查看页面运行状态，等待其成功运行部署，这个过程可能会有点漫长可以稍等1分钟左右</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659541.png" alt="image-20240505141919262"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700350.png" alt="image-20240505141957864"></p><p>成功运行后，通过访问<code>https://&lt;用户名&gt;.github.io</code>基于访问看到基础页面。（如果报错，可以删除仓库重复上述过程，或者寻找其他大佬的文章解决错误）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700191.png" alt="image-20240505142102518"></p><p>这样初步的界面就已经搭建出来了，具有前端知识的大佬可以传自己的博客模板到新建的仓库即可看到自己的博客了，我这样的鼠鼠还得通过hexo去使用模板</p><h1 id="三、上传博客模板"><a href="#三、上传博客模板" class="headerlink" title="三、上传博客模板"></a>三、上传博客模板</h1><h2 id="3-1-安装Hexo"><a href="#3-1-安装Hexo" class="headerlink" title="3.1 安装Hexo"></a>3.1 安装Hexo</h2><p>使用 npm 一键安装 Hexo 博客程序：（此为全局安装命令，一般也推荐全局安装，局部安装我也没搞懂）</p><blockquote><p>npm install -g hexo-cli</p></blockquote><h2 id="3-2-Hexo本地"><a href="#3-2-Hexo本地" class="headerlink" title="3.2 Hexo本地"></a>3.2 Hexo本地</h2><p>首先在自己想要的地方创建一个空文件夹来初始化hexo</p><blockquote><p>hexo init      # 初始化<br>npm install    # 安装组件</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700645.png" alt="image-20240505142944417"></p><p>完成上述初始化后，在继续执行下方指令生成页面也本地预览，访问本地网址<a href="http://localhost:4000/">http://localhost:4000/</a></p><blockquote><p>hexo g   # 生成页面<br>hexo s   # 启动预览</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700266.png" alt="image-20240505143118833"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700068.png" alt="image-20240505143129696"></p><p>至此，本地hexo已经成功，我们将我们生成的模板上传到自己的github.io仓库中，即可实现访问我们的github page得到相应的博客模板</p><h2 id="3-3-部署到github"><a href="#3-3-部署到github" class="headerlink" title="3.3 部署到github"></a>3.3 部署到github</h2><p>修改刚才我们初始化hexo文件中的<code>_config.yml</code>文件中最后的配置</p><blockquote><p>deploy:</p><p>type: git</p><p>repo: <a href="mailto:&#103;&#105;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#x63;&#111;&#x6d;">&#103;&#105;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#x63;&#111;&#x6d;</a>:&lt;用户名&gt;&#x2F;&lt;用户名&gt;.github.io.git </p><p>branch: main(这个分支根据自己的主分支进行修改，有的人是master)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700501.png" alt="image-20240505150515357"></p><p>修改保存退出，然后再命令行执行指令</p><blockquote><p>npm install hexo-deployer-git –save</p><p>hexo d</p></blockquote><p>再次等待Actions运行成功，这个过程稍微一点漫长，成功后，访问我们的github page网页即可，即网址<code>https://&lt;用户名&gt;.github.io</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700814.png" alt="image-20240505144127778"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700127.png" alt="image-20240505144240827"></p><h1 id="四、发布文章"><a href="#四、发布文章" class="headerlink" title="四、发布文章"></a>四、发布文章</h1><p>进入博客所在目录执行命令:</p><blockquote><p>hexo new “&lt;文章名称&gt;”</p></blockquote><p>新建的文章的<code>.md</code>文件会被保存在<code>根目录/sorce/_posts/</code>下面，将文章内容写入<code>.md</code>文件中，再次生成页面，上传到github上即可</p><blockquote><p>hexo clean#清理</p><p>hexo g</p><p>hexo d</p></blockquote><h1 id="五、hexo模板主题切换"><a href="#五、hexo模板主题切换" class="headerlink" title="五、hexo模板主题切换"></a>五、hexo模板主题切换</h1><ol><li>选择自己喜欢的主题</li></ol><p>主题网址：<a href="https://hexo.io/themes/">Themes | Hexo</a></p><p>以下选择主题<a href="https://github.com/saicaca/hexo-theme-vivia">saicaca&#x2F;hexo-theme-vivia: A clean and minimalist theme for Hexo. (github.com)</a>举例安装主题</p><p>每个主题的安装方式都类似，但又有细微的差距，差距来源于他们的依赖以及插件的不同。</p><ol start="2"><li>阅读安装步骤</li></ol><p>每个主题都会列有相应的安装步骤，教你怎么装，跟着装就是了</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700723.png" alt="image-20240422161014628"></p><p>例如，上述主题的安装步骤</p><p>我推荐直接下载源代码，然后将源代码解压，放置到相应的hexo文件夹的themes文件夹下即可。</p><p>因为git clone命令不稳定，导致有时候下载不成功。npm下载嘛，没试过，因为不确定它会把主题下到哪儿去。</p><blockquote><p>进入hexo的博客文件夹执行下方命令即可。</p><p>git clone <a href="https://github.com/saicaca/hexo-theme-vivia.git">https://github.com/saicaca/hexo-theme-vivia.git</a> themes&#x2F;vivia7(存在名字可以做更改)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700897.png" alt="image-20240422161529504"></p><ol start="3"><li>安装相关依赖</li></ol><p>有些主题并不需要安装相关依赖，有些则需要，所以根据主题的要求进行安装即可，示例主题需要通过下方命令安装依赖，则在根目录执行下方命令即可。</p><blockquote><p>npm install colorjs.io stylus hexo-symbols-count-time</p></blockquote><ol start="3"><li>切换主题</li></ol><p>打开博客文件夹根目录下的<code>_config.yml</code>文件，对其中的<code>theme</code>字段的值进行修改，修改为刚才下载主题存储在themes文件夹下的主题文件夹的名称<code>hexo-theme-vivia</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701077.png" alt="image-20240422161736726"></p><p>另外，修改<code>language</code>字段的值为<code>zh-CN</code>，将语言切换到中文。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701498.png" alt="image-20240422161833753"></p><ol start="6"><li>再次部署博客即可</li></ol><blockquote><p>hexo g &amp;&amp; hexo clean &amp;&amp; hexo d</p></blockquote><p>注意：有些主题可能存在问题，自己再换一个就是啦。</p><p>最后最后，可能你想问，那我怎么修改主题中的各种文本和加标签呢？</p><p>答案：对主题的<code>.yml</code>文件或者根目录自带的<code>_config.yml</code>进行修改，达到自己想要的效果，可以参考官方文档<a href="https://hexo.io/zh-cn/docs/configuration">配置 | Hexo</a>，或者各位大佬的博客。</p>]]></content>
     
     
     <categories>
