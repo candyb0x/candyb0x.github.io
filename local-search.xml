@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>解决Windows系统BurpSuite中文显示框框&lt;口口&gt;</title>
+    <link href="/2025/07/07/%E8%A7%A3%E5%86%B3Windows%E7%B3%BB%E7%BB%9FBurpSuite%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA%E6%A1%86%E6%A1%86-%E5%8F%A3%E5%8F%A3/"/>
+    <url>/2025/07/07/%E8%A7%A3%E5%86%B3Windows%E7%B3%BB%E7%BB%9FBurpSuite%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA%E6%A1%86%E6%A1%86-%E5%8F%A3%E5%8F%A3/</url>
+    
+    <content type="html"><![CDATA[<h1 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h1><p>本文的主要目的就是为了<strong>彻底性的解决 Windows 系统 burpsuite 中文显示框框&lt;口口&gt;的问题</strong>（任何字体均能够显示中文，不强制要求某种字体）。</p><p>不想自己做字体的，也有我这边做好的，放文章末尾了，自行下载按照第四章节替换系统字体即可；</p><p>对了，Mac 没有这种问题哟，Mac 各方面上都太优秀了（除了不能畅玩游戏）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891047954-e9a4d7f1-b6a6-453b-8e19-658fc5b65c43.png" alt="img"></p><p>这时候有人几句要说了，“改成能够显示中文的字体不就行了吗？”“用 yakit 不就好了吗？”，抱有这些想法的人，估计也翻不到这篇文章吧。</p><p>为什么要解决这个看似微小的问题？</p><p>因为，这个问题对我来说非常重要！能够显示中文的字体，如黑体、宋体等，在显示英文字母上真是丑到爆炸，严重 影响攻防渗透体验，可以说让我没有了打开 burpsuite 的欲望；能让英文字母显示好看的字体，如 Cascadia，在显示中文上又是框框口口的问题，在攻防渗透过程中有会丢失部分信息真的很苦恼。</p><p>因此，本文实现的效果就是能在Cascadia 字体上仍然能够正常地显示中文（中文是否好看不要紧，重要是能显示，因为中文在数据包的占比还是比较少的，能够读取信息即可）</p><h1 id="二、Burpsuite-中文显示框框的原因"><a href="#二、Burpsuite-中文显示框框的原因" class="headerlink" title="二、Burpsuite 中文显示框框&lt;口口&gt;的原因"></a>二、Burpsuite 中文显示框框&lt;口口&gt;的原因</h1><p>这个原因其实很简单，就是在 burpsuite 中设置显示的那个字体<strong>没有中文的适配性</strong>，即<strong>没有融入中文字体</strong>。<br>可以通过将框框&lt;口口&gt;复制到其他地方，可以看到框框的正确内容。</p><p>因此，只要让相应的字体融入中文就好了，下面直接教大家怎么做自己想要的字体；</p><h1 id="三、自定义字体的制作"><a href="#三、自定义字体的制作" class="headerlink" title="三、自定义字体的制作"></a>三、自定义字体的制作</h1><h2 id="3-1-工具和效果展示"><a href="#3-1-工具和效果展示" class="headerlink" title="3.1 工具和效果展示"></a>3.1 工具和效果展示</h2><p>制作字体需要用到一款工具<code>FontForge</code>，下载链接：<a href="https://fontforge.org/">https://fontforge.org/</a></p><p>理论上，可以融合任何字体，但是我不太建议使用一些奇奇怪怪的字体，因为可能也会导致 burpsuite 无法识别，或者导致 burpsuite 光标偏移的问题；尝试过使用<code>SF-Mono + 苹方</code>（Mac 的字体），最后指针偏移了，暂时没找到解决办法（设置那个系统匹配性不行哈，不用试了）；</p><p>本文采用将<code>Cascadia Code + 微软雅黑</code>实现显示中文，其他字体的修改思想一致，看着改就行；</p><p>最终效果如下图所示：</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891416862-81f23446-062c-4219-acb3-d8efaf7cd3f7.png" alt="img"></p><p>这样子确实存在一点小问题，但是不碍事，能用辣。</p><p>可以看到“到”字的显示存在一些问题，还有其他的一些问题也存在这种问题，如“不”等等</p><h2 id="3-2-字体制作"><a href="#3-2-字体制作" class="headerlink" title="3.2 字体制作"></a>3.2 字体制作</h2><h3 id="1-准备字体"><a href="#1-准备字体" class="headerlink" title="1. 准备字体"></a>1. 准备字体</h3><p>首先我们从系统字体中提取出<code>Cascadia Code</code>和<code>微软雅黑</code>中的<code>Regular(常规)</code>字体（Burpsuite 一般只允许使用 Regular，以及个别字体的 SemiBold）；</p><p>系统字体存放的位置在：<code>C:\Windows\Fonts\</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891945869-74e71a16-e118-4bfa-8234-f34ecfefa8f1.png" alt="img"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751892119582-a87759dc-3ccd-46b1-b715-0e8eebcd7524.png" alt="img"></p><h3 id="2-打开字体查看属性并修改"><a href="#2-打开字体查看属性并修改" class="headerlink" title="2. 打开字体查看属性并修改"></a>2. 打开字体查看属性并修改</h3><p>我融合的字体大小是一致的，不需要修改。对于其他的一些大小不一致的字体则需要修改</p><p>使用<code>FontForge</code>工具打开两个字体查看它们的属性它们的大小是否一致；</p><p>打开字体后，依次点击<code>Element</code>-&gt;<code>Font Info</code>-&gt;<code>General</code>查看<code>Em Size</code>是否一致；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751892900885-5048e960-bcb0-43f1-befe-df12d537cee7.png" alt="img"></p><p>如果两个字体的大小不一致，首先将其中一个字体的大小调整到与另一个字体大小相等导出；（一致则不需要调整）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893058181-e94ac773-35dd-49ec-89e7-becb804c734a.png" alt="img"></p><p>点击 ok 以后，依次点击<code>File</code>-&gt;<code>Generalte Fonts</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893108550-5b75afe0-f852-43a6-99ba-178a31565029.png" alt="img"></p><p>点击以后，取消保存有效性检查，并将字体类型修改为<code>TrueType</code>，然后点击生成<code>Generate</code>得到一个新的字体， 使用这个新的字体进行后续的融合步骤；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893154690-bbe87bb1-0087-485b-b014-c10ac8e1b461.png" alt="img"></p><h3 id="3-融合字体"><a href="#3-融合字体" class="headerlink" title="3. 融合字体"></a>3. 融合字体</h3><p>由于我们字体的大小一致，所以不需要对字体进行修改</p><p>首先使用<code>FontForge</code>打开英文字体<code>CASCADIACODE.TTF</code>，可能会有一些错误，但不要紧。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893409388-5caec46c-6b07-4aa2-b78b-478f992bada1.png" alt="img"></p><p>关掉错误，然后依次点击<code>Element</code>-&gt;<code>Merge Fonts</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893457143-746d08f8-5bd2-47b9-9881-58d1005ed365.png" alt="img"></p><p>然后选中我们计划融合的中文字体打开即可</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893502054-02bbb3af-8537-4940-8af5-1ecf8878979a.png" alt="img"></p><p>这里建议选 <code>No</code>，这个貌似是设置第二个字体的间距的是不是要按照第一种字体进行设置的（反正选 no 能够达到很好的效果）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893526639-588f68a5-b022-4674-ba39-359d26807e55.png" alt="img"></p><p>合并完成以后，将字体保存即可；</p><p>依次点击<code>File</code>-&gt;<code>Generate Fonts</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893624083-e6a9fcb0-7009-4973-af16-98fc45ece0ad.png" alt="img"></p><p>然后依次取消有效性选择<code>Validate Before Saving</code>，并修改保存字体类型为<code>TrueType</code>然后点击<code>Generate</code>即可。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893662237-e80d3077-0d57-4aac-b28a-f148d07c2ca7.png" alt="img"></p><p>至此，我们字体合并的部分就已经解决了</p><h1 id="四、字体替换"><a href="#四、字体替换" class="headerlink" title="四、字体替换"></a>四、字体替换</h1><p>这部分的内容主要是针对我们合并的字体是系统自带字体，这种我们会发现，我们直接安装字体是无法将字体直接替换系统字体的，在 burpsuite 中依然显示框框&lt;口口&gt;；</p><p>这里我们打开设置，搜索<code>字体</code>，打开<code>字体设置</code>，在搜索<code>cas</code>，打开<code>Cascadia Code</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893918310-a55011b3-1720-4187-86f1-53ae3d926f7e.png" alt="img"></p><p>滑到下面，选中上面那个<code>Regular</code>类型字体，点击 卸载；（别担心，下面那个你卸不了）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894207205-99111465-754d-4d38-84bd-05dedee5ffab.png" alt="img"></p><p>卸载完以后，你在打开 burpsuite 设置字体，你会发现<code>Cascadia Code</code>字体没了；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894356383-b7f3424e-14ab-48d2-b1d5-d107b87fe829.png" alt="img"></p><p>这时，在将我们合并得到的字体安装回去，就可以发现一个新的字体<code>Roman</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894448011-e1107064-b11c-417c-a1b2-4a8dc7d55994.png" alt="img"></p><p>这时，我们在打开 burpsuit 进行字体设置，就可以发现我们安装的字体<code>Cascadia Code</code>了；效果非常好；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894572265-1aaca92b-1609-4627-9f09-d42fb5251a75.png" alt="img"></p><h1 id="五、现成字体"><a href="#五、现成字体" class="headerlink" title="五、现成字体"></a>五、现成字体</h1><p>通过网盘分享的文件：Burpsuite字体</p><p>链接: <a href="https://pan.baidu.com/s/1hlf7RH9bsOfvH8ZtJGLXig?pwd=ydfu">https://pan.baidu.com/s/1hlf7RH9bsOfvH8ZtJGLXig?pwd=ydfu</a> 提取码: ydfu</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>攻防渗透</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>工具配置</tag>
+      
+      <tag>BurpSuite配置</tag>
+      
+      <tag>字体</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>免入土（四）静态免杀</title>
     <link href="/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/"/>
     <url>/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/</url>
@@ -100,7 +129,7 @@
     
     <categories>
       
-      <category>渗透测试</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -127,7 +156,7 @@
     
     <categories>
       
-      <category>渗透测试</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -277,9 +306,9 @@
     
     <tags>
       
-      <tag>SSRF</tag>
-      
       <tag>基础漏洞</tag>
+      
+      <tag>SSRF</tag>
       
     </tags>
     
@@ -333,9 +362,9 @@
     
     <tags>
       
-      <tag>基础漏洞</tag>
-      
       <tag>文件上传</tag>
+      
+      <tag>基础漏洞</tag>
       
     </tags>
     
@@ -570,7 +599,7 @@
     
     <categories>
       
-      <category>内网渗透</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -601,7 +630,7 @@
     
     <categories>
       
-      <category>内网渗透</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -661,7 +690,7 @@
     
     <categories>
       
-      <category>内网渗透</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -819,9 +848,9 @@
       
       <tag>反序列化</tag>
       
-      <tag>利用链</tag>
-      
       <tag>Java反射</tag>
+      
+      <tag>利用链</tag>
       
     </tags>
     
@@ -868,7 +897,7 @@
     
     <categories>
       
-      <category>漏洞复现</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -998,7 +1027,7 @@
     
     <categories>
       
-      <category>基础漏洞</category>
+      <category>代码审计</category>
       
     </categories>
     
@@ -1654,7 +1683,7 @@
     <link href="/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <url>/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
     
-    <content type="html"><![CDATA[<h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><h2 id="1-1-必备环境安装"><a href="#1-1-必备环境安装" class="headerlink" title="1.1 必备环境安装"></a>1.1 必备环境安装</h2><p><a href="https://nodejs.org/en/">Node.js — Run JavaScript Everywhere (nodejs.org)</a></p><p><a href="https://git-scm.com/downloads">Git - Downloads (git-scm.com)</a></p><p>这是必备的两个基本环境，请先安装这两个基本环境，网上均有教程，请参考其他教程进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659772.png" alt="image-20240505141421146"></p><p>运行这三条指令能够出现相应的版本号即可，不要求版本号相同。</p><h1 id="二、github-io仓库创建"><a href="#二、github-io仓库创建" class="headerlink" title="二、github.io仓库创建"></a>二、github.io仓库创建</h1><p>创建github page仓库的仓库名规则<code>&lt;用户名&gt;.github.io</code>如下图所示，并选择公开项目。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659455.png" alt="image-20240505141654227"></p><p>点击Actions，查看页面运行状态，等待其成功运行部署，这个过程可能会有点漫长可以稍等1分钟左右</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659541.png" alt="image-20240505141919262"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700350.png" alt="image-20240505141957864"></p><p>成功运行后，通过访问<code>https://&lt;用户名&gt;.github.io</code>基于访问看到基础页面。（如果报错，可以删除仓库重复上述过程，或者寻找其他大佬的文章解决错误）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700191.png" alt="image-20240505142102518"></p><p>这样初步的界面就已经搭建出来了，具有前端知识的大佬可以传自己的博客模板到新建的仓库即可看到自己的博客了，我这样的鼠鼠还得通过hexo去使用模板</p><h1 id="三、上传博客模板"><a href="#三、上传博客模板" class="headerlink" title="三、上传博客模板"></a>三、上传博客模板</h1><h2 id="3-1-安装Hexo"><a href="#3-1-安装Hexo" class="headerlink" title="3.1 安装Hexo"></a>3.1 安装Hexo</h2><p>使用 npm 一键安装 Hexo 博客程序：（此为全局安装命令，一般也推荐全局安装，局部安装我也没搞懂）</p><blockquote><p>npm install -g hexo-cli</p></blockquote><h2 id="3-2-Hexo本地"><a href="#3-2-Hexo本地" class="headerlink" title="3.2 Hexo本地"></a>3.2 Hexo本地</h2><p>首先在自己想要的地方创建一个空文件夹来初始化hexo</p><blockquote><p>hexo init      # 初始化<br>npm install    # 安装组件</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700645.png" alt="image-20240505142944417"></p><p>完成上述初始化后，在继续执行下方指令生成页面也本地预览，访问本地网址<a href="http://localhost:4000/">http://localhost:4000/</a></p><blockquote><p>hexo g   # 生成页面<br>hexo s   # 启动预览</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700266.png" alt="image-20240505143118833"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700068.png" alt="image-20240505143129696"></p><p>至此，本地hexo已经成功，我们将我们生成的模板上传到自己的github.io仓库中，即可实现访问我们的github page得到相应的博客模板</p><h2 id="3-3-部署到github"><a href="#3-3-部署到github" class="headerlink" title="3.3 部署到github"></a>3.3 部署到github</h2><p>修改刚才我们初始化hexo文件中的<code>_config.yml</code>文件中最后的配置</p><blockquote><p>deploy:</p><p>type: git</p><p>repo: <a href="mailto:&#103;&#105;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#x63;&#111;&#x6d;">&#103;&#105;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#x63;&#111;&#x6d;</a>:&lt;用户名&gt;&#x2F;&lt;用户名&gt;.github.io.git </p><p>branch: main(这个分支根据自己的主分支进行修改，有的人是master)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700501.png" alt="image-20240505150515357"></p><p>修改保存退出，然后再命令行执行指令</p><blockquote><p>npm install hexo-deployer-git –save</p><p>hexo d</p></blockquote><p>再次等待Actions运行成功，这个过程稍微一点漫长，成功后，访问我们的github page网页即可，即网址<code>https://&lt;用户名&gt;.github.io</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700814.png" alt="image-20240505144127778"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700127.png" alt="image-20240505144240827"></p><h1 id="四、发布文章"><a href="#四、发布文章" class="headerlink" title="四、发布文章"></a>四、发布文章</h1><p>进入博客所在目录执行命令:</p><blockquote><p>hexo new “&lt;文章名称&gt;”</p></blockquote><p>新建的文章的<code>.md</code>文件会被保存在<code>根目录/sorce/_posts/</code>下面，将文章内容写入<code>.md</code>文件中，再次生成页面，上传到github上即可</p><blockquote><p>hexo clean#清理</p><p>hexo g</p><p>hexo d</p></blockquote><h1 id="五、hexo模板主题切换"><a href="#五、hexo模板主题切换" class="headerlink" title="五、hexo模板主题切换"></a>五、hexo模板主题切换</h1><ol><li>选择自己喜欢的主题</li></ol><p>主题网址：<a href="https://hexo.io/themes/">Themes | Hexo</a></p><p>以下选择主题<a href="https://github.com/saicaca/hexo-theme-vivia">saicaca&#x2F;hexo-theme-vivia: A clean and minimalist theme for Hexo. (github.com)</a>举例安装主题</p><p>每个主题的安装方式都类似，但又有细微的差距，差距来源于他们的依赖以及插件的不同。</p><ol start="2"><li>阅读安装步骤</li></ol><p>每个主题都会列有相应的安装步骤，教你怎么装，跟着装就是了</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700723.png" alt="image-20240422161014628"></p><p>例如，上述主题的安装步骤</p><p>我推荐直接下载源代码，然后将源代码解压，放置到相应的hexo文件夹的themes文件夹下即可。</p><p>因为git clone命令不稳定，导致有时候下载不成功。npm下载嘛，没试过，因为不确定它会把主题下到哪儿去。</p><blockquote><p>进入hexo的博客文件夹执行下方命令即可。</p><p>git clone <a href="https://github.com/saicaca/hexo-theme-vivia.git">https://github.com/saicaca/hexo-theme-vivia.git</a> themes&#x2F;vivia7(存在名字可以做更改)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700897.png" alt="image-20240422161529504"></p><ol start="3"><li>安装相关依赖</li></ol><p>有些主题并不需要安装相关依赖，有些则需要，所以根据主题的要求进行安装即可，示例主题需要通过下方命令安装依赖，则在根目录执行下方命令即可。</p><blockquote><p>npm install colorjs.io stylus hexo-symbols-count-time</p></blockquote><ol start="3"><li>切换主题</li></ol><p>打开博客文件夹根目录下的<code>_config.yml</code>文件，对其中的<code>theme</code>字段的值进行修改，修改为刚才下载主题存储在themes文件夹下的主题文件夹的名称<code>hexo-theme-vivia</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701077.png" alt="image-20240422161736726"></p><p>另外，修改<code>language</code>字段的值为<code>zh-CN</code>，将语言切换到中文。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701498.png" alt="image-20240422161833753"></p><ol start="6"><li>再次部署博客即可</li></ol><blockquote><p>hexo g &amp;&amp; hexo clean &amp;&amp; hexo d</p></blockquote><p>注意：有些主题可能存在问题，自己再换一个就是啦。</p><p>最后最后，可能你想问，那我怎么修改主题中的各种文本和加标签呢？</p><p>答案：对主题的<code>.yml</code>文件或者根目录自带的<code>_config.yml</code>进行修改，达到自己想要的效果，可以参考官方文档<a href="https://hexo.io/zh-cn/docs/configuration">配置 | Hexo</a>，或者各位大佬的博客。</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><h2 id="1-1-必备环境安装"><a href="#1-1-必备环境安装" class="headerlink" title="1.1 必备环境安装"></a>1.1 必备环境安装</h2><p><a href="https://nodejs.org/en/">Node.js — Run JavaScript Everywhere (nodejs.org)</a></p><p><a href="https://git-scm.com/downloads">Git - Downloads (git-scm.com)</a></p><p>这是必备的两个基本环境，请先安装这两个基本环境，网上均有教程，请参考其他教程进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659772.png" alt="image-20240505141421146"></p><p>运行这三条指令能够出现相应的版本号即可，不要求版本号相同。</p><h1 id="二、github-io仓库创建"><a href="#二、github-io仓库创建" class="headerlink" title="二、github.io仓库创建"></a>二、github.io仓库创建</h1><p>创建github page仓库的仓库名规则<code>&lt;用户名&gt;.github.io</code>如下图所示，并选择公开项目。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659455.png" alt="image-20240505141654227"></p><p>点击Actions，查看页面运行状态，等待其成功运行部署，这个过程可能会有点漫长可以稍等1分钟左右</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659541.png" alt="image-20240505141919262"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700350.png" alt="image-20240505141957864"></p><p>成功运行后，通过访问<code>https://&lt;用户名&gt;.github.io</code>基于访问看到基础页面。（如果报错，可以删除仓库重复上述过程，或者寻找其他大佬的文章解决错误）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700191.png" alt="image-20240505142102518"></p><p>这样初步的界面就已经搭建出来了，具有前端知识的大佬可以传自己的博客模板到新建的仓库即可看到自己的博客了，我这样的鼠鼠还得通过hexo去使用模板</p><h1 id="三、上传博客模板"><a href="#三、上传博客模板" class="headerlink" title="三、上传博客模板"></a>三、上传博客模板</h1><h2 id="3-1-安装Hexo"><a href="#3-1-安装Hexo" class="headerlink" title="3.1 安装Hexo"></a>3.1 安装Hexo</h2><p>使用 npm 一键安装 Hexo 博客程序：（此为全局安装命令，一般也推荐全局安装，局部安装我也没搞懂）</p><blockquote><p>npm install -g hexo-cli</p></blockquote><h2 id="3-2-Hexo本地"><a href="#3-2-Hexo本地" class="headerlink" title="3.2 Hexo本地"></a>3.2 Hexo本地</h2><p>首先在自己想要的地方创建一个空文件夹来初始化hexo</p><blockquote><p>hexo init      # 初始化<br>npm install    # 安装组件</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700645.png" alt="image-20240505142944417"></p><p>完成上述初始化后，在继续执行下方指令生成页面也本地预览，访问本地网址<a href="http://localhost:4000/">http://localhost:4000/</a></p><blockquote><p>hexo g   # 生成页面<br>hexo s   # 启动预览</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700266.png" alt="image-20240505143118833"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700068.png" alt="image-20240505143129696"></p><p>至此，本地hexo已经成功，我们将我们生成的模板上传到自己的github.io仓库中，即可实现访问我们的github page得到相应的博客模板</p><h2 id="3-3-部署到github"><a href="#3-3-部署到github" class="headerlink" title="3.3 部署到github"></a>3.3 部署到github</h2><p>修改刚才我们初始化hexo文件中的<code>_config.yml</code>文件中最后的配置</p><blockquote><p>deploy:</p><p>type: git</p><p>repo: <a href="mailto:&#x67;&#x69;&#116;&#x40;&#x67;&#105;&#116;&#x68;&#117;&#x62;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#x69;&#116;&#x40;&#x67;&#105;&#116;&#x68;&#117;&#x62;&#46;&#x63;&#x6f;&#x6d;</a>:&lt;用户名&gt;&#x2F;&lt;用户名&gt;.github.io.git </p><p>branch: main(这个分支根据自己的主分支进行修改，有的人是master)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700501.png" alt="image-20240505150515357"></p><p>修改保存退出，然后再命令行执行指令</p><blockquote><p>npm install hexo-deployer-git –save</p><p>hexo d</p></blockquote><p>再次等待Actions运行成功，这个过程稍微一点漫长，成功后，访问我们的github page网页即可，即网址<code>https://&lt;用户名&gt;.github.io</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700814.png" alt="image-20240505144127778"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700127.png" alt="image-20240505144240827"></p><h1 id="四、发布文章"><a href="#四、发布文章" class="headerlink" title="四、发布文章"></a>四、发布文章</h1><p>进入博客所在目录执行命令:</p><blockquote><p>hexo new “&lt;文章名称&gt;”</p></blockquote><p>新建的文章的<code>.md</code>文件会被保存在<code>根目录/sorce/_posts/</code>下面，将文章内容写入<code>.md</code>文件中，再次生成页面，上传到github上即可</p><blockquote><p>hexo clean#清理</p><p>hexo g</p><p>hexo d</p></blockquote><h1 id="五、hexo模板主题切换"><a href="#五、hexo模板主题切换" class="headerlink" title="五、hexo模板主题切换"></a>五、hexo模板主题切换</h1><ol><li>选择自己喜欢的主题</li></ol><p>主题网址：<a href="https://hexo.io/themes/">Themes | Hexo</a></p><p>以下选择主题<a href="https://github.com/saicaca/hexo-theme-vivia">saicaca&#x2F;hexo-theme-vivia: A clean and minimalist theme for Hexo. (github.com)</a>举例安装主题</p><p>每个主题的安装方式都类似，但又有细微的差距，差距来源于他们的依赖以及插件的不同。</p><ol start="2"><li>阅读安装步骤</li></ol><p>每个主题都会列有相应的安装步骤，教你怎么装，跟着装就是了</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700723.png" alt="image-20240422161014628"></p><p>例如，上述主题的安装步骤</p><p>我推荐直接下载源代码，然后将源代码解压，放置到相应的hexo文件夹的themes文件夹下即可。</p><p>因为git clone命令不稳定，导致有时候下载不成功。npm下载嘛，没试过，因为不确定它会把主题下到哪儿去。</p><blockquote><p>进入hexo的博客文件夹执行下方命令即可。</p><p>git clone <a href="https://github.com/saicaca/hexo-theme-vivia.git">https://github.com/saicaca/hexo-theme-vivia.git</a> themes&#x2F;vivia7(存在名字可以做更改)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700897.png" alt="image-20240422161529504"></p><ol start="3"><li>安装相关依赖</li></ol><p>有些主题并不需要安装相关依赖，有些则需要，所以根据主题的要求进行安装即可，示例主题需要通过下方命令安装依赖，则在根目录执行下方命令即可。</p><blockquote><p>npm install colorjs.io stylus hexo-symbols-count-time</p></blockquote><ol start="3"><li>切换主题</li></ol><p>打开博客文件夹根目录下的<code>_config.yml</code>文件，对其中的<code>theme</code>字段的值进行修改，修改为刚才下载主题存储在themes文件夹下的主题文件夹的名称<code>hexo-theme-vivia</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701077.png" alt="image-20240422161736726"></p><p>另外，修改<code>language</code>字段的值为<code>zh-CN</code>，将语言切换到中文。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701498.png" alt="image-20240422161833753"></p><ol start="6"><li>再次部署博客即可</li></ol><blockquote><p>hexo g &amp;&amp; hexo clean &amp;&amp; hexo d</p></blockquote><p>注意：有些主题可能存在问题，自己再换一个就是啦。</p><p>最后最后，可能你想问，那我怎么修改主题中的各种文本和加标签呢？</p><p>答案：对主题的<code>.yml</code>文件或者根目录自带的<code>_config.yml</code>进行修改，达到自己想要的效果，可以参考官方文档<a href="https://hexo.io/zh-cn/docs/configuration">配置 | Hexo</a>，或者各位大佬的博客。</p>]]></content>
     
     
     <categories>
