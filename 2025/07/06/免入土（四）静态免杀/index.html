@@ -27,7 +27,7 @@
 <meta property="og:description" content="一、前言在免杀上也学习了一段时间，也是做出了几个不错的免杀马，是时候把静态免杀上的内容写一下了。 在静态免杀层面上，要做的工作就是尽可能使杀软不能够从字符串（shellcode和各种字符串）层面检测到，所以只要把字符串的工作做好，基本过静态就没什么问题；剩下的就是锦上添花，增加程序可信度和反调试、反沙箱的工作。 本文主要是给出学习过程中遇到的一些好用的工具，以及在静态免杀上所需要做的一些工作。 静">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-06T12:20:58.000Z">
-<meta property="article:modified_time" content="2025-07-06T12:33:16.000Z">
+<meta property="article:modified_time" content="2025-07-12T10:54:23.224Z">
 <meta property="article:author" content="Candy">
 <meta property="article:tag" content="免杀对抗">
 <meta property="article:tag" content="静态免杀">
@@ -364,7 +364,7 @@
 <ul>
 <li><strong>shellcode</strong></li>
 </ul>
-<p>对于 shellcode 的编码和加密，首先先推荐一个项目 sgn：<a target="_blank" rel="noopener" href="https://github.com/EgeBalci/sgn%EF%BC%8C%E7%9B%B4%E5%88%B0%E7%9B%AE%E5%89%8D%E4%BD%8D%E7%BD%AE%E8%AF%A5%E9%A1%B9%E7%9B%AE%E6%89%80%E8%BF%9B%E8%A1%8C%E7%BC%96%E7%A0%81%E5%90%8E%E7%9A%84">https://github.com/EgeBalci/sgn，直到目前位置该项目所进行编码后的</a> shellcode 仍然是不可预测的，因此很好的避免了杀软对 shellcode 的检测；</p>
+<p>对于 shellcode 的编码和加密，首先先推荐一个项目 sgn：<a target="_blank" rel="noopener" href="https://github.com/EgeBalci/sgn">https://github.com/EgeBalci/sgn</a>，直到目前位置该项目所进行编码后的 shellcode 仍然是不可预测的，因此很好的避免了杀软对 shellcode 的检测；</p>
 <p>因此，shellcode 的编码和加密采用<code>sgn + </code>的方式进行即可，无论加什么都能够达到一个非常好的效果！（即使<code>sgn + Null</code>也一样）</p>
 <p>不需要花太多精力在编码和加密上，sgn 真的够用，结合一种加密或编码方式即可。<br>有那精力不如放在如何绕过杀软的行为检测上……</p>
 <ul>
@@ -379,9 +379,9 @@
 </ol>
 <h2 id="2-3-签名、图标-ico、资源节替换"><a href="#2-3-签名、图标-ico、资源节替换" class="headerlink" title="2.3 签名、图标 ico、资源节替换"></a>2.3 签名、图标 ico、资源节替换</h2><p>字面意思，很容易理解，网上也能搜索到一大堆文章；这里推荐几个工具和项目</p>
 <ol>
-<li><a target="_blank" rel="noopener" href="https://github.com/langsasec/Sign-Sacker%EF%BC%88%E7%AD%BE%E5%90%8D+ico">https://github.com/langsasec/Sign-Sacker（签名+ico</a> 替换）</li>
-<li><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py%EF%BC%88%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%85%B7%EF%BC%89">https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py（签名工具）</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip%EF%BC%88%E8%B5%84%E6%BA%90%E8%8A%82%E6%9B%BF%E6%8D%A2%EF%BC%89">https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip（资源节替换）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/langsasec/Sign-Sacker">https://github.com/langsasec/Sign-Sacker</a>（签名+ico 替换）</li>
+<li><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py">https://raw.githubusercontent.com/TideSec/BypassAntiVirus/master/tools/mimikatz/sigthief.py</a>（签名工具）</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip">https://github.com/TideSec/BypassAntiVirus/blob/master/tools/mimikatz/ResHacker.zip</a>（资源节替换）</li>
 </ol>
 <h2 id="2-4-软件加壳"><a href="#2-4-软件加壳" class="headerlink" title="2.4 软件加壳"></a>2.4 软件加壳</h2><p>软件加壳原本的目的使为了反调试和反逆向的，在免杀中软件加壳可以用来防止静态查杀以及沙箱；软件加壳同样会带来一些特征，容易被杀软识别。</p>
 <p>因此，如果能够加一些比较好的商业壳，那对免杀肯定是大有益处的。如果没有商业壳，一些免费的软件壳也可以用来进行尝试，不保证有效果；</p>
@@ -470,7 +470,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年7月6日</div>
+          <div>2025年7月12日</div>
         </div>
       
       
