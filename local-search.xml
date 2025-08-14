@@ -4,6 +4,37 @@
   
   
   <entry>
+    <title>苹果iphone手机抓包新姿势</title>
+    <link href="/2025/08/14/%E8%8B%B9%E6%9E%9Ciphone%E6%89%8B%E6%9C%BA%E6%8A%93%E5%8C%85%E6%96%B0%E5%A7%BF%E5%8A%BF/"/>
+    <url>/2025/08/14/%E8%8B%B9%E6%9E%9Ciphone%E6%89%8B%E6%9C%BA%E6%8A%93%E5%8C%85%E6%96%B0%E5%A7%BF%E5%8A%BF/</url>
+    
+    <content type="html"><![CDATA[<p>电脑所需工具：BurpSuite</p><p>手机所需工具：Shadowrocket（大家都是学“这个”的，不至于这个软件都下不到吧~）</p><p>要求手机和电脑处于同一局域网</p><p>电脑启动一个该局域网 ip 的端口监听，端口随意</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1755137800115-661a21db-e56d-4bfc-9751-091f6d3199a1.png" alt="img"></p><p>在手机的 Shadowrocket 软件中添加一个新的本地节点，打开主页面右上角有个<code>+</code>；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1755138011009-205d50a9-dc16-476f-b99d-e0ba0bf46e83.jpeg" alt="img"></p><p>启动代理，将路由设置为<code>代理</code>，即全局代理</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1755138088070-09b19024-365d-4fc4-a197-646ec029a9e2.jpeg" alt="img"></p><p>然后使用浏览器访问该代理的 ip 和 port，即电脑中 burpsuite 监听的 ip 和 port，下载证书，然后到设置中对描述文件进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1755138164358-64d40ea7-baa9-41de-9ee0-3603ba7c6251.jpeg" alt="img"></p><p>完成上述步骤以后，在打开<code>设置</code>-》<code>通用</code>-》<code>关于本机</code>-》<code>证书信任设置</code>，打开 burp 证书的信任，然后即可实现抓包，不放心安全问题在使用完毕以后进行关闭即可；</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1755138287540-cf89cc63-fcec-48f5-9d56-fea6c50d826e.png" alt="img"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>攻防渗透</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>工具配置</tag>
+      
+      <tag>APP抓包</tag>
+      
+      <tag>小程序抓包</tag>
+      
+      <tag>burp</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>免入土（六）BasicLoader</title>
     <link href="/2025/07/19/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%85%AD%EF%BC%89BasicLoader/"/>
     <url>/2025/07/19/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%85%AD%EF%BC%89BasicLoader/</url>
