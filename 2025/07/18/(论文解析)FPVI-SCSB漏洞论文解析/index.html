@@ -1,0 +1,953 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="论文核心内容这篇论文的核心贡献在于，它将研究视角从基于已知瞬态执行窗口（如分支预测错误）开发新攻击，转向了深入探索瞬态执行本身的根源 。论文系统性地研究了“机器清除”这一大类此前未被充分探索的“错误推测”（Bad Speculation）事件 。 通过逆向工程，论文详细分析了四种未曾被深入研究的机器清除原因：  浮点（Floating Point, FP）机器清除 自修改代码（Self-Modif">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(论文解析)FPVI+SCSB漏洞论文解析">
+<meta property="og:url" content="http://candyb0x.github.io/2025/07/18/(%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90)FPVI-SCSB%E6%BC%8F%E6%B4%9E%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="论文核心内容这篇论文的核心贡献在于，它将研究视角从基于已知瞬态执行窗口（如分支预测错误）开发新攻击，转向了深入探索瞬态执行本身的根源 。论文系统性地研究了“机器清除”这一大类此前未被充分探索的“错误推测”（Bad Speculation）事件 。 通过逆向工程，论文详细分析了四种未曾被深入研究的机器清除原因：  浮点（Floating Point, FP）机器清除 自修改代码（Self-Modif">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-18T11:24:03.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.491Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="CPU">
+<meta property="article:tag" content="处理器漏洞">
+<meta property="article:tag" content="论文解析">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>(论文解析)FPVI+SCSB漏洞论文解析 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="(论文解析)FPVI+SCSB漏洞论文解析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-18 19:24" pubdate>
+          2025年7月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">(论文解析)FPVI+SCSB漏洞论文解析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="论文核心内容"><a href="#论文核心内容" class="headerlink" title="论文核心内容"></a>论文核心内容</h2><p>这篇论文的核心贡献在于，它将研究视角从基于已知瞬态执行窗口（如分支预测错误）开发新攻击，转向了深入探索瞬态执行本身的根源 。论文系统性地研究了“机器清除”这一大类此前未被充分探索的“错误推测”（Bad Speculation）事件 。</p>
+<p>通过逆向工程，论文详细分析了四种未曾被深入研究的机器清除原因：</p>
+<ol>
+<li><strong>浮点（Floating Point, FP）机器清除</strong></li>
+<li><strong>自修改代码（Self-Modifying Code, SMC）机器清除</strong></li>
+<li><strong>内存排序（Memory Ordering, MO）机器清除</strong></li>
+<li><strong>内存消歧（Memory Disambiguation, MD）机器清除</strong></li>
+</ol>
+<p>研究发现，这些机器清除不仅为已知攻击提供了新的瞬态执行窗口，还催生了两种全新的攻击原语：</p>
+<p><strong>浮点值注入（Floating Point Value Injection, FPVI）</strong>和 <strong>推测性代码存储绕过（Speculative Code Store Bypass, SCSB）</strong>。论文最终成功在最新版的 Mozilla Firefox 浏览器上实现了一个端到端的 FPVI 攻击，并提出了相应的缓解措施和新的瞬态执行分类方法 。</p>
+<p>以下是这四种机器清除的详细成因与利用原理：</p>
+<h3 id="1-自修改代码-Self-Modifying-Code-SMC-机器清除"><a href="#1-自修改代码-Self-Modifying-Code-SMC-机器清除" class="headerlink" title="1. 自修改代码 (Self-Modifying Code, SMC) 机器清除"></a>1. 自修改代码 (Self-Modifying Code, SMC) 机器清除</h3><ul>
+<li><p><strong>成因 (Why it happens):</strong></p>
+<ul>
+<li>现代 CPU 拥有独立的指令缓存（L1i）和数据缓存（L1d），并通过缓存一致性协议来保证代码和数据视图的统一 。</li>
+<li>当一个“存储”指令修改了一块代码区域，而这块代码恰好已经被 CPU 的指令预取单元（IFU）加载到了指令缓存（L1i）或执行流水线中时，就会产生冲突 。</li>
+<li>此时，CPU 的数据视图（即通过数据缓存写入的新代码）和指令视图（即在指令缓存中的陈旧代码）出现了短暂的<strong>不同步</strong>。</li>
+<li>为了纠正这种不同步并确保执行的是最新的代码，CPU 必须触发一次 SMC 机器清除，以冲刷整个流水线和指令缓存中的陈旧指令，然后重新获取新指令 。</li>
+</ul>
+</li>
+<li><p><strong>利用原理 (How it’s exploited):</strong></p>
+<ul>
+<li>利用的关键在于从“写入新代码”到“CPU 检测到不同步并执行清除”之间存在一个<strong>时间延迟</strong>。</li>
+<li>在这个短暂的延迟窗口中，CPU 会继续<strong>瞬态地执行</strong>已经在流水线中的<strong>陈旧代码</strong>（Stale Code）。</li>
+<li>攻击者可以利用这一点，先让一段恶意代码（Gadget）存在于某块内存中，然后通过 JIT 引擎等方式让系统在这块内存上写入新的、无害的代码。在 SMC 机器清除发生前，那段陈旧的恶意代码会被瞬态执行，其产生的微架构副作用（如改变缓存状态）可被用于泄露信息 。这被称为**推测性代码存储绕过 (SCSB)**。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-浮点-Floating-Point-FP-机器清除"><a href="#2-浮点-Floating-Point-FP-机器清除" class="headerlink" title="2. 浮点 (Floating Point, FP) 机器清除"></a>2. 浮点 (Floating Point, FP) 机器清除</h3><ul>
+<li><p><strong>成因 (Why it happens):</strong></p>
+<ul>
+<li>当浮点运算单元（FPU）遇到它无法直接在硬件中高效处理的操作时，例如对<strong>非规格化浮点数（Denormal Numbers）</strong> 的运算，它需要特殊的软件辅助来完成 。</li>
+<li>这种特殊处理是通过<strong>微码辅助 (Microcode Assist)</strong> 实现的 。</li>
+<li>在执行微码辅助程序之前，CPU 必须清空当前的执行流水线，而这个清空操作就是通过一次机器清除完成的 。因此，任何需要微码辅助的浮点操作都会引发一次 FP 机器清除 。</li>
+</ul>
+</li>
+<li><p><strong>利用原理 (How it’s exploited):</strong></p>
+<ul>
+<li>利用的关键在于 FPU 在请求微码辅助<strong>之前</strong>的行为。</li>
+<li>研究发现，FPU 会首先“盲目地”假设操作数都是正常的，并快速计算出一个<strong>瞬态的、错误的结果</strong>。</li>
+<li>CPU 会在稍后才检测到这个计算是错误的（因为它涉及非规格化数），并触发机器清除来纠正它。这个检测延迟创造了一个瞬态执行窗口 。</li>
+<li>在这个窗口期内，后续指令会使用那个错误的瞬态结果进行运算 。攻击者可以通过精心构造浮点操作的输入，使得这个错误的瞬态结果变成一个可控的、有特定位模式的值（例如一个指针），从而在瞬态执行路径上实现任意值注入，这被称为**浮点值注入 (FPVI)**。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-内存排序-Memory-Ordering-MO-机器清除"><a href="#3-内存排序-Memory-Ordering-MO-机器清除" class="headerlink" title="3. 内存排序 (Memory Ordering, MO) 机器清除"></a>3. 内存排序 (Memory Ordering, MO) 机器清除</h3><ul>
+<li><p><strong>成因 (Why it happens):</strong></p>
+<ul>
+<li>现代多核 CPU 为了隐藏内存延迟，允许乱序执行（Out-of-Order Execution），但这必须遵守特定的内存排序模型（如 Intel 的 TSO 模型）以保证程序行为的正确性 。</li>
+<li>当一个核心（核心 A）正在乱序执行内存操作时（例如，一个快的加载操作先于一个慢的加载操作执行），如果此时它收到了来自另一个核心（核心 B）的**窥探请求 (snoop request)**，表明某个内存地址的数据已被修改，这可能导致核心 A 的执行顺序违反内存排序模型 。</li>
+<li>例如，如果核心 A 瞬态地看到了 Y 的新值，但看到的却是 X 的旧值，这在 TSO 模型中可能是一个非法状态 。</li>
+<li>为了维持内存排序的正确性，核心 A 别无选择，只能触发一次 MO 机器清除，冲刷流水线并按正确的顺序重新执行加载操作 。</li>
+</ul>
+</li>
+<li><p><strong>利用原理 (How it’s exploited):</strong></p>
+<ul>
+<li>利用点在于，在内存排序冲突被检测到并被机器清除纠正<strong>之前</strong>，CPU 已经基于一个<strong>陈旧的内存值</strong>进行了瞬态执行 。</li>
+<li>在上述例子中，核心 A 上的指令会基于从 Y 读取到的陈旧值（在核心 B 写入之前的值）继续瞬态执行。</li>
+<li>攻击者可以通过在两个线程间制造内存竞争，让一个线程（攻击线程）的写操作去“污染”另一个线程（受害线程）即将读取的缓存行，从而在受害线程中触发一个基于陈旧数据的瞬态执行路径 。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-内存消歧-Memory-Disambiguation-MD-机器清除"><a href="#4-内存消歧-Memory-Disambiguation-MD-机器清除" class="headerlink" title="4. 内存消歧 (Memory Disambiguation, MD) 机器清除"></a>4. 内存消歧 (Memory Disambiguation, MD) 机器清除</h3><ul>
+<li><p><strong>成因 (Why it happens):</strong></p>
+<ul>
+<li>为了优化性能，CPU 包含一个<strong>内存消歧预测器</strong>，用于预测一个加载（Load）操作是否与它前面的、地址尚未计算出来的存储（Store）操作访问相同的内存地址（即别名 Aliasing）。</li>
+<li>如果预测器预测“无别名”，CPU 就会乐观地将该加载操作提前执行（称为“提升” Hoisting）。</li>
+<li>当这个预测<strong>错误</strong>时（即预测无别名，但实际上有别名），就会触发一次 MD 机器清除 。</li>
+<li>清除是必要的，因为提前执行的加载操作从内存中读取了一个<strong>陈旧的值</strong>（因为真正应该提供数据的那个存储操作还没来得及写入），CPU 必须撤销这个错误操作并重新正确地执行加载 。</li>
+</ul>
+</li>
+<li><p><strong>利用原理 (How it’s exploited):</strong></p>
+<ul>
+<li>利用原理非常直接：当预测器被诱导发生错误时，被提升的加载操作会瞬态地读取到一个<strong>陈旧的数据值</strong>。</li>
+<li>这个陈旧的值会被传递给后续的指令，在瞬态执行路径上使用，从而可以被用来泄露信息 。</li>
+<li>攻击者需要做的就是通过一系列特定的内存访问模式来“训练”或“误导”内存消歧预测器，使其在关键时刻做出错误的“无别名”预测 。这正是<strong>Spectre Variant 4 (Speculative Store Bypass, SSB)</strong> 攻击的核心机制 。</li>
+</ul>
+</li>
+</ul>
+<h2 id="威胁模型-Threat-Model"><a href="#威胁模型-Threat-Model" class="headerlink" title="威胁模型 (Threat Model)"></a>威胁模型 (Threat Model)</h2><p>论文设定的威胁模型如下：</p>
+<ul>
+<li><strong>攻击者能力</strong>：攻击者是无特权的，可以在受害者机器上运行代码，例如通过 JavaScript、普通用户进程或虚拟机 。</li>
+<li><strong>攻击目标</strong>：目标是跨越安全边界（如从用户空间到内核，或从一个进程到另一个进程）泄露机密信息，如私钥、密码或随机化指针 。</li>
+<li><strong>受害者环境</strong>：受害者是一台基于 x86-64 架构的机器，运行着最新的操作系统和 CPU 微码，并且已经部署了所有针对瞬态执行攻击的最新缓解措施 。</li>
+</ul>
+<h2 id="漏洞成因-Cause-of-Vulnerabilities"><a href="#漏洞成因-Cause-of-Vulnerabilities" class="headerlink" title="漏洞成因 (Cause of Vulnerabilities)"></a>漏洞成因 (Cause of Vulnerabilities)</h2><p>漏洞的根本原因在于 CPU 为了提升性能而进行的“错误推测”，当这些推测被发现错误时，CPU 会执行“机器清除”来冲刷整个处理器流水线 。这个过程会产生一个时间窗口，其中错误推测路径上执行的指令虽然最终会被丢弃，但其产生的微架构层面的副作用（如缓存状态变化）却可能保留下来，从而被攻击者利用。</p>
+<p>具体来说，两种新攻击原语的成因如下：</p>
+<ol>
+<li><p><strong>SCSB 的成因（基于 SMC 机器清除）</strong>:</p>
+<ul>
+<li><p>在现代 CPU 架构中，为了性能，指令缓存（L1i）和数据缓存（L1d）是分离的，但缓存一致性协议会确保二者同步 。</p>
+</li>
+<li><p>当一个“存储”指令修改了一块正在被执行或即将被取指的代码区域时（即自修改代码），就会发生 SMC 。</p>
+</li>
+<li><p>这会导致 CPU 的数据视图（新写入的代码）和指令视图（已在流水线或 L1i 缓存中的旧代码）之间出现短暂的<strong>不同步</strong>。</p>
+</li>
+<li><p>在 CPU 检测到这种不同步并触发 SMC 机器清除以刷新流水线之前，它会瞬态地执行<strong>陈旧的（stale）代码</strong>。攻击者可以利用这个窗口执行恶意的旧代码片段。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>FPVI 的成因（基于 FP 机器清除）</strong>:</p>
+<ul>
+<li><p>当浮点运算单元（FPU）处理非规格化浮点数（denormal numbers）时，硬件无法直接处理，需要借助微码辅助（microcode assist）来完成 。</p>
+</li>
+<li><p>调用微码辅助前，CPU 必须触发一次机器清除来清空流水线 。</p>
+</li>
+<li><p>在触发机器清除之前，FPU 会“盲目地”按照处理正常数值的方式进行计算，从而产生一个<strong>瞬态的、错误的计算结果</strong>。</p>
+</li>
+<li><p>这个错误的瞬态结果会被后续指令使用，直到 CPU 检测到错误并纠正它 。攻击者可以通过精心构造非规格化浮点数，来“注入”一个任意的、可控的瞬态值。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="攻击原语-Attack-Primitives"><a href="#攻击原语-Attack-Primitives" class="headerlink" title="攻击原语 (Attack Primitives)"></a>攻击原语 (Attack Primitives)</h2><p>基于上述成因，论文提出了两种新的攻击原语：</p>
+<ol>
+<li><p><strong>Speculative Code Store Bypass (SCSB) - 推测性代码存储绕过</strong>:</p>
+<ul>
+<li><p>此原语利用 SMC 机器清除，允许攻击者在瞬态执行窗口中执行一段<strong>陈旧且受控的代码</strong>。</p>
+</li>
+<li><p>它类似于对 JIT（Just-In-Time）代码缓存的瞬态“释放后使用”（Use-After-Free）攻击 。</p>
+</li>
+<li><p>主要应用场景是 JIT 引擎（如 JavaScript 引擎），攻击者可以控制 JIT 编译过程，将恶意小工具（gadget）写入一块内存，然后让 JIT 引擎在这块内存上生成新代码，从而触发对旧有恶意小工具的瞬态执行 。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Floating Point Value Injection (FPVI) - 浮点值注入</strong>:</p>
+<ul>
+<li><p>此原语利用 FP 机器清除，允许攻击者将一个<strong>任意值注入</strong>到受害者的瞬态执行路径中 。</p>
+</li>
+<li><p>攻击者通过向受害者应用中的浮点运算提供特制的非规格化操作数来实现 。</p>
+</li>
+<li><p>这与 LVI（Load Value Injection）攻击类似，但 FPVI 是通过控制浮点运算的操作数，而不是通过诱导错误的加载操作来实现价值注入 。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="攻击链-Attack-Chain"><a href="#攻击链-Attack-Chain" class="headerlink" title="攻击链 (Attack Chain)"></a>攻击链 (Attack Chain)</h2><h3 id="1-推测性代码存储绕过-SCSB-的攻击链"><a href="#1-推测性代码存储绕过-SCSB-的攻击链" class="headerlink" title="1. 推测性代码存储绕过 (SCSB) 的攻击链"></a>1. 推测性代码存储绕过 (SCSB) 的攻击链</h3><p>SCSB 攻击的核心是利用自修改代码（SMC）机器清除前的延迟，在瞬态执行窗口中执行一段陈旧且受控的代码 。其攻击链主要针对 JIT (Just-In-Time) 引擎，如浏览器中的 JavaScript 引擎 。</p>
+<p>攻击步骤如下：</p>
+<ol>
+<li><p><strong>控制代码缓存 (Code Cache Manipulation)</strong></p>
+<ul>
+<li><p>攻击者首先需要操纵 JIT 引擎的代码缓存分配器 。</p>
+</li>
+<li><p>通过特定的操作（类似堆喷射），攻击者让一段包含恶意泄密小工具（gadget）的陈旧代码 <code>g</code> 存在于 JIT 代码缓存的某个特定、可预测的内存区域，这块区域随后被“释放” 。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>触发代码写入与执行 (Triggering Code Write &amp; Execution)</strong></p>
+<ul>
+<li><p>攻击者接着强制 JIT 引擎编译一段新的、无害的代码 <code>f</code>，并让引擎将这段新代码写入到刚才被控制的同一块内存区域 。</p>
+</li>
+<li><p>紧接着，JIT 引擎会立即跳转到这块内存区域，准备执行新代码 <code>f</code>。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>瞬态执行陈旧代码 (Transient Execution of Stale Code)</strong></p>
+<ul>
+<li><p>这是攻击的关键。由于 CPU 的数据视图（刚写入的新代码 <code>f</code>）和指令视图（已在预取队列或指令缓存中的陈旧代码 <code>g</code>）之间存在短暂的不同步，CPU 不会立即执行新代码 <code>f</code>。</p>
+</li>
+<li><p>相反，CPU 会<strong>瞬态地执行</strong>那段陈旧的、由攻击者植入的恶意小工具代码 <code>g</code>，直到 SMC 机器清除被触发来纠正这个不同步 。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>泄露秘密与恢复 (Leakage and Recovery)</strong></p>
+<ul>
+<li><p>被瞬态执行的恶意小工具 <code>g</code> 会执行一个可以泄露秘密的操作，例如，根据某个秘密值去访问特定的缓存行，从而在缓存中留下痕迹 。</p>
+</li>
+<li><p>之后，SMC 机器清除发生，流水线被冲刷，CPU 的代码和数据视图恢复同步 。</p>
+</li>
+<li><p>最终，CPU 开始从架构上正确地执行新的无害代码 <code>f</code>。但此时，秘密信息已经通过微架构状态（缓存）的变化被泄露，攻击者可以通过侧信道（如 FLUSH+RELOAD）检测到这个变化来获取秘密。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-浮点值注入-FPVI-的攻击链"><a href="#2-浮点值注入-FPVI-的攻击链" class="headerlink" title="2. 浮点值注入 (FPVI) 的攻击链"></a>2. 浮点值注入 (FPVI) 的攻击链</h3><p>FPVI 攻击允许攻击者通过浮点运算，将一个任意值注入到瞬态执行路径中 。论文中展示了一个针对 <strong>Mozilla Firefox 浏览器 SpiderMonkey 引擎</strong>的完整攻击链，该攻击利用了其 <strong>NaN-boxing</strong> 实现 。</p>
+<p>攻击步骤如下：</p>
+<ol>
+<li><p><strong>构造输入操作数 (Crafting Input Operands)</strong></p>
+<ul>
+<li><p>攻击者在 JavaScript 沙箱中，执行一个浮点运算（例如除法）。</p>
+</li>
+<li><p>攻击者为这个运算提供了两个经过精心构造的<strong>非规格化浮点数（denormal numbers）</strong> 作为操作数 。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>注入瞬态值 (Injecting the Transient Value)</strong></p>
+<ul>
+<li><p>当 FPU 处理这些非规格化数时，它会首先“盲目地”按正常流程计算，从而瞬态地产生一个<strong>错误的、但可被攻击者预测和控制的结果</strong><code>z</code>。</p>
+</li>
+<li><p>攻击者构造的操作数，会使这个瞬态结果 <code>z</code> 的二进制位模式恰好符合 SpiderMonkey 的 NaN-boxing 编码：高位部分是一个<strong>“字符串”类型的标签</strong>，而低位部分（payload）则是<strong>攻击者想要读取的任意内存地址</strong>。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>瞬态类型混淆 (Transient Type Confusion)</strong></p>
+<ul>
+<li><p>在瞬态执行路径上，JIT 编译后的代码会检查运算结果 <code>z</code> 的类型。它会读取到伪造的“字符串”标签，并错误地认为 <code>z</code> 是一个合法的字符串对象指针 。</p>
+</li>
+<li><p>然而，在架构上，这次运算的正确结果是一个浮点数（例如 <code>-Infinity</code>），因此这个代码分支在正常情况下永远不会被执行 。这就造成了一次**推测性类型混淆 (speculative type confusion)**。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>瞬态内存读取与泄露 (Transient Memory Read and Leakage)</strong></p>
+<ul>
+<li><p>接着，瞬态执行的代码会尝试访问这个伪造“字符串”对象的属性，例如 <code>z.length</code>。</p>
+</li>
+<li><p>这次访问在微架构层面变成了一次对<strong>攻击者注入的任意地址</strong>的内存读取操作 。</p>
+</li>
+<li><p>从该地址读取到的秘密数据，会被用来访问一个共享缓存区，通过 <code>EVICT+RELOAD</code> 等侧信道技术将秘密泄露出来 。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>恢复与清理 (Recovery and Cleanup)</strong></p>
+<ul>
+<li><p>CPU 最终检测到最初的浮点运算存在错误（因涉及非规格化数），触发 FP 机器清除，冲刷流水线 。</p>
+</li>
+<li><p>然后，CPU 以正确的、架构上的结果重新执行代码 。但此时，秘密信息已经通过瞬态执行期间留下的缓存痕迹成功泄露 。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="复现环境-Reproduction-Environment"><a href="#复现环境-Reproduction-Environment" class="headerlink" title="复现环境 (Reproduction Environment)"></a>复现环境 (Reproduction Environment)</h2><ul>
+<li><p><strong>FPVI 端到端攻击的复现环境</strong>:</p>
+<ul>
+<li><strong>CPU</strong>: Intel Core i9-9900K (微码版本 0xde) 。</li>
+<li><strong>操作系统</strong>: Linux 5.8.0 。</li>
+<li><strong>软件</strong>: Firefox 85.0 。</li>
+<li><strong>配置</strong>：为了简化侧信道攻击，实验中在 Firefox 中启用了高精度计时器 。</li>
+</ul>
+</li>
+<li><p><strong>受影响的处理器范围</strong>：</p>
+<ul>
+<li>论文在多个 Intel 和 AMD 处理器上测试并验证了漏洞的存在 。</li>
+<li><strong>SCSB</strong>：所有测试的 Intel 和 AMD 处理器均受影响 。ARM 架构由于其规范要求在自修改代码后使用显式的软件屏障，因此不受影响 。</li>
+<li><strong>FPVI</strong>：所有测试的 Intel 和 AMD 处理器均受影响 。尽管在 AMD 上没有找到可利用的 NaN-boxing 瞬态结果，但漏洞本身存在 。在 ARM 上未观察到瞬态结果的痕迹 。</li>
+<li><strong>测试过的处理器型号包括</strong>：<ul>
+<li>Intel: Core i7-10700K, Xeon Silver 4214, Core i9-9900K, Core i7-7700K 。</li>
+<li>AMD: Ryzen 5 5600X, Ryzen Threadripper 2990WX, Ryzen 7 2700X 。</li>
+<li>ARM: Cortex-A72 (Broadcom BCM2711) 。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="攻击效果-Implementation-Effect"><a href="#攻击效果-Implementation-Effect" class="headerlink" title="攻击效果 (Implementation Effect)"></a>攻击效果 (Implementation Effect)</h2><ul>
+<li><p><strong>FPVI 攻击效果</strong>：在 Firefox 上的端到端攻击，成功实现了从浏览器进程中读取任意内存 。</p>
+<ul>
+<li><strong>泄露速率</strong>：约 13 KB&#x2F;s 。</li>
+<li><strong>瞬态窗口大小</strong>：通过增加 FPU 的计算压力，瞬态窗口可以扩展到约 12 条加载指令 。</li>
+</ul>
+</li>
+<li><p><strong>各机制性能对比</strong>：</p>
+<ul>
+<li><strong>泄露效率</strong>：FP 机器清除被证明是一种高效的瞬态执行触发机制，其泄露率可与已被广泛研究但常被禁用的 TSX 相媲美，并且在 Intel 和 AMD 平台上都可用 。</li>
+<li><strong>适用性</strong>：与需要复杂“训练”的分支预测和内存消歧不同，许多机器清除（如 FP、SMC）无需训练，这使得攻击更高效，且能绕过基于模式检测的防御措施 。</li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A7%91%E7%A0%94%E5%B7%A5%E4%BD%9C/" class="category-chain-item">科研工作</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CPU/" class="print-no-link">#CPU</a>
+      
+        <a href="/tags/%E5%A4%84%E7%90%86%E5%99%A8%E6%BC%8F%E6%B4%9E/" class="print-no-link">#处理器漏洞</a>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/" class="print-no-link">#论文解析</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>(论文解析)FPVI+SCSB漏洞论文解析</div>
+      <div>http://candyb0x.github.io/2025/07/18/(论文解析)FPVI-SCSB漏洞论文解析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月18日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/19/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%85%AD%EF%BC%89BasicLoader/" title="免入土（六）BasicLoader">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">免入土（六）BasicLoader</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/17/CVE-2023-20569-Inception%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="(CVE-2023-20569)Inception漏洞复现">
+                        <span class="hidden-mobile">(CVE-2023-20569)Inception漏洞复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

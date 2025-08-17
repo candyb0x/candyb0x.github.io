@@ -1,0 +1,989 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. nmap扫描1.1 确定目标IP地址根据开关靶机确定目标机器的ip地址   根据两次存活主机排查可以知道靶场的IP是192.168.31.105 1.2 端口扫描 开放端口扫描   nmap -sT –min-rate 10000 -p- 192.168.31.105 -oA nmapscan&#x2F;dc-2ports  -sT: 使用tcp三次握手的过程进行探测端口是否开放（相对较慢，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dc-2打靶日记">
+<meta property="og:url" content="http://candyb0x.github.io/2024/05/09/dc-2%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1. nmap扫描1.1 确定目标IP地址根据开关靶机确定目标机器的ip地址   根据两次存活主机排查可以知道靶场的IP是192.168.31.105 1.2 端口扫描 开放端口扫描   nmap -sT –min-rate 10000 -p- 192.168.31.105 -oA nmapscan&#x2F;dc-2ports  -sT: 使用tcp三次握手的过程进行探测端口是否开放（相对较慢，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082104733.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082111702.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082113626.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082114234.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082125165.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082125397.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082129663.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082131528.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082134895.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082142961.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082143722.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082149689.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082153384.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091921748.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091926250.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091933586.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091934757.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091941391.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091943849.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091948925.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092037641.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092038200.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092039490.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092040033.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092041219.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092042689.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092101378.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092103672.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092105731.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092104795.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092117819.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092119900.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092121947.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092139015.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092142894.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092143591.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092143269.png">
+<meta property="article:published_time" content="2024-05-09T13:56:28.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.494Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="web攻防">
+<meta property="article:tag" content="打靶日记">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082104733.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>dc-2打靶日记 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dc-2打靶日记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-09 21:56" pubdate>
+          2024年5月9日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">dc-2打靶日记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-nmap扫描"><a href="#1-nmap扫描" class="headerlink" title="1. nmap扫描"></a>1. nmap扫描</h1><h2 id="1-1-确定目标IP地址"><a href="#1-1-确定目标IP地址" class="headerlink" title="1.1 确定目标IP地址"></a>1.1 确定目标IP地址</h2><p>根据开关靶机确定目标机器的ip地址</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082104733.png" srcset="/img/loading.gif" lazyload alt="image-20240508210424698"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082111702.png" srcset="/img/loading.gif" lazyload alt="image-20240508211147648"></p>
+<p>根据两次存活主机排查可以知道靶场的IP是<code>192.168.31.105</code></p>
+<h2 id="1-2-端口扫描"><a href="#1-2-端口扫描" class="headerlink" title="1.2 端口扫描"></a>1.2 端口扫描</h2><ol>
+<li>开放端口扫描</li>
+</ol>
+<blockquote>
+<p>nmap -sT –min-rate 10000 -p- 192.168.31.105 -oA nmapscan&#x2F;dc-2ports</p>
+</blockquote>
+<p><code>-sT</code>: 使用tcp三次握手的过程进行探测端口是否开放（相对较慢，但相对准确）；</p>
+<p><code>-sS</code>: 默认扫描方式，通过syn标志位进行检测连接是否开放（容易被防火墙挡住）；</p>
+<p><code>-oA</code>：以全格式保存在后续的地址文件中，以三种不同的后缀文件名保存；</p>
+<p><code>--min-rate</code>: 指定扫描的速度，在正式的护网中要比10000还慢；</p>
+<p><code>-p</code>：指定扫描端口，<code>-p-</code>指的是从1到65535端口</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082113626.png" srcset="/img/loading.gif" lazyload alt="image-20240508211317606"></p>
+<p>可以看到打开的端口数量为2个，分别为80,7744</p>
+<ol start="2">
+<li>开放端口详细扫描</li>
+</ol>
+<blockquote>
+<p>sudo nmap -sT -sV -sC -O -p80,7744 192.168.31.105 -oA nmapscan&#x2F;portsdetail</p>
+</blockquote>
+<p><code>-sV</code>：扫描提供服务的版本</p>
+<p><code>-sC</code>：用默认的脚本进行扫描</p>
+<p><code>-O</code>：扫描操作系统的版本</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082114234.png" srcset="/img/loading.gif" lazyload alt="image-20240508211453201"></p>
+<p>根据开放端口的详细信息可以知道</p>
+<blockquote>
+<p>端口7744</p>
+<p>服务：ssh	版本：OpenSSH 6.7p1Debian 5+deb8u7 (protocol 2.0)</p>
+</blockquote>
+<blockquote>
+<p>端口80</p>
+<p>服务：http	Apache httpd 2.4.10 ((Debian))</p>
+</blockquote>
+<p>其他就没有扫出太多的信息，包括一些目录什么的也没有；</p>
+<h1 id="2-gobuster目录爆破"><a href="#2-gobuster目录爆破" class="headerlink" title="2. gobuster目录爆破"></a>2. gobuster目录爆破</h1><p>由于在端口搜索的时候发现的东西并不太多，所以我们通过目录爆破尝试获取一些其他信息；</p>
+<blockquote>
+<p>sudo gobuster dir -u <a target="_blank" rel="noopener" href="http://192.168.31.105/">http://192.168.31.105</a> –wordlist&#x3D;&#x2F;usr&#x2F;share&#x2F;dirbuster&#x2F;wordlists&#x2F;directory-list-2.3-medium.txt</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082125165.png" srcset="/img/loading.gif" lazyload alt="image-20240508212502130"></p>
+<p>目录爆破完成，对所有网页进行访问</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082125397.png" srcset="/img/loading.gif" lazyload alt="image-20240508212549357"></p>
+<p>这是唯一一个能够访问的界面，其他两个并不能够访问，也获取不到什么有用的信息。通过这个界面也获取不到什么非常有用的东西，尝试。</p>
+<h1 id="3-重定向修改访问"><a href="#3-重定向修改访问" class="headerlink" title="3. 重定向修改访问"></a>3. 重定向修改访问</h1><p>由于每次访问靶机ip地址都会被重定向到域名dc-2，所以应该是做了重定向处理，我们对本机的host文件进行修改，尝试定位会源靶机主页。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082129663.png" srcset="/img/loading.gif" lazyload alt="image-20240508212903630"></p>
+<p>想host文件添加以下内容后，在对<code>192.168.31.105</code>进行访问，可得其正确访问主页</p>
+<blockquote>
+<p>192.168.31.105	dc-2</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082131528.png" srcset="/img/loading.gif" lazyload alt="image-20240508213140274"></p>
+<p>访问到主页后根据指纹工具的识别可以得出其技术构成等信息</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082134895.png" srcset="/img/loading.gif" lazyload alt="image-20240508213411869"></p>
+<p>可以得到的信息有</p>
+<blockquote>
+<p>WordPress 4.7.10</p>
+<p>php语言</p>
+<p>Mysql数据库</p>
+<p>jQuery Migrate 1.4.1</p>
+<p>jQuery 1.12.4</p>
+</blockquote>
+<h1 id="4-WordPress漏洞"><a href="#4-WordPress漏洞" class="headerlink" title="4. WordPress漏洞"></a>4. WordPress漏洞</h1><p>根据上述得到的信息可以进行CMS的漏洞搜索和尝试获取shell，使用Metasploit工具搜索器漏洞，印象中这个CMS漏洞特别多</p>
+<blockquote>
+<p>msfconsole</p>
+<p>search wordpress</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082142961.png" srcset="/img/loading.gif" lazyload alt="image-20240508214210877"></p>
+<p>可见确实有特别多，但是有些我们并没有利用条件</p>
+<p>例如，下面这个，我们并没有订阅的用户名和密码</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082143722.png" srcset="/img/loading.gif" lazyload alt="image-20240508214309675"></p>
+<p>又例如这个，我们所有条件都满足但是却没法成功利用的</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082149689.png" srcset="/img/loading.gif" lazyload alt="image-20240508214901659"></p>
+<p>尝试多个，也没法成功利用</p>
+<h1 id="5-flag-1"><a href="#5-flag-1" class="headerlink" title="5. flag 1"></a>5. flag 1</h1><p>对于刚才进入的主页，仔细观察可以发现下面有个<code>flag</code>标签，应该对应着什么信息。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405082153384.png" srcset="/img/loading.gif" lazyload alt="image-20240508215310302"></p>
+<blockquote>
+<p><strong>Flag 1:</strong></p>
+<p>Your usual wordlists probably won’t work, so instead, maybe you just need to be cewl.</p>
+<p>More passwords is always better, but sometimes you just can’t win them all.</p>
+<p>Log in as one to see the next flag.</p>
+<p>If you can’t find it, log in as another.</p>
+<p>解释：</p>
+<p>你常用的字典可能不会起作用，因此，可能你需要cewl</p>
+<p>更多密码肯定会更好，但是有时并不能获得所有的密码</p>
+<p>作为一个用户去登录查看下一个flag</p>
+<p>如果不能看到flag，那就登录另一个用户</p>
+</blockquote>
+<p>通过百度查询以下<code>cewl</code>的使用方法，得出以下内容：<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/190128.html">Kali Linux字典生成工具Cewl使用全指南 - FreeBuf网络安全行业门户</a></p>
+<blockquote>
+<p>ewl是一款采用Ruby开发的应用程序，你可以给它的爬虫指定URL地址和爬取深度，还可以添额外的外部链接，接下来Cewl会给你返回一个字典文件，你可以把字典用到类似John the Ripper这样的密码破解工具中。除此之外，Cewl还提供了命令行工具。</p>
+<p>帮助命令：cewl -h</p>
+<p>默认方法：cewl <a target="_blank" rel="noopener" href="http://www.ignitetechnologies.in/">http://www.ignitetechnologies.in/</a></p>
+<p>保存字典文件：cewl <a target="_blank" rel="noopener" href="http://www.ignitetechnologies.in/">http://www.ignitetechnologies.in/</a> -w dict.txt</p>
+</blockquote>
+<p>我们尝试通过最基本的命令进行字典的获取，由于ip地址被重定向了，通过域名访问即可得到相应爬虫字典</p>
+<blockquote>
+<p>cewl <a target="_blank" rel="noopener" href="http://dc-2/">http://dc-2</a> -w cewlDict.txt</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091921748.png" srcset="/img/loading.gif" lazyload alt="image-20240509192131666"></p>
+<p>根据cewl的介绍我们可以知道，这大概率是密码字典，有了密码我们还需要找相应的账号和登录界面</p>
+<p>之前的目录爆破结果得到的目录有，此前是因为ip地址重定向导致了网页无法访问，现在我们应该修改了相应的地址，应该可以正常访问</p>
+<blockquote>
+<p>&#x2F;wp-content</p>
+<p>&#x2F;wp-includes</p>
+<p>&#x2F;wp-admin</p>
+</blockquote>
+<p><code>/wp-content</code>目录依旧无法进入，<code>/wp-admin</code>目录进入后跳转到登录界面，那么现在我们的问题就只剩下寻找用户名了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091926250.png" srcset="/img/loading.gif" lazyload alt="image-20240509192606200"></p>
+<h1 id="6-wpscan扫描"><a href="#6-wpscan扫描" class="headerlink" title="6. wpscan扫描"></a>6. wpscan扫描</h1><blockquote>
+<p><code>WPScan</code>是一个扫描 <code>WordPress</code> 漏洞的黑盒子扫描器，它可以为所有 <code>Web</code> 开发人员扫描 <code>WordPress</code> 漏洞并在他们开发前找到并解决问题。我们还使用了 <code>Nikto</code> ，它是一款非常棒的<code>Web</code> 服务器评估工具，我们认为这个工具应该成为所有针对 <code>WordPress</code>网站进行的渗透测试的一部分</p>
+</blockquote>
+<h2 id="6-1-wpscan扫描wordpress有效用户"><a href="#6-1-wpscan扫描wordpress有效用户" class="headerlink" title="6.1 wpscan扫描wordpress有效用户"></a>6.1 wpscan扫描wordpress有效用户</h2><p>通过扫描在wordpress中有效的用户，确定用户的用户名，从而使用密码字典进行爆破</p>
+<blockquote>
+<p>wpscan –url <a target="_blank" rel="noopener" href="http://dc-2/">http://dc-2/</a> -e u</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091933586.png" srcset="/img/loading.gif" lazyload alt="image-20240509193329539"></p>
+<p>将用户名保存在相应字典中，继续使用wpscan爆破用户名和密码</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091934757.png" srcset="/img/loading.gif" lazyload alt="image-20240509193452725"></p>
+<h2 id="6-2-爆破用户名密码"><a href="#6-2-爆破用户名密码" class="headerlink" title="6.2 爆破用户名密码"></a>6.2 爆破用户名密码</h2><p>使用获取到的用户名字典和密码字典进行爆破，获取可登录账户</p>
+<blockquote>
+<p>wpscan –url <a target="_blank" rel="noopener" href="http://dc-2/">http://dc-2/</a> -U usersname.txt -P cewlDict.txt</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091941391.png" srcset="/img/loading.gif" lazyload alt="image-20240509194157351"></p>
+<p>可以看到成功爆破出两个用户名的密码，通过使用这两个用户名登录系统</p>
+<blockquote>
+<p>jerry &#x2F; adipiscing</p>
+<p>tom &#x2F; parturient</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091943849.png" srcset="/img/loading.gif" lazyload alt="image-20240509194350784"></p>
+<p>两个用户名和密码均成功登录管理系统，在这里可以获得的信息是这个wordpress CMS的版本是<code>6.5.3</code></p>
+<h1 id="7-flag2"><a href="#7-flag2" class="headerlink" title="7. flag2"></a>7. flag2</h1><p>在jerry的pages栏下发现了flag2，简单查看一下flag2的内容；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405091948925.png" srcset="/img/loading.gif" lazyload alt="image-20240509194818863"></p>
+<blockquote>
+<p>解释：</p>
+<p>如果你不能利用WordPress并走捷径，还有另一种方法。</p>
+<p>希望你找到了另一个入口。</p>
+</blockquote>
+<p>它似乎想告诉我们可能利用wordpress的路径是实现不了的，这也就验证了上述通过metasploit利用wordpress漏洞行不通的原因了</p>
+<h1 id="8-ssh连接"><a href="#8-ssh连接" class="headerlink" title="8. ssh连接"></a>8. ssh连接</h1><p>我们获得了两个账号密码，可以尝试使用他们连接服务器呀，服务器的端口改成了7744，但是开启的依旧是ssh服务</p>
+<ol>
+<li>jerry账号登录，三次都无法成功，可以排除密码输入错误的情况</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092037641.png" srcset="/img/loading.gif" lazyload alt="image-20240509203715602"></p>
+<ol start="2">
+<li><p>tom账号登录，成功登录</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092038200.png" srcset="/img/loading.gif" lazyload alt="image-20240509203809169"></p>
+<p>查看当前目录发现有flag3</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092039490.png" srcset="/img/loading.gif" lazyload alt="image-20240509203920460"></p>
+<p>尝试读取flag3，发现没有cat命令，应该是命令限制</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092040033.png" srcset="/img/loading.gif" lazyload alt="image-20240509203959012"></p>
+<p>查看能够使用的命令</p>
+<blockquote>
+<p>compgen -c       &#x2F;&#x2F;查看可以使用的指令</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092041219.png" srcset="/img/loading.gif" lazyload alt="image-20240509204142157"></p>
+<p>发现可使用的命令中有<code>vi</code>，直接使用vi打开flag3.txt查看其内容</p>
+<blockquote>
+<p>vi flag3.txt</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092042689.png" srcset="/img/loading.gif" lazyload alt="image-20240509204246658"></p>
+<blockquote>
+<p>Poor old Tom is always running after Jerry. Perhaps he should su for all the stress he causes.</p>
+</blockquote>
+</li>
+</ol>
+<p>根据flag3的内容可以知道，tom权限不足，应该去提升权限到root</p>
+<h1 id="9-提权"><a href="#9-提权" class="headerlink" title="9. 提权"></a>9. 提权</h1><p>根据上述查询到的信息可知，我们能够使用的命令有以下命令，通过以下命令进行提权操作；</p>
+<blockquote>
+<p>if<br>then<br>else<br>elif<br>fi<br>case<br>esac<br>for<br>select<br>while<br>until<br>do<br>done<br>in<br>function<br>time<br>{<br>}<br>!<br>[[<br>]]<br>coproc<br>__expand_tilde_by_ref</p>
+<p>__get_cword_at_cursor_by_ref<br>__git_eread</p>
+<p>__git_ps1<br>__git_ps1_colorize_gitstring</p>
+<p>__git_ps1_show_upstream<br>__grub_dir</p>
+<p>__grub_get_last_option<br>__grub_get_options_from_help</p>
+<p>__grub_get_options_from_usage<br>__grub_list_menuentries</p>
+<p>__grub_list_modules<br>__grubcomp</p>
+<p>__ltrim_colon_completions<br>__parse_options</p>
+<p>__reassemble_comp_words_by_ref<br>_a2disconf<br>_a2dismod<br>_a2dissite<br>_a2enconf<br>_a2enmod<br>_a2ensite<br>_allowed_groups<br>_allowed_users<br>_apache2_allcomp<br>_apache2_conf<br>_apache2_mods<br>_apache2_sites<br>_available_interfaces<br>_cd<br>_cd_devices<br>_command<br>_command_offset<br>_complete_as_root<br>_completion_loader<br>_configured_interfaces<br>_count_args<br>_debconf_show<br>_dvd_devices<br>_expand<br>_filedir<br>_filedir_xspec<br>_fstypes<br>_get_comp_words_by_ref<br>_get_cword<br>_get_first_arg<br>_get_pword<br>_gids<br>_grub_editenv<br>_grub_install<br>_grub_mkconfig<br>_grub_mkfont<br>_grub_mkimage<br>_grub_mkpasswd_pbkdf2<br>_grub_mkrescue<br>_grub_probe<br>_grub_script_check<br>_grub_set_entry<br>_grub_setup<br>_have<br>_init_completion<br>_insserv<br>_installed_modules<br>_ip_addresses<br>_kernel_versions<br>_known_hosts<br>_known_hosts_real<br>_longopt<br>_mac_addresses<br>_minimal<br>_modules<br>_ncpus<br>_parse_help<br>_parse_usage<br>_pci_ids<br>_pgids<br>_pids<br>_pnames<br>_pygmentize<br>_quote_readline_by_ref<br>_realcommand<br>_rl_enabled<br>_root_command<br>_service<br>_services<br>_shells<br>_signals<br>_split_longopt<br>_sysvdirs<br>_terms<br>_tilde<br>_uids<br>_update_initramfs<br>_upvar<br>_upvars<br>_usb_ids<br>_user_at_host<br>_usergroup<br>_userland<br>_variables<br>_xfunc<br>_xinetd_services<br>dequote<br>quote<br>quote_readline<br>.<br>:<br>[<br>alias<br>bg<br>bind<br>break<br>builtin<br>caller<br>cd<br>command<br>compgen<br>complete<br>compopt<br>continue<br>declare<br>dirs<br>disown<br>echo<br>enable<br>eval<br>exec<br>exit<br>export<br>false<br>fc<br>fg<br>getopts<br>hash<br>help<br>history<br>jobs<br>kill<br>let<br>local<br>logout<br>mapfile<br>popd<br>printf<br>pushd<br>pwd<br>read<br>readarray<br>readonly<br>return<br>set<br>shift<br>shopt<br>source<br>suspend<br>test<br>times<br>trap<br>true<br>type<br>typeset<br>ulimit<br>umask<br>unalias<br>unset<br>wait<br>less<br>scp<br>ls<br>vi</p>
+</blockquote>
+<p>根据网络查询到的资料可以得知，vim编译器是可以实现提权的，照例来说，vi和vim相似，可以尝试</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092101378.png" srcset="/img/loading.gif" lazyload alt="image-20240509210126284"></p>
+<p>使用<code>vi</code>命令随便打开一个文件，然后以保存关闭文件类似的方式输入以下命令</p>
+<blockquote>
+<p>:set shell&#x3D;&#x2F;bin&#x2F;sh</p>
+<p>:shell</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092103672.png" srcset="/img/loading.gif" lazyload alt="image-20240509210304635"></p>
+<p>可见虽然没有实现完全提权，但已经实现了部分提权，能够访问jerry和tom文件夹了</p>
+<p>进入jerry文件夹，发现这里存在flag4.txt文件</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092105731.png" srcset="/img/loading.gif" lazyload alt="image-20240509210510696"></p>
+<p>访问flag4.txt文件可以看到</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092104795.png" srcset="/img/loading.gif" lazyload alt="image-20240509210450761"></p>
+<blockquote>
+<p>Good to see that you’ve made it this far - but you’re not home yet.</p>
+<p>You still need to get the final flag (the only flag that really counts!!!).</p>
+<p>No hints here - you’re on your own now.  :-)</p>
+<p>Go on - git outta here!!!!</p>
+</blockquote>
+<p>这个flag告诉我们，我们还没有home，我们仍然需要去找到最后一个flag，继续提权</p>
+<p>通过网络查询找到一个绕过rbash的方式，通过设置环境变量绕过rbash</p>
+<blockquote>
+<p>什么是 RBASH</p>
+<ul>
+<li>RBASH 是 Restricted BASH 的缩写，意思是受限制的 BASH。</li>
+<li>RBASH 是一种特殊的 shell，它限制了用户的一些操作和权限，例如：<ul>
+<li>不能使用 cd 命令来改变当前目录。</li>
+<li>不能使用 set 命令来改变环境变量或 shell 选项。</li>
+<li>不能使用 unset 命令来取消环境变量或 shell 函数。</li>
+<li>不能使用任何包含 &#x2F; 符号的命令，除非它们在 PATH 环境变量中指定了。</li>
+<li>不能重定向输入或输出，例如使用 &gt;, &lt;, &gt;&gt;, &lt;&lt; 等符号。</li>
+<li>只能执行 PATH 环境变量中指定的命令，而且 PATH 环境变量通常只包含一些基本的命令，例如 ls, cat, echo 等。</li>
+</ul>
+</li>
+<li>RBASH 的目的是为了提高系统的安全性，防止用户执行一些危险或不合法的操作。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>export -p        &#x2F;&#x2F;查看环境变量<br>BASH_CMDS[a]&#x3D;&#x2F;bin&#x2F;sh;a         &#x2F;&#x2F;把&#x2F;bin&#x2F;sh给a<br>&#x2F;bin&#x2F;bash<br>export PATH&#x3D;$PATH:&#x2F;bin&#x2F;         &#x2F;&#x2F;添加环境变量<br>export PATH&#x3D;$PATH:&#x2F;usr&#x2F;bin      &#x2F;&#x2F;添加环境变量</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092117819.png" srcset="/img/loading.gif" lazyload alt="image-20240509211718764"></p>
+<p>通过设置环境变量，再次查看能够使用的命令可知，已经成功绕过了rbash；</p>
+<p>但是通过尝试执行提权可知，依旧没有root权限，继续提权，寻找能够提权的指令进行提权</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092119900.png" srcset="/img/loading.gif" lazyload alt="image-20240509211904860"></p>
+<p>利用find命令，找查具有SUID权限的可执行二进制文件</p>
+<blockquote>
+<p>find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092121947.png" srcset="/img/loading.gif" lazyload alt="image-20240509212123905"></p>
+<blockquote>
+<p>&#x2F;usr&#x2F;bin&#x2F;gpasswd<br>&#x2F;usr&#x2F;bin&#x2F;newgrp<br>&#x2F;usr&#x2F;bin&#x2F;sudo<br>&#x2F;usr&#x2F;bin&#x2F;chfn<br>&#x2F;usr&#x2F;bin&#x2F;chsh<br>&#x2F;usr&#x2F;bin&#x2F;passwd<br>&#x2F;usr&#x2F;bin&#x2F;procmail<br>&#x2F;usr&#x2F;bin&#x2F;at<br>&#x2F;usr&#x2F;lib&#x2F;openssh&#x2F;ssh-keysign<br>&#x2F;usr&#x2F;lib&#x2F;dbus-1.0&#x2F;dbus-daemon-launch-helper<br>&#x2F;usr&#x2F;lib&#x2F;eject&#x2F;dmcrypt-get-device<br>&#x2F;usr&#x2F;sbin&#x2F;exim4<br>&#x2F;bin&#x2F;umount<br>&#x2F;bin&#x2F;mount<br>&#x2F;bin&#x2F;su<br>You have mail in &#x2F;var&#x2F;mail&#x2F;tom</p>
+</blockquote>
+<p>发现并没有什么文件可以使用，参考别人的打靶文章，知道应该要换用户，在flag3的地方已经进行了提示</p>
+<p>所以我们这里切换到jerry账号，查看sudo配置文件<code>sudo -l</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092139015.png" srcset="/img/loading.gif" lazyload alt="image-20240509213945977"></p>
+<p>发现git命令是root权限的，刚才我们通过网页搜索的时候也看到过git命令提权的方法</p>
+<blockquote>
+<p>1、sudo git help config #在末行命令模式输入<br>!&#x2F;bin&#x2F;bash 或 !’sh’ #完成提权<br>2、sudo git -p help<br>!&#x2F;bin&#x2F;bash #输入!&#x2F;bin&#x2F;bash，即可打开一个用户为root的shell</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092142894.png" srcset="/img/loading.gif" lazyload alt="image-20240509214208855"></p>
+<p>通过find命令运行最后一个flag</p>
+<blockquote>
+<p>find &#x2F; -name *flag*</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092143591.png" srcset="/img/loading.gif" lazyload alt="image-20240509214318544"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405092143269.png" srcset="/img/loading.gif" lazyload alt="image-20240509214350229"></p>
+<p>好了，那么dc-2也就到此结束咯</p>
+<h1 id="10-总结"><a href="#10-总结" class="headerlink" title="10.总结"></a>10.总结</h1><p>在这个靶场学到的技能还是相当多的，以下是一部分</p>
+<ol>
+<li>ip地址重定向，可通过修改hosts文件绕过</li>
+<li>cewl爬虫获取网页的密码字典</li>
+<li>wordpress存在wpscan工具进行存活用户名扫描以及管理系统的账户密码爆破</li>
+<li>compgen -c可以查看可执行命令</li>
+<li>有一些已知的用户名和密码可以用来尝试连接ssh（如果服务开放的话）</li>
+<li>可以通过一些已知的命令进行提权典型的命令有nmap、vim、find、bash、more、less、nano、cp、git、vi等等</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" class="category-chain-item">渗透学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/web%E6%94%BB%E9%98%B2/" class="print-no-link">#web攻防</a>
+      
+        <a href="/tags/%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" class="print-no-link">#打靶日记</a>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="print-no-link">#渗透测试</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dc-2打靶日记</div>
+      <div>http://candyb0x.github.io/2024/05/09/dc-2打靶日记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/17/%E8%80%83%E7%A0%94%E5%88%9D%E8%AF%95%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/" title="考研初始经验分享">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">考研初始经验分享</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/08/dc-1%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="dc-1打靶日记">
+                        <span class="hidden-mobile">dc-1打靶日记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

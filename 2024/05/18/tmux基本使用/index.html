@@ -1,0 +1,1029 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. tmux是什么命令行的典型使用方式是，打开一个终端窗口（terminal window，以下简称”窗口”），在里面输入命令。用户与计算机的这种临时的交互，称为一次”会话”（session）  Tmux 就是会话与窗口的”解绑”工具，将它们彻底分离。在我的理解看来，就是能在一个终端开启多个会话，简洁美观，这也是我想追求的效果； tmux采用C&#x2F;S模型构建，输入tmux命令就相当于开启">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tmux基本使用">
+<meta property="og:url" content="http://candyb0x.github.io/2024/05/18/tmux%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1. tmux是什么命令行的典型使用方式是，打开一个终端窗口（terminal window，以下简称”窗口”），在里面输入命令。用户与计算机的这种临时的交互，称为一次”会话”（session）  Tmux 就是会话与窗口的”解绑”工具，将它们彻底分离。在我的理解看来，就是能在一个终端开启多个会话，简洁美观，这也是我想追求的效果； tmux采用C&#x2F;S模型构建，输入tmux命令就相当于开启">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182030590.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182054654.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182056393.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182100583.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182102877.png">
+<meta property="article:published_time" content="2024-05-18T13:10:31.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.496Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="环境搭建">
+<meta property="article:tag" content="工具配置">
+<meta property="article:tag" content="美化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182030590.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>tmux基本使用 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="tmux基本使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-18 21:10" pubdate>
+          2024年5月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">tmux基本使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-tmux是什么"><a href="#1-tmux是什么" class="headerlink" title="1. tmux是什么"></a>1. tmux是什么</h1><p>命令行的典型使用方式是，打开一个终端窗口（terminal window，以下简称”窗口”），在里面输入命令。<strong>用户与计算机的这种临时的交互，称为一次”会话”（session）</strong> </p>
+<p><strong>Tmux 就是会话与窗口的”解绑”工具，将它们彻底分离。</strong>在我的理解看来，就是能在一个终端开启多个会话，简洁美观，这也是我想追求的效果；</p>
+<p>tmux采用C&#x2F;S模型构建，输入tmux命令就相当于开启了一个服务器，此时默认将新建一个会话，然后会话中默认新建一个窗口，窗口中默认新建一个面板。会话、窗口、面板之间的联系如下</p>
+<p>一个tmux <code>session</code>（会话）可以包含多个<code>window</code>（窗口），窗口默认充满会话界面，因此这些窗口中可以运行相关性不大的任务。</p>
+<p>一个<code>window</code>又可以包含多个<code>pane</code>（面板），窗口下的面板，都处于同一界面下，这些面板适合运行相关性高的任务，以便同时观察到它们的运行情况。</p>
+<h1 id="2-tmux下载安装"><a href="#2-tmux下载安装" class="headerlink" title="2. tmux下载安装"></a>2. tmux下载安装</h1><p>使用下方命令直接下载tmux即可：</p>
+<blockquote>
+<p>sudo apt install tmux</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182030590.png" srcset="/img/loading.gif" lazyload alt="image-20240518203031518"></p>
+<h1 id="3-基本使用方法"><a href="#3-基本使用方法" class="headerlink" title="3. 基本使用方法"></a>3. 基本使用方法</h1><h2 id="3-1基本启动"><a href="#3-1基本启动" class="headerlink" title="3.1基本启动"></a>3.1基本启动</h2><p>直接输入<code>tmux</code>即可进入tmux</p>
+<blockquote>
+<p>tmux	#创建一个无名会话</p>
+<p>tmux new -s demo	#创建一个名为demo的会话</p>
+</blockquote>
+<h2 id="3-2tmux快捷指令"><a href="#3-2tmux快捷指令" class="headerlink" title="3.2tmux快捷指令"></a>3.2tmux快捷指令</h2><p>关于快捷指令，首先要认识到的是：tmux的所有指令，都包含同一个前缀，默认为<code>Ctrl+b</code>，输入完前缀过后，控制台激活，命令按键才能生效。前面tmux会话相关的操作中，我们共用到了两个快捷键<code>Ctrl+b</code> + <code>d</code>、<code>Ctrl+b</code> + <code>s</code>，但这仅仅是冰山一角，欲窥tmux庞大的快捷键体系，请看下表。</p>
+<p>表一：系统指令。</p>
+<table>
+<thead>
+<tr>
+<th align="center">前缀</th>
+<th align="center">指令</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>?</code></td>
+<td align="center">显示快捷键帮助文档</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>d</code></td>
+<td align="center">断开当前会话</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>D</code></td>
+<td align="center">选择要断开的会话</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>Ctrl+z</code></td>
+<td align="center">挂起当前会话</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>r</code></td>
+<td align="center">强制重载当前会话</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>s</code></td>
+<td align="center">显示会话列表用于选择并切换</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>:</code></td>
+<td align="center">进入命令行模式，此时可直接输入<code>ls</code>等命令</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>[</code></td>
+<td align="center">进入复制模式，按<code>q</code>退出</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>]</code></td>
+<td align="center">粘贴复制模式中复制的文本</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>~</code></td>
+<td align="center">列出提示信息缓存</td>
+</tr>
+</tbody></table>
+<p>表二：窗口（window）指令。</p>
+<table>
+<thead>
+<tr>
+<th align="center">前缀</th>
+<th align="center">指令</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>c</code></td>
+<td align="center">新建窗口</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>&amp;</code></td>
+<td align="center">关闭当前窗口（关闭前需输入<code>y</code> or <code>n</code>确认）</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>0~9</code></td>
+<td align="center">切换到指定窗口</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>p</code></td>
+<td align="center">切换到上一窗口</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>n</code></td>
+<td align="center">切换到下一窗口</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>w</code></td>
+<td align="center">打开窗口列表，用于且切换窗口</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>,</code></td>
+<td align="center">重命名当前窗口</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>.</code></td>
+<td align="center">修改当前窗口编号（适用于窗口重新排序）</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>f</code></td>
+<td align="center">快速定位到窗口（输入关键字匹配窗口名称）</td>
+</tr>
+</tbody></table>
+<p>表三：面板（pane）指令。</p>
+<table>
+<thead>
+<tr>
+<th align="center">前缀</th>
+<th align="center">指令</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>&quot;</code></td>
+<td align="center">当前面板上下一分为二，下侧新建面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>%</code></td>
+<td align="center">当前面板左右一分为二，右侧新建面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>x</code></td>
+<td align="center">关闭当前面板（关闭前需输入<code>y</code> or <code>n</code>确认）</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>z</code></td>
+<td align="center">最大化当前面板，再重复一次按键后恢复正常（v1.8版本新增）</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>!</code></td>
+<td align="center">将当前面板移动到新的窗口打开（原窗口中存在两个及以上面板有效）</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>;</code></td>
+<td align="center">切换到最后一次使用的面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>q</code></td>
+<td align="center">显示面板编号，在编号消失前输入对应的数字可切换到相应的面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>&#123;</code></td>
+<td align="center">向前置换当前面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>&#125;</code></td>
+<td align="center">向后置换当前面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>Ctrl+o</code></td>
+<td align="center">顺时针旋转当前窗口中的所有面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>方向键</code></td>
+<td align="center">移动光标切换面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>o</code></td>
+<td align="center">选择下一面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>空格键</code></td>
+<td align="center">在自带的面板布局中循环切换</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>Alt+方向键</code></td>
+<td align="center">以5个单元格为单位调整当前面板边缘</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>Ctrl+方向键</code></td>
+<td align="center">以1个单元格为单位调整当前面板边缘（Mac下被系统快捷键覆盖）</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+b</code></td>
+<td align="center"><code>t</code></td>
+<td align="center">显示时钟</td>
+</tr>
+</tbody></table>
+<p>怎么看我都觉得太复杂了，还是跟着大佬自定义一下吧。</p>
+<h2 id="3-3-自定义tmux快捷键"><a href="#3-3-自定义tmux快捷键" class="headerlink" title="3.3 自定义tmux快捷键"></a>3.3 自定义tmux快捷键</h2><h3 id="修改前缀命令"><a href="#修改前缀命令" class="headerlink" title="修改前缀命令"></a>修改前缀命令</h3><p>相信只要你用过几次tmux，就会发现<code>Ctrl+b</code>指令前缀，着实不太方便。这两个键相距太远，按键成本太高了。因此我们首先需要将它更换为距离更近的<code>Ctrl+a</code>组合键，或者不常用的 &#96; 键（当然其他键也是可以的）。</p>
+<p>tmux的用户级配置文件为<code>~/.tmux.conf</code>（没有的话就创建一个），修改快捷指令，只需要增加如下三行即可。</p>
+<blockquote>
+<p>set -g prefix C-a<br>unbind C-b      #C-b即Ctrl+b组合键，unbind意味着解除绑定<br>bind C-a send-prefix    #绑定Ctrl+a为新的指令前缀</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182054654.png" srcset="/img/loading.gif" lazyload alt="image-20240518205445625"></p>
+<h3 id="修改新增面板指令"><a href="#修改新增面板指令" class="headerlink" title="修改新增面板指令"></a>修改新增面板指令</h3><p>tmux中，使用最多的功能之一就是新增一个面板。</p>
+<p>水平方向新增面板的指令是 <code>prefix</code> + <code>&quot;</code> ，垂直方向是 <code>prefix</code> + <code>%</code>，<code>&quot;</code> 和 <code>%</code>需要两个键同时按下才能完成，加上指令前缀至少需要3~4次按键才能组成一个完整的指令，同时这个两个键也不够醒目和方便，</p>
+<p>因此我们可以绑定两个更常用的指令 <code>-</code>、<code>|</code>，如下所示：</p>
+<blockquote>
+<p>unbind ‘“‘ </p>
+<p>bind - splitw -v -c ‘#{pane_current_path}’ # 垂直方向新增面板，默认进入当前目录 </p>
+<p>unbind % </p>
+<p>bind | splitw -h -c ‘#{pane_current_path}’ # 水平方向新增面板，默认进入当前目录</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182056393.png" srcset="/img/loading.gif" lazyload alt="image-20240518205634364"></p>
+<h3 id="修改面板切换指令"><a href="#修改面板切换指令" class="headerlink" title="修改面板切换指令"></a>修改面板切换指令</h3><p>虽然指令前缀加<code>方向键</code>可以切换面板，但<code>方向键</code>太远，不够快，不够Geek。没关系，我们可以将面板切换升级为熟悉的<code>h</code>、<code>j</code>、<code>k</code>、<code>l</code>键位。</p>
+<blockquote>
+<p># 绑定hjkl键为面板切换的上下左右键 </p>
+<p>bind -r k select-pane -U # 绑定k为↑ </p>
+<p>bind -r j select-pane -D # 绑定j为↓ </p>
+<p>bind -r h select-pane -L # 绑定h为← </p>
+<p>bind -r l select-pane -R # 绑定l为→</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182100583.png" srcset="/img/loading.gif" lazyload alt="image-20240518210004543"></p>
+<h3 id="修改面板大小调整指令"><a href="#修改面板大小调整指令" class="headerlink" title="修改面板大小调整指令"></a>修改面板大小调整指令</h3><p>习惯了全键盘操作后，命令的便捷性不言而喻。既然面板切换的指令都可以升级，面板大小调整的指令自然也不能落后。如下配置就可以升级你的操作：</p>
+<blockquote>
+<p># 绑定Ctrl+hjkl键为面板上下左右调整边缘的快捷指令 </p>
+<p>bind -r ^k resizep -U 10 # 绑定Ctrl+k为往↑调整面板边缘10个单元格 </p>
+<p>bind -r ^j resizep -D 10 # 绑定Ctrl+j为往↓调整面板边缘10个单元格 </p>
+<p>bind -r ^h resizep -L 10 # 绑定Ctrl+h为往←调整面板边缘10个单元格 </p>
+<p>bind -r ^l resizep -R 10 # 绑定Ctrl+l为往→调整面板边缘10个单元格</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405182102877.png" srcset="/img/loading.gif" lazyload alt="image-20240518210218838"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上述修改的指令都是比较常用的指令其他不常用的指令等以后用到的时候在查资料进行修改，更改的指令如下表表格所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">前缀</th>
+<th align="center">指令</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">-</td>
+<td align="center">当前面板上下一分为二，下侧新建面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">|</td>
+<td align="center">当前面板左右一分为二，右侧新建面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">j</td>
+<td align="center">往↓切换面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">k</td>
+<td align="center">往↑切换面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">h</td>
+<td align="center">往←切换面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">l</td>
+<td align="center">往→切换面板</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">Ctrl+j</td>
+<td align="center">往↓调整面板边缘10个单元格</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">Ctrl+k</td>
+<td align="center">往↑调整面板边缘10个单元格</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">Ctrl+h</td>
+<td align="center">往←调整面板边缘10个单元格</td>
+</tr>
+<tr>
+<td align="center"><code>Ctrl+a</code></td>
+<td align="center">Ctrl+l</td>
+<td align="center">往→调整面板边缘10个单元格</td>
+</tr>
+</tbody></table>
+<h1 id="4-其他相关设置"><a href="#4-其他相关设置" class="headerlink" title="4. 其他相关设置"></a>4. 其他相关设置</h1><h2 id="4-1-tmux终端默认zsh"><a href="#4-1-tmux终端默认zsh" class="headerlink" title="4.1 tmux终端默认zsh"></a>4.1 tmux终端默认zsh</h2><p>在<code>.tmux.conf</code>文件中添加以下内容</p>
+<blockquote>
+<p>set -g default-shell &#x2F;bin&#x2F;zsh</p>
+</blockquote>
+<h2 id="4-2-设置终端默认tmux"><a href="#4-2-设置终端默认tmux" class="headerlink" title="4.2 设置终端默认tmux"></a>4.2 设置终端默认tmux</h2><blockquote>
+<p> chsh -s &#x2F;usr&#x2F;bin&#x2F;tmux</p>
+<p>如果要切换回去bash</p>
+<p>chsh -s &#x2F;bin&#x2F;bash</p>
+</blockquote>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://louiszhai.github.io/2017/09/30/tmux/">Tmux使用手册 | louis blog (louiszhai.github.io)</a></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://louiszhai.github.io/2017/09/30/tmux/">Tmux使用手册 | louis blog (louiszhai.github.io)</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">环境搭建</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="print-no-link">#环境搭建</a>
+      
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" class="print-no-link">#工具配置</a>
+      
+        <a href="/tags/%E7%BE%8E%E5%8C%96/" class="print-no-link">#美化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>tmux基本使用</div>
+      <div>http://candyb0x.github.io/2024/05/18/tmux基本使用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月18日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/18/zsh%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/" title="zsh基本配置">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">zsh基本配置</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/18/IDA%E8%BF%9C%E7%A8%8B%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/" title="IDA远程动态调试">
+                        <span class="hidden-mobile">IDA远程动态调试</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

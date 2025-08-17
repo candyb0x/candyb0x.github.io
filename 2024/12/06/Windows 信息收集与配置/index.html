@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、收集本机信息1.1 手动信息收集1.1.1 查询网络配置信息1ifconfig &#x2F;all	# 查询网络配置信息  1.1.2 查询操作系统及软件信息123456systeminfo	# 查询操作系统及软件信息(可查询出补丁，可利用系统自身存在的漏洞进行后续的提权。)systeminfo | findstr &#x2F;B &#x2F;C:“OS 名称” &#x2F;C:“OS 版本”echo %PROCESSOR_ARCH">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows 信息收集与配置">
+<meta property="og:url" content="http://candyb0x.github.io/2024/12/06/Windows%20%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="一、收集本机信息1.1 手动信息收集1.1.1 查询网络配置信息1ifconfig &#x2F;all	# 查询网络配置信息  1.1.2 查询操作系统及软件信息123456systeminfo	# 查询操作系统及软件信息(可查询出补丁，可利用系统自身存在的漏洞进行后续的提权。)systeminfo | findstr &#x2F;B &#x2F;C:“OS 名称” &#x2F;C:“OS 版本”echo %PROCESSOR_ARCH">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-06T04:55:45.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.493Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="内网渗透">
+<meta property="article:tag" content="信息收集">
+<meta property="article:tag" content="系统配置">
+<meta property="article:tag" content="windows">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Windows 信息收集与配置 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Windows 信息收集与配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-06 12:55" pubdate>
+          2024年12月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Windows 信息收集与配置</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、收集本机信息"><a href="#一、收集本机信息" class="headerlink" title="一、收集本机信息"></a>一、收集本机信息</h1><h2 id="1-1-手动信息收集"><a href="#1-1-手动信息收集" class="headerlink" title="1.1 手动信息收集"></a>1.1 手动信息收集</h2><h3 id="1-1-1-查询网络配置信息"><a href="#1-1-1-查询网络配置信息" class="headerlink" title="1.1.1 查询网络配置信息"></a>1.1.1 查询网络配置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ifconfig /all	<span class="hljs-comment"># 查询网络配置信息</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-2-查询操作系统及软件信息"><a href="#1-1-2-查询操作系统及软件信息" class="headerlink" title="1.1.2 查询操作系统及软件信息"></a>1.1.2 查询操作系统及软件信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">systeminfo	<span class="hljs-comment"># 查询操作系统及软件信息(可查询出补丁，可利用系统自身存在的漏洞进行后续的提权。)</span><br>systeminfo | findstr /B /C:“OS 名称” /C:“OS 版本”<br><span class="hljs-built_in">echo</span> %PROCESSOR_ARCHITECTURE%	<span class="hljs-comment"># 查看系统体系结构</span><br>wmic product get name,version	<span class="hljs-comment"># 查看安装的软件版本及路径等</span><br><span class="hljs-comment"># 利用powershell收集软件版本信息</span><br>powershell “GET-WmiObject -class Win32_Product | Select-Object -Property name,version”<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-3-查询本机服务信息"><a href="#1-1-3-查询本机服务信息" class="headerlink" title="1.1.3 查询本机服务信息"></a>1.1.3 <font style="color:rgb(25, 27, 31);">查询本机服务信息</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">wmic service list brief	<span class="hljs-comment"># 查询本机服务信息</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-4-查询进程列表"><a href="#1-1-4-查询进程列表" class="headerlink" title="1.1.4 查询进程列表"></a>1.1.4 <font style="color:rgb(25, 27, 31);">查询进程列表</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">tasklist	<span class="hljs-comment"># 查询进程列表</span><br>wmic process list brief	<span class="hljs-comment"># 查看当前进程和进程用户</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-5-查看启动程序（启动项）信息"><a href="#1-1-5-查看启动程序（启动项）信息" class="headerlink" title="1.1.5 查看启动程序（启动项）信息"></a>1.1.5 <font style="color:rgb(25, 27, 31);">查看启动程序（启动项）信息</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">wmic startup get <span class="hljs-built_in">command</span>,caption	<span class="hljs-comment"># 查看启动程序（启动项）信息</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-6-查看计划任务"><a href="#1-1-6-查看计划任务" class="headerlink" title="1.1.6 查看计划任务"></a>1.1.6 <font style="color:rgb(25, 27, 31);">查看计划任务</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">schtasks /query /fo LIST /v	<span class="hljs-comment"># 查看计划任务</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-7-查询用户列表"><a href="#1-1-7-查询用户列表" class="headerlink" title="1.1.7 查询用户列表"></a>1.1.7 查询用户列表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">net user	<span class="hljs-comment"># 查看本机用户列表</span><br>net localgroup administrators	<span class="hljs-comment"># 获取本地管理员组</span><br>query user || qwinsta	<span class="hljs-comment"># 查看当前在线用户</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-8-查看主机开机时间"><a href="#1-1-8-查看主机开机时间" class="headerlink" title="1.1.8 查看主机开机时间"></a>1.1.8 <font style="color:rgb(25, 27, 31);">查看主机开机时间</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">net statistics workstation<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-9-列出或端开本地计算机与所有连接的客户端之间的会话"><a href="#1-1-9-列出或端开本地计算机与所有连接的客户端之间的会话" class="headerlink" title="1.1.9 列出或端开本地计算机与所有连接的客户端之间的会话"></a>1.1.9 <font style="color:rgb(25, 27, 31);">列出或端开本地计算机与所有连接的客户端之间的会话</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">net session<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-10-查询端口列表"><a href="#1-1-10-查询端口列表" class="headerlink" title="1.1.10 查询端口列表"></a>1.1.10 <font style="color:rgb(25, 27, 31);">查询端口列表</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">netstat -ano<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-11-查看补丁列表"><a href="#1-1-11-查看补丁列表" class="headerlink" title="1.1.11 查看补丁列表"></a>1.1.11 <font style="color:rgb(25, 27, 31);">查看补丁列表</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">systeminfo<br>wmic qfe get Caption,Descript,HotFixID,InstalledOn<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-12-查询本地共享列表"><a href="#1-1-12-查询本地共享列表" class="headerlink" title="1.1.12 查询本地共享列表"></a>1.1.12 <font style="color:rgb(25, 27, 31);">查询本地共享列表</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">net share<br>wmic share get name,path,status<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-13-查询路由表及所有可用接口的ARP缓存表"><a href="#1-1-13-查询路由表及所有可用接口的ARP缓存表" class="headerlink" title="1.1.13 查询路由表及所有可用接口的ARP缓存表"></a>1.1.13 <font style="color:rgb(25, 27, 31);">查询路由表及所有可用接口的ARP缓存表</font></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">route <span class="hljs-built_in">print</span><br>arp -a<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-1-14-查看防火墙相关配置"><a href="#1-1-14-查看防火墙相关配置" class="headerlink" title="1.1.14 查看防火墙相关配置"></a>1.1.14 查看防火墙相关配置</h3><ul>
+<li>查杀软</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">WMIC /Node:localhost /Namespace:\root\SecurityCenter2 Path AntiVirusProduct Get displayName /Format:List<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>关闭防火墙</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Windows Server 2003 系统及之前版本</span><br>netsh firewall <span class="hljs-built_in">set</span> opmode <span class="hljs-built_in">disable</span><br><span class="hljs-comment"># Windows Server 2003 系统及之后版本</span><br>netsh advfirewall <span class="hljs-built_in">set</span> allprofiles state off<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>查看防火墙配置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">netstat firewall show config<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>修改防火墙配置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Windows server 2003 及之前，允许指定程序全部连接</span><br>netsh firewall add allowedprogram c:\nc.exe <span class="hljs-string">&quot;allwa nc&quot;</span> <span class="hljs-built_in">enable</span><br><span class="hljs-comment"># Windows server 2003 之后，允许指定程序全部连接</span><br>netsh advfirewall firewall add rule name=<span class="hljs-string">&quot;pass nc&quot;</span> <span class="hljs-built_in">dir</span>=<span class="hljs-keyword">in</span> action=allow program=<span class="hljs-string">&quot;c:\nc.exe&quot;</span><br><span class="hljs-comment"># 允许指定程序退出</span><br>netsh advfirewall firewall add rule name=<span class="hljs-string">&quot;Allow nc&quot;</span> <span class="hljs-built_in">dir</span>=out action=allow program=<span class="hljs-string">&quot;c:\nc.exe&quot;</span><br><br><span class="hljs-comment"># 允许 3389 端口放行</span><br>netsh advfirewall firewall add rule name=<span class="hljs-string">&quot;Remote Desktop&quot;</span> protocol=TCP <span class="hljs-built_in">dir</span>=<span class="hljs-keyword">in</span> localport=3389 action=allow<br><br><span class="hljs-comment"># 自定义翻过墙存储位置</span><br>netsh advfirewall <span class="hljs-built_in">set</span> currentprofile logging filename <span class="hljs-string">&quot;c:\windows\temp\fw.log&quot;</span><br><br><span class="hljs-comment"># 远程桌面连接历史记录</span><br>cmdkey /l<br><br><span class="hljs-comment">#注册表开启3389端口</span><br>REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal<span class="hljs-string">&quot; &quot;</span>Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f<br><br><span class="hljs-comment">#添加防火墙规则</span><br>netsh advfirewall firewall add rule name=<span class="hljs-string">&quot;Open 3389&quot;</span> <span class="hljs-built_in">dir</span>=<span class="hljs-keyword">in</span> action=allow protocol=TCP localport=3389<br><br><span class="hljs-comment">#关闭防火墙</span><br>netsh firewall <span class="hljs-built_in">set</span> opmode <span class="hljs-built_in">disable</span>   			<span class="hljs-comment">#winsows server 2003 之前</span><br>netsh advfirewall <span class="hljs-built_in">set</span> allprofiles state off 	<span class="hljs-comment">#winsows server 2003 之后</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>自定义防火墙日志的存储位置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">netsh advfirewall <span class="hljs-built_in">set</span> currentprofile logging filename <span class="hljs-string">&quot;C:\windows\temp\fw.log&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="1-2-脚本自动信息收集"><a href="#1-2-脚本自动信息收集" class="headerlink" title="1.2 脚本自动信息收集"></a>1.2 脚本自动信息收集</h2><p>下载链接：<a target="_blank" rel="noopener" href="http://www.fuzzysecurity.com/scripts/files/wmic_info.rar">http://www.fuzzysecurity.com/scripts/files/wmic_info.rar</a></p>
+<p>下载后直接运行脚本得到 <strong><font style="color:rgb(77, 77, 77);">html 格式</font></strong><font style="color:rgb(77, 77, 77);">的文件，打开即可；</font></p>
+<h1 id="二、查看当前权限"><a href="#二、查看当前权限" class="headerlink" title="二、查看当前权限"></a><font style="color:rgb(77, 77, 77);">二、查看当前权限</font></h1><h2 id="2-1-获取当前域-SID"><a href="#2-1-获取当前域-SID" class="headerlink" title="2.1 获取当前域 SID"></a>2.1 获取当前域 SID</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">whoami</span> /all<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-2-查询指定用户的详细信息"><a href="#2-2-查询指定用户的详细信息" class="headerlink" title="2.2 查询指定用户的详细信息"></a>2.2 查询指定用户的详细信息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">net user win7 /domain<br></code></pre></td></tr></table></figure>
+
+<h1 id="三、判断是否存在域"><a href="#三、判断是否存在域" class="headerlink" title="三、判断是否存在域"></a>三、判断是否存在域</h1><h2 id="3-1-ipconfig"><a href="#3-1-ipconfig" class="headerlink" title="3.1 ipconfig"></a>3.1 ipconfig</h2><p><font style="color:rgb(25, 27, 31);">查看网关IP地址、DNS的ip地址、域名、本机是否和DNS服务器处于同一网段等信息。</font></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ipconfig /all<br></code></pre></td></tr></table></figure>
+
+<p><font style="color:rgb(25, 27, 31);">然后</font><code>&lt;font style=&quot;color:rgb(25, 27, 31);background-color:rgb(248, 248, 250);&quot;&gt;nslookup&lt;/font&gt;</code><font style="color:rgb(25, 27, 31);">解析域名的ip地址，查看是否与DNS服务器在同一ip上。</font></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nslookup security.com<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-2-查看系统的详细信息"><a href="#3-2-查看系统的详细信息" class="headerlink" title="3.2 查看系统的详细信息"></a>3.2 查看系统的详细信息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systeminfo<br></code></pre></td></tr></table></figure>
+
+<p><font style="color:rgb(25, 27, 31);">从中看到处于域 </font><code>&lt;font style=&quot;color:rgb(25, 27, 31);background-color:rgb(248, 248, 250);&quot;&gt;security.com&lt;/font&gt;</code></p>
+<h2 id="3-3-查看当前登录域及域用户"><a href="#3-3-查看当前登录域及域用户" class="headerlink" title="3.3 查看当前登录域及域用户"></a>3.3 查看当前登录域及域用户</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">net config workstation<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-4-判断主域"><a href="#3-4-判断主域" class="headerlink" title="3.4 判断主域"></a>3.4 判断主域</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">net time /domain<br></code></pre></td></tr></table></figure>
+
+<h1 id="四、搜集域内基本信息"><a href="#四、搜集域内基本信息" class="headerlink" title="四、搜集域内基本信息"></a><font style="color:rgb(25, 27, 31);">四、搜集域内基本信息</font></h1><h2 id="4-1-查询域"><a href="#4-1-查询域" class="headerlink" title="4.1 查询域"></a><font style="color:rgb(25, 27, 31);">4.1 查询域</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net view /domain<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-2-查询域内所有计算机"><a href="#4-2-查询域内所有计算机" class="headerlink" title="4.2 查询域内所有计算机"></a><font style="color:rgb(25, 27, 31);">4.2 查询域内所有计算机</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net view /domain:[domain-name]<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-3-查询域内所有用户组列表"><a href="#4-3-查询域内所有用户组列表" class="headerlink" title="4.3 查询域内所有用户组列表"></a><font style="color:rgb(25, 27, 31);">4.3 查询域内所有用户组列表</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net group /domain<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgb(25, 27, 31);">Domain Admins : 域管理员组</font></li>
+<li><font style="color:rgb(25, 27, 31);">Domain Computers : 域内机器</font></li>
+<li><font style="color:rgb(25, 27, 31);">Domain Controllers ：域控制器</font></li>
+<li><font style="color:rgb(25, 27, 31);">Domain Guest ： 域访客，权限较低</font></li>
+<li><font style="color:rgb(25, 27, 31);">Domain User ： 域用户</font></li>
+<li><font style="color:rgb(25, 27, 31);">Enterprise Admins ： 企业系统管理员用户</font></li>
+</ul>
+<p><font style="color:rgb(25, 27, 31);">默认，Domain Admins 、Enterprise Admins 对域内机器有完全控制权。</font></p>
+<h2 id="4-4-查询所有域成员计算机列表"><a href="#4-4-查询所有域成员计算机列表" class="headerlink" title="4.4 查询所有域成员计算机列表"></a><font style="color:rgb(25, 27, 31);">4.4 查询所有域成员计算机列表</font></h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">net group “domain computers” /doamin<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-5-获取域用户密码信息"><a href="#4-5-获取域用户密码信息" class="headerlink" title="4.5 获取域用户密码信息"></a><font style="color:rgb(25, 27, 31);">4.5 获取域用户密码信息</font></h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">net accounts /domain<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-6-获取域信任信息"><a href="#4-6-获取域信任信息" class="headerlink" title="4.6 获取域信任信息"></a><font style="color:rgb(25, 27, 31);">4.6 获取域信任信息</font></h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">nltest /domain_trusts<br></code></pre></td></tr></table></figure>
+
+<h1 id="五、查看域控制器"><a href="#五、查看域控制器" class="headerlink" title="五、查看域控制器"></a><font style="color:rgb(25, 27, 31);">五、查看域控制器</font></h1><h2 id="5-1查看域控制器的机器名"><a href="#5-1查看域控制器的机器名" class="headerlink" title="5.1查看域控制器的机器名"></a><font style="color:rgb(25, 27, 31);">5.1查看域控制器的机器名</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nltest /DCLIST:security<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-2查看域控制器的主机名"><a href="#5-2查看域控制器的主机名" class="headerlink" title="5.2查看域控制器的主机名"></a><font style="color:rgb(25, 27, 31);">5.2查看域控制器的主机名</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">nslookup -type=SRV_ldap_tcp<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-3查看当前时间"><a href="#5-3查看当前时间" class="headerlink" title="5.3查看当前时间"></a><font style="color:rgb(25, 27, 31);">5.3查看当前时间</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net time /domain<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-4查看域控制器组"><a href="#5-4查看域控制器组" class="headerlink" title="5.4查看域控制器组"></a><font style="color:rgb(25, 27, 31);">5.4查看域控制器组</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net group “domain controllers” /domain<br></code></pre></td></tr></table></figure>
+
+<h1 id="六、获取域内用户和管理员信息"><a href="#六、获取域内用户和管理员信息" class="headerlink" title="六、获取域内用户和管理员信息"></a><font style="color:rgb(25, 27, 31);">六、获取域内用户和管理员信息</font></h1><h2 id="6-1查询所有域用户列表"><a href="#6-1查询所有域用户列表" class="headerlink" title="6.1查询所有域用户列表"></a><font style="color:rgb(25, 27, 31);">6.1查询所有域用户列表</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net user /domain<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-2获取域内用户详细信息"><a href="#6-2获取域内用户详细信息" class="headerlink" title="6.2获取域内用户详细信息"></a><font style="color:rgb(25, 27, 31);">6.2获取域内用户详细信息</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">wmic useraccount get /all<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-3查看存在的用户"><a href="#6-3查看存在的用户" class="headerlink" title="6.3查看存在的用户"></a><font style="color:rgb(25, 27, 31);">6.3查看存在的用户</font></h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs php">dsquery user<br><br>dsquery computer <span class="hljs-comment"># 查找目录中的计算机。</span><br>dsquery contact <span class="hljs-comment"># 查找目录中的联系人。</span><br>dsquery subnet <span class="hljs-comment"># 查找目录中的子网。</span><br>dsquery group <span class="hljs-comment"># 查找目录中的组。</span><br>dsquery ou <span class="hljs-comment"># 查找目录中的组织单位。</span><br>dsquery site <span class="hljs-comment"># 查找目录中的站点。</span><br>dsquery server <span class="hljs-comment"># 查找目录中的域控制器。</span><br>dsquery user <span class="hljs-comment"># 查找目录中的用户。</span><br>dsquery quota <span class="hljs-comment"># 查找目录中的配额。</span><br>dsquery partition <span class="hljs-comment"># 查找目录中的分区。</span><br>dsquery * <span class="hljs-comment"># 用通用的 LDAP 查询查找目录中的任何对象。</span><br>dsquery computer domainroot -limit <span class="hljs-number">65535</span> &amp;&amp; net group “domain computers” /domain  <span class="hljs-comment"># 列出该域内所有机器名</span><br>dsquery user domainroot -limit <span class="hljs-number">65535</span> &amp;&amp; net user /domain <span class="hljs-comment"># 列出该域内所有用户名</span><br>dsquery subnet <span class="hljs-comment">//列出该域内网段划分</span><br>dsquery group &amp;&amp; net group /domain <span class="hljs-comment"># 列出该域内分组</span><br>dsquery ou <span class="hljs-comment">//列出该域内组织单位</span><br>dsquery server &amp;&amp; net time /domain <span class="hljs-comment"># 列出该域内域控制器</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="6-4查询本地管理员组用户"><a href="#6-4查询本地管理员组用户" class="headerlink" title="6.4查询本地管理员组用户"></a><font style="color:rgb(25, 27, 31);">6.4查询本地管理员组用户</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net localgroup administrators<br></code></pre></td></tr></table></figure>
+
+<h1 id="七、查询域管理员用户组"><a href="#七、查询域管理员用户组" class="headerlink" title="七、查询域管理员用户组"></a><font style="color:rgb(25, 27, 31);">七、查询域管理员用户组</font></h1><h2 id="7-1查询域管理员用户"><a href="#7-1查询域管理员用户" class="headerlink" title="7.1查询域管理员用户"></a><font style="color:rgb(25, 27, 31);">7.1查询域管理员用户</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net group “domain admins” /domain<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-2查询管理员用户组"><a href="#7-2查询管理员用户组" class="headerlink" title="7.2查询管理员用户组"></a><font style="color:rgb(25, 27, 31);">7.2查询管理员用户组</font></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">net group “enterprise admins” /domain<br></code></pre></td></tr></table></figure>
+
+<h1 id="八、远程桌面配置"><a href="#八、远程桌面配置" class="headerlink" title="八、远程桌面配置"></a>八、远程桌面配置</h1><h2 id="8-1-windows-打开-3389-远程连接命令"><a href="#8-1-windows-打开-3389-远程连接命令" class="headerlink" title="8.1 windows 打开 3389 远程连接命令"></a>8.1 windows 打开 3389 远程连接命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 终端执行</span><br>REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal<span class="hljs-string">&quot; &quot;</span>Server /v fDenyTSConnections /t REG_DWORD /d 0 /f<br><span class="hljs-comment"># msf反斜杠保留&quot;和\</span><br>REG ADD HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal\&quot; \&quot;Server /v fDenyTSConnections /t REG_DWORD /d 0 /f<br></code></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/626445631">https://zhuanlan.zhihu.com/p/626445631</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" class="print-no-link">#内网渗透</a>
+      
+        <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" class="print-no-link">#信息收集</a>
+      
+        <a href="/tags/%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE/" class="print-no-link">#系统配置</a>
+      
+        <a href="/tags/windows/" class="print-no-link">#windows</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Windows 信息收集与配置</div>
+      <div>http://candyb0x.github.io/2024/12/06/Windows 信息收集与配置/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月6日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/06/%E5%8F%AF%E9%AA%8C%E8%AF%81%E5%AF%86%E7%A0%81%E7%89%A9%E7%90%86%E5%AE%89%E5%85%A8TEE%E7%9A%84%E7%A0%94%E7%A9%B6%E6%96%B9%E5%90%91(PUF)/" title="可验证密码物理安全TEE的研究方向(PUF)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">可验证密码物理安全TEE的研究方向(PUF)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/04/CS%E4%B8%8EMSF%E8%81%94%E5%8A%A8/" title="CS与MSF联动">
+                        <span class="hidden-mobile">CS与MSF联动</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

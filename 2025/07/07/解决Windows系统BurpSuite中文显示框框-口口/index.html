@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、引言本文的主要目的就是为了彻底性的解决 Windows 系统 burpsuite 中文显示框框&lt;口口&gt;的问题（任何字体均能够显示中文，不强制要求某种字体）。 不想自己做字体的，也有我这边做好的，放文章末尾了，自行下载按照第四章节替换系统字体即可； 对了，Mac 没有这种问题哟，Mac 各方面上都太优秀了（除了不能畅玩游戏）  这时候有人几句要说了，“改成能够显示中文的字体不就行了吗">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决Windows系统BurpSuite中文显示框框&lt;口口&gt;">
+<meta property="og:url" content="http://candyb0x.github.io/2025/07/07/%E8%A7%A3%E5%86%B3Windows%E7%B3%BB%E7%BB%9FBurpSuite%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA%E6%A1%86%E6%A1%86-%E5%8F%A3%E5%8F%A3/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="一、引言本文的主要目的就是为了彻底性的解决 Windows 系统 burpsuite 中文显示框框&lt;口口&gt;的问题（任何字体均能够显示中文，不强制要求某种字体）。 不想自己做字体的，也有我这边做好的，放文章末尾了，自行下载按照第四章节替换系统字体即可； 对了，Mac 没有这种问题哟，Mac 各方面上都太优秀了（除了不能畅玩游戏）  这时候有人几句要说了，“改成能够显示中文的字体不就行了吗">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891047954-e9a4d7f1-b6a6-453b-8e19-658fc5b65c43.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891416862-81f23446-062c-4219-acb3-d8efaf7cd3f7.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891945869-74e71a16-e118-4bfa-8234-f34ecfefa8f1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751892119582-a87759dc-3ccd-46b1-b715-0e8eebcd7524.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751892900885-5048e960-bcb0-43f1-befe-df12d537cee7.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893058181-e94ac773-35dd-49ec-89e7-becb804c734a.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893108550-5b75afe0-f852-43a6-99ba-178a31565029.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893154690-bbe87bb1-0087-485b-b014-c10ac8e1b461.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893409388-5caec46c-6b07-4aa2-b78b-478f992bada1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893457143-746d08f8-5bd2-47b9-9881-58d1005ed365.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893502054-02bbb3af-8537-4940-8af5-1ecf8878979a.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893526639-588f68a5-b022-4674-ba39-359d26807e55.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893624083-e6a9fcb0-7009-4973-af16-98fc45ece0ad.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893662237-e80d3077-0d57-4aac-b28a-f148d07c2ca7.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893918310-a55011b3-1720-4187-86f1-53ae3d926f7e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894207205-99111465-754d-4d38-84bd-05dedee5ffab.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894356383-b7f3424e-14ab-48d2-b1d5-d107b87fe829.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894448011-e1107064-b11c-417c-a1b2-4a8dc7d55994.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894572265-1aaca92b-1609-4627-9f09-d42fb5251a75.png">
+<meta property="article:published_time" content="2025-07-07T13:30:39.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.498Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="工具配置">
+<meta property="article:tag" content="BurpSuite配置">
+<meta property="article:tag" content="字体">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891047954-e9a4d7f1-b6a6-453b-8e19-658fc5b65c43.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>解决Windows系统BurpSuite中文显示框框&lt;口口&gt; - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="解决Windows系统BurpSuite中文显示框框&lt;口口&gt;"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-07 21:30" pubdate>
+          2025年7月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">解决Windows系统BurpSuite中文显示框框&lt;口口&gt;</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h1><p>本文的主要目的就是为了<strong>彻底性的解决 Windows 系统 burpsuite 中文显示框框&lt;口口&gt;的问题</strong>（任何字体均能够显示中文，不强制要求某种字体）。</p>
+<p>不想自己做字体的，也有我这边做好的，放文章末尾了，自行下载按照第四章节替换系统字体即可；</p>
+<p>对了，Mac 没有这种问题哟，Mac 各方面上都太优秀了（除了不能畅玩游戏）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891047954-e9a4d7f1-b6a6-453b-8e19-658fc5b65c43.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这时候有人几句要说了，“改成能够显示中文的字体不就行了吗？”“用 yakit 不就好了吗？”，抱有这些想法的人，估计也翻不到这篇文章吧。</p>
+<p>为什么要解决这个看似微小的问题？</p>
+<p>因为，这个问题对我来说非常重要！能够显示中文的字体，如黑体、宋体等，在显示英文字母上真是丑到爆炸，严重 影响攻防渗透体验，可以说让我没有了打开 burpsuite 的欲望；能让英文字母显示好看的字体，如 Cascadia，在显示中文上又是框框口口的问题，在攻防渗透过程中有会丢失部分信息真的很苦恼。</p>
+<p>因此，本文实现的效果就是能在Cascadia 字体上仍然能够正常地显示中文（中文是否好看不要紧，重要是能显示，因为中文在数据包的占比还是比较少的，能够读取信息即可）</p>
+<blockquote>
+<p>update: 最后使用Cascadia Code + 黑体实现了巨优秀（无错乱等）的字体显示，字体也放到网盘里边，请自取！</p>
+</blockquote>
+<h1 id="二、Burpsuite-中文显示框框的原因"><a href="#二、Burpsuite-中文显示框框的原因" class="headerlink" title="二、Burpsuite 中文显示框框&lt;口口&gt;的原因"></a>二、Burpsuite 中文显示框框&lt;口口&gt;的原因</h1><p>这个原因其实很简单，就是在 burpsuite 中设置显示的那个字体<strong>没有中文的适配性</strong>，即<strong>没有融入中文字体</strong>。<br>可以通过将框框&lt;口口&gt;复制到其他地方，可以看到框框的正确内容。</p>
+<p>因此，只要让相应的字体融入中文就好了，下面直接教大家怎么做自己想要的字体；</p>
+<h1 id="三、自定义字体的制作"><a href="#三、自定义字体的制作" class="headerlink" title="三、自定义字体的制作"></a>三、自定义字体的制作</h1><h2 id="3-1-工具和效果展示"><a href="#3-1-工具和效果展示" class="headerlink" title="3.1 工具和效果展示"></a>3.1 工具和效果展示</h2><p>制作字体需要用到一款工具<code>FontForge</code>，下载链接：<a target="_blank" rel="noopener" href="https://fontforge.org/">https://fontforge.org/</a></p>
+<p>理论上，可以融合任何字体，但是我不太建议使用一些奇奇怪怪的字体，因为可能也会导致 burpsuite 无法识别，或者导致 burpsuite 光标偏移的问题；尝试过使用<code>SF-Mono + 苹方</code>（Mac 的字体），最后指针偏移了，暂时没找到解决办法（设置那个系统匹配性不行哈，不用试了）；</p>
+<p>本文采用将<code>Cascadia Code + 微软雅黑</code>实现显示中文，其他字体的修改思想一致，看着改就行；</p>
+<p>最终效果如下图所示：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891416862-81f23446-062c-4219-acb3-d8efaf7cd3f7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这样子确实存在一点小问题，但是不碍事，能用辣。</p>
+<p>可以看到“到”字的显示存在一些问题，还有其他的一些问题也存在这种问题，如“不”等等</p>
+<h2 id="3-2-字体制作"><a href="#3-2-字体制作" class="headerlink" title="3.2 字体制作"></a>3.2 字体制作</h2><h3 id="1-准备字体"><a href="#1-准备字体" class="headerlink" title="1. 准备字体"></a>1. 准备字体</h3><p>首先我们从系统字体中提取出<code>Cascadia Code</code>和<code>微软雅黑</code>中的<code>Regular(常规)</code>字体（Burpsuite 一般只允许使用 Regular，以及个别字体的 SemiBold）；</p>
+<p>系统字体存放的位置在：<code>C:\Windows\Fonts\</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751891945869-74e71a16-e118-4bfa-8234-f34ecfefa8f1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751892119582-a87759dc-3ccd-46b1-b715-0e8eebcd7524.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="2-打开字体查看属性并修改"><a href="#2-打开字体查看属性并修改" class="headerlink" title="2. 打开字体查看属性并修改"></a>2. 打开字体查看属性并修改</h3><p>我融合的字体大小是一致的，不需要修改。对于其他的一些大小不一致的字体则需要修改</p>
+<p>使用<code>FontForge</code>工具打开两个字体查看它们的属性它们的大小是否一致；</p>
+<p>打开字体后，依次点击<code>Element</code>-&gt;<code>Font Info</code>-&gt;<code>General</code>查看<code>Em Size</code>是否一致；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751892900885-5048e960-bcb0-43f1-befe-df12d537cee7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>如果两个字体的大小不一致，首先将其中一个字体的大小调整到与另一个字体大小相等导出；（一致则不需要调整）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893058181-e94ac773-35dd-49ec-89e7-becb804c734a.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>点击 ok 以后，依次点击<code>File</code>-&gt;<code>Generalte Fonts</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893108550-5b75afe0-f852-43a6-99ba-178a31565029.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>点击以后，取消保存有效性检查，并将字体类型修改为<code>TrueType</code>，然后点击生成<code>Generate</code>得到一个新的字体， 使用这个新的字体进行后续的融合步骤；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893154690-bbe87bb1-0087-485b-b014-c10ac8e1b461.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="3-融合字体"><a href="#3-融合字体" class="headerlink" title="3. 融合字体"></a>3. 融合字体</h3><p>由于我们字体的大小一致，所以不需要对字体进行修改</p>
+<p>首先使用<code>FontForge</code>打开英文字体<code>CASCADIACODE.TTF</code>，可能会有一些错误，但不要紧。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893409388-5caec46c-6b07-4aa2-b78b-478f992bada1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>关掉错误，然后依次点击<code>Element</code>-&gt;<code>Merge Fonts</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893457143-746d08f8-5bd2-47b9-9881-58d1005ed365.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>然后选中我们计划融合的中文字体打开即可</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893502054-02bbb3af-8537-4940-8af5-1ecf8878979a.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这里建议选 <code>No</code>，这个貌似是设置第二个字体的间距的是不是要按照第一种字体进行设置的（反正选 no 能够达到很好的效果）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893526639-588f68a5-b022-4674-ba39-359d26807e55.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>合并完成以后，将字体保存即可；</p>
+<p>依次点击<code>File</code>-&gt;<code>Generate Fonts</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893624083-e6a9fcb0-7009-4973-af16-98fc45ece0ad.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>然后依次取消有效性选择<code>Validate Before Saving</code>，并修改保存字体类型为<code>TrueType</code>然后点击<code>Generate</code>即可。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893662237-e80d3077-0d57-4aac-b28a-f148d07c2ca7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>至此，我们字体合并的部分就已经解决了</p>
+<h1 id="四、字体替换"><a href="#四、字体替换" class="headerlink" title="四、字体替换"></a>四、字体替换</h1><p>这部分的内容主要是针对我们合并的字体是系统自带字体，这种我们会发现，我们直接安装字体是无法将字体直接替换系统字体的，在 burpsuite 中依然显示框框&lt;口口&gt;；</p>
+<p>这里我们打开设置，搜索<code>字体</code>，打开<code>字体设置</code>，在搜索<code>cas</code>，打开<code>Cascadia Code</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751893918310-a55011b3-1720-4187-86f1-53ae3d926f7e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>滑到下面，选中上面那个<code>Regular</code>类型字体，点击 卸载；（别担心，下面那个你卸不了）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894207205-99111465-754d-4d38-84bd-05dedee5ffab.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>卸载完以后，你在打开 burpsuite 设置字体，你会发现<code>Cascadia Code</code>字体没了；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894356383-b7f3424e-14ab-48d2-b1d5-d107b87fe829.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这时，在将我们合并得到的字体安装回去，就可以发现一个新的字体<code>Roman</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894448011-e1107064-b11c-417c-a1b2-4a8dc7d55994.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这时，我们在打开 burpsuit 进行字体设置，就可以发现我们安装的字体<code>Cascadia Code</code>了；效果非常好；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1751894572265-1aaca92b-1609-4627-9f09-d42fb5251a75.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="五、现成字体"><a href="#五、现成字体" class="headerlink" title="五、现成字体"></a>五、现成字体</h1><p>通过网盘分享的文件：Burpsuite字体</p>
+<p>链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1hlf7RH9bsOfvH8ZtJGLXig?pwd=ydfu">https://pan.baidu.com/s/1hlf7RH9bsOfvH8ZtJGLXig?pwd=ydfu</a> 提取码: ydfu</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" class="print-no-link">#工具配置</a>
+      
+        <a href="/tags/BurpSuite%E9%85%8D%E7%BD%AE/" class="print-no-link">#BurpSuite配置</a>
+      
+        <a href="/tags/%E5%AD%97%E4%BD%93/" class="print-no-link">#字体</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>解决Windows系统BurpSuite中文显示框框&lt;口口&gt;</div>
+      <div>http://candyb0x.github.io/2025/07/07/解决Windows系统BurpSuite中文显示框框-口口/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月7日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/" title="免入土（五）绕过 IAT Hook / Inline Hook 实现SafeGetProcAddress">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">免入土（五）绕过 IAT Hook / Inline Hook 实现SafeGetProcAddress</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/" title="免入土（四）静态免杀">
+                        <span class="hidden-mobile">免入土（四）静态免杀</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

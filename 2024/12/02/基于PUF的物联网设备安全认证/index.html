@@ -1,0 +1,806 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="原文下载：PUF-Based_Authentication_for_the_Security_of_IoT_Devices.pdf 一、研究背景1.1 基于 PUF 的物联网设备威胁基于 PUF 安全系统的主要威胁就是攻击者能够获取挑战的正确响应； 建模攻击是新兴攻击的一个例子，旨在复制PUF的挑战和响应行为，以克隆 PUF 设计生成的秘密密钥。 针对基于物理不可克隆功能（PUF）的物联网设备认证">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于PUF的物联网设备安全认证">
+<meta property="og:url" content="http://candyb0x.github.io/2024/12/02/%E5%9F%BA%E4%BA%8EPUF%E7%9A%84%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="原文下载：PUF-Based_Authentication_for_the_Security_of_IoT_Devices.pdf 一、研究背景1.1 基于 PUF 的物联网设备威胁基于 PUF 安全系统的主要威胁就是攻击者能够获取挑战的正确响应； 建模攻击是新兴攻击的一个例子，旨在复制PUF的挑战和响应行为，以克隆 PUF 设计生成的秘密密钥。 针对基于物理不可克隆功能（PUF）的物联网设备认证">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438767.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438303.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438019.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438158.png">
+<meta property="article:published_time" content="2024-12-02T06:41:10.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.497Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="硬件安全">
+<meta property="article:tag" content="PUF">
+<meta property="article:tag" content="身份认证">
+<meta property="article:tag" content="物理不可克隆函数">
+<meta property="article:tag" content="物联网">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438767.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>基于PUF的物联网设备安全认证 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于PUF的物联网设备安全认证"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-02 14:41" pubdate>
+          2024年12月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">基于PUF的物联网设备安全认证</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>原文下载：<a target="_blank" rel="noopener" href="https://www.yuque.com/attachments/yuque/0/2024/pdf/34580676/1732849412850-81b80258-3eea-4412-bb7d-56b82ff9ee8e.pdf">PUF-Based_Authentication_for_the_Security_of_IoT_Devices.pdf</a></p>
+<h1 id="一、研究背景"><a href="#一、研究背景" class="headerlink" title="一、研究背景"></a>一、研究背景</h1><h2 id="1-1-基于-PUF-的物联网设备威胁"><a href="#1-1-基于-PUF-的物联网设备威胁" class="headerlink" title="1.1 基于 PUF 的物联网设备威胁"></a>1.1 基于 PUF 的物联网设备威胁</h2><p>基于 PUF 安全系统的主要威胁就是攻击者能够获取挑战的正确响应；</p>
+<p>建模攻击是新兴攻击的一个例子，旨在复制PUF的挑战和响应行为，以克隆 PUF 设计生成的秘密密钥。</p>
+<p>针对基于物理不可克隆功能（PUF）的物联网设备认证方案的建模攻击被分类为不同的类别。</p>
+<h3 id="1-1-1-机器学习攻击"><a href="#1-1-1-机器学习攻击" class="headerlink" title="1.1.1 机器学习攻击"></a>1.1.1 机器学习攻击</h3><p>机器学习攻击被认为是最成功的复制 PUF 设计行为的攻击，一些基于机器学习的模型攻击已经分析出模仿 PUFs 行为，算法的有效性取决于不同的 PUF 设计的复杂性。</p>
+<h3 id="1-1-2-中间人攻击"><a href="#1-1-2-中间人攻击" class="headerlink" title="1.1.2 中间人攻击"></a>1.1.2 中间人攻击</h3><p>攻击者通过提取和记录服务器和设备之间通信的数据包，并且提取出其中的挑战-响应对(CRPs)进行存储。在获得一组 CRPs 后，可以通过利用机器学习对 PUF 进行建模。</p>
+<h3 id="1-1-3-基于硬件的侧信道攻击"><a href="#1-1-3-基于硬件的侧信道攻击" class="headerlink" title="1.1.3 基于硬件的侧信道攻击"></a>1.1.3 基于硬件的侧信道攻击</h3><p>侧信道攻击利用各种参数，如电流泄漏、电压变化和功耗，对半导体集成电路（IC）和物联网（IoT）设备发起攻击。这些攻击利用侧向挑战参数来模拟稳健的 PUF 设计。</p>
+<h1 id="二、基础组件分析"><a href="#二、基础组件分析" class="headerlink" title="二、基础组件分析"></a>二、基础组件分析</h1><h2 id="2-1-研究成果"><a href="#2-1-研究成果" class="headerlink" title="2.1 研究成果"></a>2.1 研究成果</h2><p><font style="color:rgb(42, 43, 46);">提出了一种轻量级的基于异或环振荡器 PUF （XOR-ROPUF）的物联网系统安全认证方案。</font></p>
+<p><font style="color:rgb(42, 43, 46);">提出的管理方案在验证机构和物联网设备之间进行认证，保证数据的一致性和完整性，降低网络攻击的风险。</font></p>
+<h2 id="2-2-实现方法"><a href="#2-2-实现方法" class="headerlink" title="2.2 实现方法"></a><font style="color:rgb(42, 43, 46);">2.2 实现方法</font></h2><p>使用延迟 PUF 在物联网设备上进行身份认证；</p>
+<h3 id="2-2-1-异或-环振荡器-PUF（XOR-ROPUF）"><a href="#2-2-1-异或-环振荡器-PUF（XOR-ROPUF）" class="headerlink" title="2.2.1 异或-环振荡器 PUF（XOR-ROPUF）"></a>2.2.1 异或-环振荡器 PUF（XOR-ROPUF）</h3><p>提出的 XOR-ROPUF 增强了熵，使设计能够为安全可信的物联网应用生成挑战-响应对，这些应用需要稳健、轻量级的密钥和密码密钥生成。</p>
+<p>轻量级的 PUF 设计，低消耗并且能够安全、有效地为物联网设备生成秘密密钥，包括物联网设备认证的鲁棒性；</p>
+<p>图 2 显示的是已实现的 XOR-ROPUF，从 PUF 生成的响应反馈到挑战生成器。XOR 网络接收来自挑战生成器的挑战，并将响应结合起来生成新的挑战。PUF 设计采用 16 位挑战并生成 16 位响应。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438767.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-2-2-基于-PUF-的认证方案"><a href="#2-2-2-基于-PUF-的认证方案" class="headerlink" title="2.2.2 基于 PUF 的认证方案"></a>2.2.2 基于 PUF 的认证方案</h3><p>使用上述提出的轻量级 XOR-ROPUF 进行物联网设备的身份认证，下图是物联网设备与认证服务器之间为确保数据一致性和完整性而提出的方案。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438303.png" srcset="/img/loading.gif" lazyload></p>
+<p>所提出的基于 PUF 的物联网设备认证方案降低了认证漏洞的风险，提出的技术可通过与待认证的物联网设备通信来存储和更新挑战与响应对。</p>
+<p>基于 PUF 的认证方案由两个步骤组成，分别是注册和认证，上述保证了认证过程的安全；</p>
+<ol>
+<li>第一阶段：注册</li>
+</ol>
+<p>第一阶段注册的过程中，认证端通过发送 n 个挑战给客户端，获取与之响应的 n 个响应，并将挑战-响应对 CRPs 记录在一个安全的数据库中； 每个客户端都会经过该过程进行注册，具体流程如下图所示；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438019.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="2">
+<li>第二阶段：认证</li>
+</ol>
+<p>认证端通过物联网设备的唯一 ID 辨认物联网设备，认证端在从数据库中选取该设备的 CRPs 的任意挑战发送给客户端（物联网设备）获取其响应与数据库中存储的 CRP 进行对比，一致则认为正确；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202412021438158.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="三、研究创新点"><a href="#三、研究创新点" class="headerlink" title="三、研究创新点"></a>三、研究创新点</h1><p><font style="color:rgb(42, 43, 46);">XOR-ROPUF的硬件实现利用FPGA固有的物理特性来实现安全、可靠和可信的物联网应用。</font></p>
+<p><font style="color:rgb(42, 43, 46);">所提出的基于安全PUF的方案消除了传统方法的一些缺点，并解释了如何使用PUF来构建低成本的身份验证方案。提出的基于puf的安全增强方案解决了高安全性物联网网络的需求。</font></p>
+<h1 id="四、实验结果分析"><a href="#四、实验结果分析" class="headerlink" title="四、实验结果分析"></a>四、实验结果分析</h1><h2 id="4-1-实验结果"><a href="#4-1-实验结果" class="headerlink" title="4.1 实验结果"></a>4.1 实验结果</h2><blockquote>
+<p><strong>Art ix 7 FPGAs</strong>指的是 <strong>Xilinx Artix-7 系列现场可编程门阵列（Field Programmable Gate Arrays，FPGAs）</strong></p>
+<ol>
+<li><strong>FPGA 是什么？</strong><ul>
+<li>FPGA 是一种可编程的集成电路，用户可以根据需求设计电路功能。</li>
+<li>它包含可配置逻辑块（CLBs）、存储单元、输入&#x2F;输出单元以及可编程互连。</li>
+</ul>
+</li>
+<li><strong>Artix-7 系列的特点</strong><ul>
+<li><strong>制造工艺</strong>：采用 28nm 制造工艺，具备高性能和低功耗的特性。</li>
+<li><strong>适用场景</strong>：专为功耗敏感的中低端应用设计，例如嵌入式系统、工业控制和信号处理。</li>
+<li><strong>性能优势</strong>：<ul>
+<li>低功耗：相比更高性能的 Kintex 和 Virtex 系列，Artix-7 的功耗更低。</li>
+<li>成本效益：价格较低，适合资源受限的应用。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>主要特性</strong><ul>
+<li>支持可编程逻辑设计，适用于实现 PUF 的复杂逻辑和测量功能。</li>
+<li>提供高速 I&#x2F;O 接口，用于与外部设备通信。</li>
+<li>集成硬核模块（如 DSP 块和存储单元），方便处理数据。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>在上述认证过程中，只有进行两次挑战-响应验证成果，才认为该物联网设备成功进行身份认证；</p>
+<p>该实验设计是在安装在Diligent Nexys 4板上的Xilinx Artix 7 fpga上实现的， 通过与其他相似设计方案的一致性、唯一性、位混叠、可靠性进行对比，实验结果如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">设计</th>
+<th align="center"><font style="color:rgb(42, 43, 46);">一致性</font></th>
+<th align="center"><font style="color:rgb(42, 43, 46);">唯一性</font></th>
+<th align="center"><font style="color:rgb(42, 43, 46);">位混叠</font></th>
+<th align="center"><font style="color:rgb(42, 43, 46);">可靠性</font></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">XOR-ROPUF</td>
+<td align="center">50.76%</td>
+<td align="center">49.40%</td>
+<td align="center">48.35%</td>
+<td align="center">99.8%</td>
+</tr>
+<tr>
+<td align="center">Inverter ROPUF</td>
+<td align="center">47.02%</td>
+<td align="center">45.15%</td>
+<td align="center">47.20%</td>
+<td align="center">98.0%</td>
+</tr>
+<tr>
+<td align="center">ROPUF</td>
+<td align="center">50.56%</td>
+<td align="center">47.24%</td>
+<td align="center">50.56%</td>
+<td align="center">99.14%</td>
+</tr>
+<tr>
+<td align="center">APUF</td>
+<td align="center">55.69%</td>
+<td align="center">7.20%</td>
+<td align="center">19.57%</td>
+<td align="center">99.76%</td>
+</tr>
+</tbody></table>
+<h2 id="4-2-可延展方向"><a href="#4-2-可延展方向" class="headerlink" title="4.2 可延展方向"></a>4.2 可延展方向</h2><p>尝试设计提高一致性、唯一性和位混叠的 PUF 身份认证设计方案；</p>
+<p>主要的修改方向是如何生成挑战-响应对（CRPs）。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A7%91%E7%A0%94%E5%B7%A5%E4%BD%9C/" class="category-chain-item">科研工作</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A1%AC%E4%BB%B6%E5%AE%89%E5%85%A8/" class="print-no-link">#硬件安全</a>
+      
+        <a href="/tags/PUF/" class="print-no-link">#PUF</a>
+      
+        <a href="/tags/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/" class="print-no-link">#身份认证</a>
+      
+        <a href="/tags/%E7%89%A9%E7%90%86%E4%B8%8D%E5%8F%AF%E5%85%8B%E9%9A%86%E5%87%BD%E6%95%B0/" class="print-no-link">#物理不可克隆函数</a>
+      
+        <a href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/" class="print-no-link">#物联网</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于PUF的物联网设备安全认证</div>
+      <div>http://candyb0x.github.io/2024/12/02/基于PUF的物联网设备安全认证/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/04/CS%E4%B8%8EMSF%E8%81%94%E5%8A%A8/" title="CS与MSF联动">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CS与MSF联动</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/30/Windows%E7%9A%84NTLM%E8%AE%A4%E8%AF%81%E5%92%8Chash%E6%94%BB%E5%87%BB/" title="Windows的NTLM认证和hash攻击">
+                        <span class="hidden-mobile">Windows的NTLM认证和hash攻击</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

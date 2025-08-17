@@ -1,0 +1,844 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#7732b1">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. nmap扫描1.1 确认目标ip地址通过反复开启靶机并扫描相应网段中存活的主机即可确定靶机的ip地址 1sudo nmap -sN 192.168.2.0&#x2F;24    通过测试和对MAC设备的检测识别可以知道靶机的ip地址为：192.168.2.8  1.2 目标开放TCP端口1sudo nmap -sS -p- 192.168.2.8 -oA nmapscan&#x2F;tcpports  由于只是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hackNos-Os-Hax打靶日记">
+<meta property="og:url" content="http://candyb0x.github.io/2024/06/29/hackNos-Os-Hax%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1. nmap扫描1.1 确认目标ip地址通过反复开启靶机并扫描相应网段中存活的主机即可确定靶机的ip地址 1sudo nmap -sN 192.168.2.0&#x2F;24    通过测试和对MAC设备的检测识别可以知道靶机的ip地址为：192.168.2.8  1.2 目标开放TCP端口1sudo nmap -sS -p- 192.168.2.8 -oA nmapscan&#x2F;tcpports  由于只是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291701833.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291703206.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291710541.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291711538.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291725267.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291715777.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291719277.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291836219.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291840531.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291840684.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291841057.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291844379.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291850681.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291856165.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291858863.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291859688.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291900895.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291903860.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291905889.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291909878.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291911635.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292008613.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292012929.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292102426.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292102329.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292101248.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292102338.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292103462.png">
+<meta property="article:published_time" content="2024-06-29T13:08:08.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:06:29.495Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="工具教程">
+<meta property="article:tag" content="web攻防">
+<meta property="article:tag" content="打靶日记">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291701833.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>hackNos-Os-Hax打靶日记 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="hackNos-Os-Hax打靶日记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-29 21:08" pubdate>
+          2024年6月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">hackNos-Os-Hax打靶日记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-nmap扫描"><a href="#1-nmap扫描" class="headerlink" title="1. nmap扫描"></a>1. nmap扫描</h1><h2 id="1-1-确认目标ip地址"><a href="#1-1-确认目标ip地址" class="headerlink" title="1.1 确认目标ip地址"></a>1.1 确认目标ip地址</h2><p>通过反复开启靶机并扫描相应网段中存活的主机即可确定靶机的ip地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sN 192.168.2.0/24<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291701833.png" srcset="/img/loading.gif" lazyload alt="image-20240629170120732"></p>
+<blockquote>
+<p>通过测试和对MAC设备的检测识别可以知道靶机的ip地址为：192.168.2.8</p>
+</blockquote>
+<h2 id="1-2-目标开放TCP端口"><a href="#1-2-目标开放TCP端口" class="headerlink" title="1.2 目标开放TCP端口"></a>1.2 目标开放TCP端口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sS -p- 192.168.2.8 -oA nmapscan/tcpports<br></code></pre></td></tr></table></figure>
+
+<p>由于只是对靶机的扫描检测，所以没有对检测进行速度限制，在真实的护网环境中应该对端口扫描的速度进行限制（通过加入参数–max-rate）</p>
+<p><code>--max-rate 10000</code>：发包的速度不会超过10000个每秒</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291703206.png" srcset="/img/loading.gif" lazyload alt="image-20240629170356155"></p>
+<h2 id="1-3-目标开放UDP端口"><a href="#1-3-目标开放UDP端口" class="headerlink" title="1.3 目标开放UDP端口"></a>1.3 目标开放UDP端口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sU --top-ports 20 192.168.2.8 -oA nmapscan/udpports<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291710541.png" srcset="/img/loading.gif" lazyload alt="image-20240629171045498"></p>
+<h2 id="1-4-开放TCP端口详细信息"><a href="#1-4-开放TCP端口详细信息" class="headerlink" title="1.4 开放TCP端口详细信息"></a>1.4 开放TCP端口详细信息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -sT -sV -sC -O -p22,80 192.168.2.8 -oA nmapscan/tcpDetails<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291711538.png" srcset="/img/loading.gif" lazyload alt="image-20240629171102499"></p>
+<blockquote>
+<p>可以确定的信息就是Web服务器是Apache，操作系统是Linux3.2-4.9之间，其他就没有什么非常有用的信息啦；</p>
+</blockquote>
+<h2 id="1-5-nmap漏洞扫描"><a href="#1-5-nmap漏洞扫描" class="headerlink" title="1.5 nmap漏洞扫描"></a>1.5 nmap漏洞扫描</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nmap -script=vuln -p22,80 192.168.2.8 -oA nmapscan/vuln<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291725267.png" srcset="/img/loading.gif" lazyload alt="image-20240629172550205"></p>
+<blockquote>
+<p>首先是可能存在DOS攻击的问题，即使存在这类攻击也不意味着什么，一般用不上DOS；</p>
+<p>第二，可能存在SQL注入，这个就比较有用啦，但是它所给出的可能存在sql注入的url地址似乎不太可能存在sql注入，后面可以进一步尝试，说不定确实存在</p>
+<p>第三，扫到了一些目录，其中就包括wordpress，这个框架的问题还是比较多的，这里入手比较好</p>
+</blockquote>
+<h1 id="2-信息检索"><a href="#2-信息检索" class="headerlink" title="2. 信息检索"></a>2. 信息检索</h1><h2 id="2-1-网页基本信息检索"><a href="#2-1-网页基本信息检索" class="headerlink" title="2.1 网页基本信息检索"></a>2.1 网页基本信息检索</h2><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291715777.png" srcset="/img/loading.gif" lazyload alt="image-20240629171519723"></p>
+<p>最有用的信息就只有指纹工具识别出来的信息，但是其实就我目前的知识积累一点门道都看不出来；</p>
+<h2 id="2-2-目录爆破"><a href="#2-2-目录爆破" class="headerlink" title="2.2 目录爆破"></a>2.2 目录爆破</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">dirsearch -u http://192.168.2.8/<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291719277.png" srcset="/img/loading.gif" lazyload alt="image-20240629171931236"></p>
+<blockquote>
+<p>熟悉的wordpress出来了，这里就是我们上面漏扫扫出来的目录，因为漏洞的时间比较长，所以就做了一下目录扫描；</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">wpscan --url http://192.168.2.8/wordpress -e u<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291836219.png" srcset="/img/loading.gif" lazyload alt="image-20240629183651152"></p>
+<p>知道了wordpress版本信息是5.2.21，发现了一个用户<code>web</code>，但是没有发现密码，可以尝试一下密码爆破，但是还是先找找有没有其他的信息吧。</p>
+<h2 id="2-3-图片加密"><a href="#2-3-图片加密" class="headerlink" title="2.3 图片加密"></a>2.3 图片加密</h2><p>通过目录的不断翻找，最后在<code>/img</code>中找到了一张特殊的图片</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291840531.png" srcset="/img/loading.gif" lazyload alt="image-20240629184037492"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291840684.png" srcset="/img/loading.gif" lazyload alt="image-20240629184054635"></p>
+<p>通过命令将该图片下载到本地</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget http://192.168.2.8/img/flaghost.png<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291841057.png" srcset="/img/loading.gif" lazyload alt="image-20240629184159022"></p>
+<p>图片的内容并不能获得什么特别的信息，通过<code>exiftool</code>工具查看一下图片的元数据信息；[exiftool的基本使用方法](#*.1 exiftool的基本使用方法)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291844379.png" srcset="/img/loading.gif" lazyload alt="image-20240629184433340"></p>
+<p>其中在元数据中发现一些比较特别的数据的路径连接，尝试访问或者密码登录</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291850681.png" srcset="/img/loading.gif" lazyload alt="image-20240629185010624"></p>
+<p>尝试登录的时候我们发现url地址发生了变化导致请求错误，拒绝连接；所以我们通过别的方式进行登录吧，打开burpsuite；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291856165.png" srcset="/img/loading.gif" lazyload alt="image-20240629185610108"></p>
+<p>修改红色框框的请求的目标地址在对数据包进行放行即可登录；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291858863.png" srcset="/img/loading.gif" lazyload alt="image-20240629185854812"></p>
+<p>但是即使成功发送了数据包，但是也没能够成功登录似乎是因为没有正确的Cookies值导致登录失败，尝试一下别的方向；</p>
+<p>最后发现存在字段作为目录信息</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291859688.png" srcset="/img/loading.gif" lazyload alt="image-20240629185959637"></p>
+<p>成功在flag2.txt中找到一串加密密文</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291900895.png" srcset="/img/loading.gif" lazyload alt="image-20240629190023845"></p>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs brainfuck"><span class="hljs-comment">i</span><span class="hljs-literal">+++++</span> <span class="hljs-literal">+++++</span> <span class="hljs-title">[</span><span class="hljs-literal">-</span>&gt;<span class="hljs-literal">++</span> <span class="hljs-literal">+++++</span> <span class="hljs-literal">+++</span>&lt;<span class="hljs-title">]</span> &gt;<span class="hljs-literal">++++</span> <span class="hljs-literal">+++++</span> <span class="hljs-literal">+++++</span> <span class="hljs-literal">+++++</span> <span class="hljs-string">.</span>&lt;<span class="hljs-literal">+++</span> <span class="hljs-literal">+</span><span class="hljs-title">[</span><span class="hljs-literal">-</span>&gt;<span class="hljs-literal">-</span> <span class="hljs-literal">---</span>&lt;<span class="hljs-title">]</span><br>&gt;<span class="hljs-literal">--</span><span class="hljs-string">.</span><span class="hljs-literal">-</span> <span class="hljs-literal">--</span><span class="hljs-string">.</span>&lt;<span class="hljs-literal">+</span> <span class="hljs-literal">+++++</span> <span class="hljs-title">[</span><span class="hljs-literal">-</span>&gt;<span class="hljs-literal">--</span> <span class="hljs-literal">----</span>&lt; <span class="hljs-title">]</span>&gt;<span class="hljs-literal">---</span> <span class="hljs-literal">-</span><span class="hljs-string">.</span>&lt;<span class="hljs-literal">++</span> <span class="hljs-literal">+</span><span class="hljs-title">[</span><span class="hljs-literal">-</span>&gt;<span class="hljs-literal">+</span> <span class="hljs-literal">++</span>&lt;<span class="hljs-title">]</span>&gt; <span class="hljs-literal">+++++</span> <span class="hljs-string">.</span>&lt;<span class="hljs-literal">+++</span> <span class="hljs-literal">++</span><span class="hljs-title">[</span><span class="hljs-literal">-</span>&gt;<br><span class="hljs-literal">+++++</span> &lt;<span class="hljs-title">]</span>&gt;<span class="hljs-string">.</span><span class="hljs-literal">+</span> <span class="hljs-literal">+</span><span class="hljs-string">.</span><span class="hljs-literal">+++</span> <span class="hljs-literal">+++++</span> <span class="hljs-string">.</span><span class="hljs-literal">----</span> <span class="hljs-literal">--</span><span class="hljs-string">.</span>&lt;<span class="hljs-literal">+</span> <span class="hljs-literal">++</span><span class="hljs-title">[</span><span class="hljs-literal">-</span>&gt; <span class="hljs-literal">+++</span>&lt;<span class="hljs-title">]</span> &gt;<span class="hljs-literal">++++</span> <span class="hljs-string">.</span>&lt;<span class="hljs-literal">+++</span> <span class="hljs-literal">++++</span><span class="hljs-title">[</span> <span class="hljs-literal">-</span>&gt;<span class="hljs-literal">---</span><br><span class="hljs-literal">----</span>&lt; <span class="hljs-title">]</span>&gt;<span class="hljs-literal">-</span><span class="hljs-string">.</span>&lt; <span class="hljs-literal">+++</span><span class="hljs-title">[</span><span class="hljs-literal">-</span> &gt;<span class="hljs-literal">---</span>&lt; <span class="hljs-title">]</span>&gt;<span class="hljs-literal">---</span> <span class="hljs-string">.</span><span class="hljs-literal">+</span><span class="hljs-string">.</span><span class="hljs-literal">--</span> <span class="hljs-literal">--</span><span class="hljs-string">.</span><span class="hljs-literal">++</span> <span class="hljs-literal">+</span><span class="hljs-string">.</span>&lt;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291903860.png" srcset="/img/loading.gif" lazyload alt="image-20240629190309824"></p>
+<p>另一个文件似乎没有得到什么非常有用的信息；把精力放在破解密文上吧；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291905889.png" srcset="/img/loading.gif" lazyload alt="image-20240629190535838"></p>
+<p>别说你还真别说！Chatgpt真好使，然后我们直接搜索<code>Brainfuck Online Interpreter</code>找到了一个在线编译器<a target="_blank" rel="noopener" href="https://www.dcode.fr/brainfuck-language">Brainfuck Language - Online Decoder, Translator, Interpreter (dcode.fr)</a></p>
+<p>我们上述的加密文本（应该说是代码）放置到在线编译器中进行执行，即可得到</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291909878.png" srcset="/img/loading.gif" lazyload alt="image-20240629190912827"></p>
+<blockquote>
+<p>username: web	password: Hacker@4514</p>
+</blockquote>
+<p>通过使用burpsuite工具对请求地址进行逐一修改最后确实进入了后台管理系统</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406291911635.png" srcset="/img/loading.gif" lazyload alt="image-20240629191132579"></p>
+<p>登入后台管理系统后的第一件事，先来到设置中更新网页url地址（这个是为了后面不在需要一个个修改请求url）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292008613.png" srcset="/img/loading.gif" lazyload alt="image-20240629200805539"></p>
+<h2 id="2-4-IP-tools"><a href="#2-4-IP-tools" class="headerlink" title="2.4 IP tools"></a>2.4 IP tools</h2><p>在后台关系系统中不断翻找，又找到了一个熟悉的东西，似乎是之前在dc-6靶场中利用过的东西</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292012929.png" srcset="/img/loading.gif" lazyload alt="image-20240629201234877"></p>
+<p>相同的方式进行利用，但是最后发现好像shell反弹不回来，不知道是不是过滤了什么奇怪的东西，其他命令都能够执行，就是shell反弹不回来；（网上看到有人可以，但我不行）</p>
+<h1 id="3-提权"><a href="#3-提权" class="headerlink" title="3. 提权"></a>3. 提权</h1><p>说来也好笑，刚才想要通过命令执行反弹shell，没成功！然后突发奇想，既然有web用户的账号密码是不是可以ssh登录啊！尝试一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh web@192.168.2.8<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292102426.png" srcset="/img/loading.gif" lazyload alt="image-20240629205627301"></p>
+<p>没想到真登录上去了；看到flag3.txt，查看一下其内容</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292102329.png" srcset="/img/loading.gif" lazyload alt="image-20240629205726672"></p>
+<p>给出了一个加密的密码，先记录下来尝试使用john破解；</p>
+<p>此时我们查看一下有没有可以使用的命令提权</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo -l<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292101248.png" srcset="/img/loading.gif" lazyload alt="image-20240629210140208"></p>
+<p>ok，真有可以用来提权的命令<code>awk</code>，那么我们直接提权即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo awk <span class="hljs-string">&#x27;BEGIN &#123;system(&quot;/bin/sh&quot;)&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292102338.png" srcset="/img/loading.gif" lazyload alt="image-20240629210236304"></p>
+<p>root权限也是成功拿下！最后在&#x2F;root中也是找到了最后的flag</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406292103462.png" srcset="/img/loading.gif" lazyload alt="image-20240629210342417"></p>
+<p>下班！！！！（比爆破那个md5简单多了）</p>
+<p>其实应该还有很多方法可以获得权限，这只是其中一种</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h1><ol>
+<li>不要遗漏任何的信息，比如在&#x2F;img目录的图片信息等等</li>
+<li>有些以前使用过的漏洞不能再使用了可能是由于过滤什么等等的原因，不要纠结，寻找其他方法突破</li>
+</ol>
+<h1 id="附录"><a href="#附录" class="headerlink" title="*. 附录"></a>*. 附录</h1><h2 id="1-exiftool的基本使用方法"><a href="#1-exiftool的基本使用方法" class="headerlink" title="*.1 exiftool的基本使用方法"></a>*.1 exiftool的基本使用方法</h2><p>ExifTool 的使用非常简单，以下是一些基本命令示例：</p>
+<ol>
+<li><p><strong>查看文件元数据</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">exiftool image.jpg<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>修改文件元数据</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">exiftool -Artist=<span class="hljs-string">&quot;John Doe&quot;</span> image.jpg<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>删除文件元数据</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">exiftool -all= image.jpg<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>批量处理文件</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">exiftool -Artist=<span class="hljs-string">&quot;John Doe&quot;</span> *.jpg<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>复制元数据</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">exiftool -tagsFromFile source.jpg -all:all target.jpg<br></code></pre></td></tr></table></figure></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" class="category-chain-item">渗透学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="print-no-link">#工具教程</a>
+      
+        <a href="/tags/web%E6%94%BB%E9%98%B2/" class="print-no-link">#web攻防</a>
+      
+        <a href="/tags/%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" class="print-no-link">#打靶日记</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>hackNos-Os-Hax打靶日记</div>
+      <div>http://candyb0x.github.io/2024/06/29/hackNos-Os-Hax打靶日记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月29日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年8月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/03/MyBatis%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A7%8D%E7%B1%BB%E5%9E%8B/" title="MyBatis注入的三种类型">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MyBatis注入的三种类型</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/29/%E7%AB%AF%E5%8F%A3%E6%95%B2%E9%97%A8knockd/" title="端口敲门knockd">
+                        <span class="hidden-mobile">端口敲门knockd</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
