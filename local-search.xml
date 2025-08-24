@@ -242,7 +242,7 @@
   
   
   <entry>
-    <title>免入土（五）绕过 IAT Hook / Inline Hook 实现SafeGetProcAddress</title>
+    <title>免入土（五）通过 PEB 直接获取 API 地址调用自实现 Windows API</title>
     <link href="/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/"/>
     <url>/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/</url>
     
@@ -263,10 +263,6 @@
       <tag>免杀对抗</tag>
       
       <tag>Windows Api</tag>
-      
-      <tag>IAT Hook</tag>
-      
-      <tag>Inline Hook</tag>
       
     </tags>
     
