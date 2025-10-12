@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>从0开始手搓C2 - 基础架构</title>
+    <link href="/2025/10/12/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E6%89%8B%E6%90%93C2-%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+    <url>/2025/10/12/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E6%89%8B%E6%90%93C2-%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</url>
+    
+    <content type="html"><![CDATA[<p>对于一个项目的开发我个人觉得最关键的还是整体架构的设计，如果不在一开始确定的话，后续开发很容易出现功能重叠或者分工不明的情况发生。与此同时，在确定一些基础模块的功能设计思路和目标，这样一个整体架构就简单的设计出来，后续根据这个基础架构进行拓展即可。对于一些 UML 图和 api 接口文档等，那还是算了，我又不需要完成作业或者公司业务，这种东西不需要，自己后续清楚即可。</p><h1 id="一、系统总体目标"><a href="#一、系统总体目标" class="headerlink" title="一、系统总体目标"></a>一、系统总体目标</h1><p>对于初期设计的 C2 只需要保存最基础的功能，即命令执行、隧道搭建、文件浏览，其他的功能后续在进行拓展；</p><p>构建一个可扩展、跨平台、模块化的 C2 框架原型，实现以下核心目标：</p><table><thead><tr><th>模块</th><th>功能目标</th></tr></thead><tbody><tr><td>服务端（Server）</td><td>接收并管理植入端连接，分发命令，收集结果</td></tr><tr><td>植入端（Implant）</td><td>定期与服务端连接，执行下发的任务</td></tr><tr><td>客户端（Client）</td><td>提供命令行或客户端 UI 界面进行操作、监控与调度</td></tr><tr><td>通信模块</td><td>定义安全的通信协议（HTTP&#x2F;HTTPS&#x2F;WebSocket&#x2F;gRPC&#x2F;自定义TCP）与数据加密机制，减少流量特征</td></tr></tbody></table><h1 id="二、系统架构设计"><a href="#二、系统架构设计" class="headerlink" title="二、系统架构设计"></a>二、系统架构设计</h1><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760256662675-e3bdfc87-0b84-4d4b-aa67-257ea8c7a60b.svg" alt="img"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760259010917-e6c1e09e-4ecb-4f88-b8ee-500ab05ca9cb.svg" alt="img"></p><p>根据上述给出的两个图示，一个 C2 的系统架构就已经跃然纸上，指需要我们将其中的每个模块的功能都依次实现即可；</p><p>其中每个部分重要性与优先级又大不相同，例如，GUI 管理控制端的优先级是较低的，这个模块主要是提供操作的便捷性，可以到其他模块全部实现且调试成功以后再对该模块进行实现即可；个人认为最核心的模块是 Agent&#x2F;Implant 端，这是整个系统的核心，如果无法提供基础的命令执行功能的话，那么其他模块也就失去了相应的作用；</p><p>因此，从总体上，我们的设计的顺序应该是，Agent&#x2F;Implant 端、Server 端、Client 端。</p><p>从总体上又能细分出更多的设计，包括加密方案、加密隧道、传输协议、反向代理、心跳回连、文件浏览、命令管理、命令执行、隧道搭建、结果上传、日志管理、数据管理等等，那么对于这些功能的设计中，与 Agent&#x2F;Implant 端相关的功能设计是更为关键的，必须提前确定设计方案的模块。这些模块是加密方案、心跳回连、文件浏览、命令执行、隧道搭建、结果上传等等，对于一个初始阶段的 C2 没有必要将全部的功能都实现，后续一步一步添加即可。因此，需要提前将命令执行上的功能先实现即可，即加密方案、心跳回连、命令执行、结果上传。</p><p>按照上述的思想去设计 C2，细分功能的设计顺序为加密方案、心跳回连、命令执行、结果上传、加密隧道、传输协议、反向代理、命令管理、数据管理（部分模块的顺序可以进行替换顺序），依次将这些功能模块实现，基本就可以得到一个最基础的 C2 啦。</p><p>为什么不提关于客户端方面的设计，额。。。。，好像还没有必要，现在还没到那种需要快捷操作的阶段，通过 api 接口测试服务端即可。</p><p>这只是个人的理解，大家按自己喜欢的开发设计思路进行即可；</p><h1 id="三、Agent-Implant-模块"><a href="#三、Agent-Implant-模块" class="headerlink" title="三、Agent&#x2F;Implant 模块"></a>三、Agent&#x2F;Implant 模块</h1><p>这部分的内容实在是相当的困难，既要考虑免杀的问题，又要考虑功能实现的问题，想要有很好的效果感觉还得进一步的研究。</p><p>目前个人的想要是通过 Cpp + asm 去实现这个模块的功能，在此之前做的免杀相关的内容一直都是使用 cpp 进行的，应该会有一定的帮助。</p><h1 id="四、C2-Server-端"><a href="#四、C2-Server-端" class="headerlink" title="四、C2 Server 端"></a>四、C2 Server 端</h1><p>对于 C2 的 Server 端，其实采用什么语言进行都可以，因为存在 grpc 的存在，可以实现跨平台的通信协议，因此不用担心，可以采用自己喜欢的语言进行即可。</p><p>然而，目前大部分的 C2 的 Server 貌似都在采用 go+gin 进行实现，这是本人没有开发经验的一块，决定挑战一些自己的软肋吧，反正有 llm 等一些列的开发工具，实在不行还能帮我解决相关的问题。</p><h1 id="五、Client-UI-端"><a href="#五、Client-UI-端" class="headerlink" title="五、Client UI 端"></a>五、Client UI 端</h1><p>对于这个功能模块的内容呢，前期其实都差不多，写成 web 端也好，写成客户端也是，都可以，但是在后期的话，可能客户端会优于 web 端，因为可能需要引入 bof 等插件的形式。（这些都还是天方夜谭，感觉不用管，甚至都还不用设计 client，以后再说）。</p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>感觉自己打算开始写 C2 就已经走上了不归路，这玩意儿是不是有点太多了？又开始挑战自己了，我勒个豆啊，有点顶不住了。后续的任务如下：</p><ol><li>学习 shellcode 的设计与编写</li><li>恶补 golang</li></ol><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol><li><a href="https://xz.aliyun.com/users/144519/news">https://xz.aliyun.com/users/144519/news</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>免杀对抗</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>C2</tag>
+      
+      <tag>安全开发</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>回调函数Callbacks</title>
     <link href="/2025/10/09/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0Callbacks/"/>
     <url>/2025/10/09/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0Callbacks/</url>
