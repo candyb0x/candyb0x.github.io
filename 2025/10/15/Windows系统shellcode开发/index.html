@@ -26,11 +26,11 @@
 <meta property="og:site_name" content="Welcome Candy Box">
 <meta property="og:description" content="以前完全没有接触过该领域的知识和内容，可以说目前是一个从零开始学习的状态。汇编能看懂，但是不会写。学习目标是能够实现自定义的 shellcode，编写自己想要的功能。let’s go! 学习方式主要是参考 one day 师傅的三篇文章（放参考链接啦），本文主要是记录一下自己的学习内容，方便后续查阅，学习的话建议直接看 one day 师傅的文章。 一、基础概念shellcode 是一段精心编写的">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760270977347-c022228f-dfca-43c6-b98f-a04ede3d1916.png">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760271003805-747f7651-ac29-4bef-80ca-83347f560fc8.png">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760271046964-66ee744f-efeb-42e2-b434-4bd46b3ae6d4.png">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760271069949-ff246143-0934-4ad2-a794-96f83e16834e.png">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760278211646-8157e584-aa37-421e-b312-1efd151980c4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760270977347-c022228f-dfca-43c6-b98f-a04ede3d1916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760271003805-747f7651-ac29-4bef-80ca-83347f560fc8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760271046964-66ee744f-efeb-42e2-b434-4bd46b3ae6d4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760271069949-ff246143-0934-4ad2-a794-96f83e16834e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760278211646-8157e584-aa37-421e-b312-1efd151980c4.png">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760276212372-55dd68cf-aa13-40d0-a76e-3629c2565054.png">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760276246118-3438a38a-718b-4910-9f08-5ce79df17b50.png">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760275817263-6e26f9cc-9f9c-4fd6-83f7-62981679fe76.png">
@@ -43,12 +43,12 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760454150393-4f3651da-8b8c-423b-990b-2a9c9eb60fdc.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760512009796-ed17cf5e-c314-4737-8a50-d7b2899ada07.png">
 <meta property="article:published_time" content="2025-10-15T07:08:56.000Z">
-<meta property="article:modified_time" content="2025-10-15T07:12:09.033Z">
+<meta property="article:modified_time" content="2025-10-15T07:18:43.898Z">
 <meta property="article:author" content="Candy">
 <meta property="article:tag" content="shellcode">
 <meta property="article:tag" content="Windows编程">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760270977347-c022228f-dfca-43c6-b98f-a04ede3d1916.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760270977347-c022228f-dfca-43c6-b98f-a04ede3d1916.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -389,11 +389,11 @@
 <li>不使用C++异常、不使用导入延迟表</li>
 <li>编译后提取 <code>.text</code> 节作为我们的shellcode。</li>
 </ol>
-<h1 id="三、环境配置"><a href="#三、环境配置" class="headerlink" title="三、环境配置"></a>三、环境配置</h1><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760270977347-c022228f-dfca-43c6-b98f-a04ede3d1916.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760271003805-747f7651-ac29-4bef-80ca-83347f560fc8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760271046964-66ee744f-efeb-42e2-b434-4bd46b3ae6d4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760271069949-ff246143-0934-4ad2-a794-96f83e16834e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1760278211646-8157e584-aa37-421e-b312-1efd151980c4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="三、环境配置"><a href="#三、环境配置" class="headerlink" title="三、环境配置"></a>三、环境配置</h1><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760270977347-c022228f-dfca-43c6-b98f-a04ede3d1916.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760271003805-747f7651-ac29-4bef-80ca-83347f560fc8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760271046964-66ee744f-efeb-42e2-b434-4bd46b3ae6d4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760271069949-ff246143-0934-4ad2-a794-96f83e16834e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1760278211646-8157e584-aa37-421e-b312-1efd151980c4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h1 id="四、弹窗-shellcode"><a href="#四、弹窗-shellcode" class="headerlink" title="四、弹窗 shellcode"></a>四、弹窗 shellcode</h1><h2 id="4-1-cpp-获取弹窗-shellcode"><a href="#4-1-cpp-获取弹窗-shellcode" class="headerlink" title="4.1 cpp 获取弹窗 shellcode"></a>4.1 cpp 获取弹窗 shellcode</h2><p>想要直接通过<code>.text</code>节获取到 shellcode 执行，那么得先保证我们的变量不会保存在<code>.rdata</code>节中，通过以下方式定义的变量就会保存在<code>.text</code>节中，而不是在<code>.rdata</code>中；</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp">CHAR messageBoxA[] = &#123;<span class="hljs-string">&#x27;M&#x27;</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-string">&#x27;a&#x27;</span>,<span class="hljs-string">&#x27;g&#x27;</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-string">&#x27;B&#x27;</span>,<span class="hljs-string">&#x27;o&#x27;</span>,<span class="hljs-string">&#x27;x&#x27;</span>,<span class="hljs-string">&#x27;A&#x27;</span>,<span class="hljs-string">&#x27;\0&#x27;</span>&#125;;<br>CHAR loadLibraryA[] = &#123; <span class="hljs-string">&#x27;L&#x27;</span>, <span class="hljs-string">&#x27;o&#x27;</span>, <span class="hljs-string">&#x27;a&#x27;</span>, <span class="hljs-string">&#x27;d&#x27;</span>, <span class="hljs-string">&#x27;L&#x27;</span>, <span class="hljs-string">&#x27;i&#x27;</span>, <span class="hljs-string">&#x27;b&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-string">&#x27;a&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-string">&#x27;y&#x27;</span>, <span class="hljs-string">&#x27;A&#x27;</span>, <span class="hljs-string">&#x27;\0&#x27;</span> &#125;;<br>CHAR getProcAddress[] = &#123; <span class="hljs-string">&#x27;G&#x27;</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-string">&#x27;t&#x27;</span>,<span class="hljs-string">&#x27;P&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>,<span class="hljs-string">&#x27;o&#x27;</span>,<span class="hljs-string">&#x27;c&#x27;</span>,<span class="hljs-string">&#x27;A&#x27;</span>,<span class="hljs-string">&#x27;d&#x27;</span>,<span class="hljs-string">&#x27;d&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-string">&#x27;\0&#x27;</span> &#125;;<br>WCHAR kernel32[] = &#123; <span class="hljs-string">&#x27;K&#x27;</span>, <span class="hljs-string">&#x27;e&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-string">&#x27;n&#x27;</span>, <span class="hljs-string">L&#x27;e&#x27;</span>, <span class="hljs-string">&#x27;l&#x27;</span>, <span class="hljs-string">&#x27;3&#x27;</span>, <span class="hljs-string">&#x27;2&#x27;</span>, <span class="hljs-string">&#x27;.&#x27;</span>, <span class="hljs-string">&#x27;d&#x27;</span>, <span class="hljs-string">&#x27;l&#x27;</span>, <span class="hljs-string">&#x27;l&#x27;</span>, <span class="hljs-string">&#x27;\0&#x27;</span> &#125;;<br>CHAR User32[] = &#123; <span class="hljs-string">&#x27;U&#x27;</span>,<span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>,<span class="hljs-string">&#x27;3&#x27;</span>,<span class="hljs-string">&#x27;2&#x27;</span>,<span class="hljs-string">&#x27;.&#x27;</span>,<span class="hljs-string">&#x27;d&#x27;</span>,<span class="hljs-string">&#x27;l&#x27;</span>,<span class="hljs-string">&#x27;l&#x27;</span>,<span class="hljs-string">&#x27;\0&#x27;</span>&#125;;<br></code></pre></td></tr></table></figure>
 
