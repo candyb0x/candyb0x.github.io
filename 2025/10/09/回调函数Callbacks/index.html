@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="回调函数基础概念回调函数（Callback Function）是一种编程模式，指的是将一个函数作为参数传递给另一个函数，并在特定条件满足时被调用的函数。在Windows API中，回调函数被广泛用于事件处理、异步操作等场景。 12345&#x2F;&#x2F; 回调函数的基本定义typedef BOOL (WINAPI *CALLBACK_FUNCTION)(LPVOID lpParameter);&#x2F;&#x2F; 使用回调函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回调函数Callbacks">
+<meta property="og:url" content="http://candyb0x.github.io/2025/10/09/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0Callbacks/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="回调函数基础概念回调函数（Callback Function）是一种编程模式，指的是将一个函数作为参数传递给另一个函数，并在特定条件满足时被调用的函数。在Windows API中，回调函数被广泛用于事件处理、异步操作等场景。 12345&#x2F;&#x2F; 回调函数的基本定义typedef BOOL (WINAPI *CALLBACK_FUNCTION)(LPVOID lpParameter);&#x2F;&#x2F; 使用回调函数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-09T08:43:21.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:47:16.908Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="免杀对抗">
+<meta property="article:tag" content="callbacks">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>回调函数Callbacks - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="回调函数Callbacks"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-09 16:43" pubdate>
+          2025年10月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          872 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">回调函数Callbacks</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="回调函数基础概念"><a href="#回调函数基础概念" class="headerlink" title="回调函数基础概念"></a>回调函数基础概念</h1><p>回调函数（Callback Function）是一种编程模式，指的是将一个函数作为参数传递给另一个函数，并在特定条件满足时被调用的函数。在Windows API中，回调函数被广泛用于事件处理、异步操作等场景。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 回调函数的基本定义</span><br><span class="hljs-function"><span class="hljs-keyword">typedef</span> <span class="hljs-title">BOOL</span> <span class="hljs-params">(WINAPI *CALLBACK_FUNCTION)</span><span class="hljs-params">(LPVOID lpParameter)</span></span>;<br><br><span class="hljs-comment">// 使用回调函数的API示例</span><br><span class="hljs-function">BOOL <span class="hljs-title">EnumWindows</span><span class="hljs-params">(WNDENUMPROC lpEnumFunc, LPARAM lParam)</span></span>;<br></code></pre></td></tr></table></figure>
+
+<p><strong>使用回调函数的优点：</strong></p>
+<ol>
+<li><strong>合法性强</strong>：回调函数是Windows系统的正常机制</li>
+<li><strong>隐蔽性好</strong>：恶意代码隐藏在合法的回调中</li>
+<li><strong>绕过检测</strong>：许多安全产品不会深入分析回调函数内容</li>
+<li><strong>动态执行</strong>：可以在运行时动态注册和执行</li>
+</ol>
+<h1 id="免杀对抗中回调函数"><a href="#免杀对抗中回调函数" class="headerlink" title="免杀对抗中回调函数"></a>免杀对抗中回调函数</h1><h2 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h2><p>通过注册合法的回调函数，在系统或应用程序调用这些回调时执行恶意代码，从而绕过静态检测和部分动态检测。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-number">1.</span> 程序启动 → <span class="hljs-number">2.</span> 注册回调函数 → <span class="hljs-number">3.</span> 等待触发条件 → <span class="hljs-number">4.</span> 执行恶意代码<br></code></pre></td></tr></table></figure>
+
+<h2 id="常见的回调函数类型"><a href="#常见的回调函数类型" class="headerlink" title="常见的回调函数类型"></a>常见的回调函数类型</h2><h3 id="1-窗口消息回调"><a href="#1-窗口消息回调" class="headerlink" title="1. 窗口消息回调"></a>1. 窗口消息回调</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 窗口过程回调</span><br><span class="hljs-function">LRESULT CALLBACK <span class="hljs-title">WindowProc</span><span class="hljs-params">(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (uMsg == WM_CREATE) &#123;<br>        <span class="hljs-comment">// 恶意代码执行点</span><br>        <span class="hljs-built_in">MessageBox</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-string">L&quot;恶意代码已执行&quot;</span>, <span class="hljs-string">L&quot;提示&quot;</span>, MB_OK);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">DefWindowProc</span>(hwnd, uMsg, wParam, lParam);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-定时器回调"><a href="#2-定时器回调" class="headerlink" title="2. 定时器回调"></a>2. 定时器回调</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 定时器回调函数</span><br><span class="hljs-function">VOID CALLBACK <span class="hljs-title">TimerProc</span><span class="hljs-params">(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 恶意代码执行</span><br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;calc.exe&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-文件系统监控回调"><a href="#3-文件系统监控回调" class="headerlink" title="3. 文件系统监控回调"></a>3. 文件系统监控回调</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 文件系统监控回调</span><br><span class="hljs-function">VOID CALLBACK <span class="hljs-title">FileIOCompletionRoutine</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">DWORD dwErrorCode,</span></span><br><span class="hljs-params"><span class="hljs-function">DWORD dwNumberOfBytesTransfered,</span></span><br><span class="hljs-params"><span class="hljs-function">LPOVERLAPPED lpOverlapped</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (dwErrorCode == <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-comment">// 恶意代码执行</span><br>        <span class="hljs-built_in">CreateThread</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, (LPTHREAD_START_ROUTINE)MaliciousCode, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-注册表监控回调"><a href="#4-注册表监控回调" class="headerlink" title="4. 注册表监控回调"></a>4. 注册表监控回调</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 注册表监控回调</span><br><span class="hljs-function">LSTATUS CALLBACK <span class="hljs-title">RegChangeCallback</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">HKEY hKey,</span></span><br><span class="hljs-params"><span class="hljs-function">DWORD dwControl,</span></span><br><span class="hljs-params"><span class="hljs-function">PVOID pvData</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 恶意代码执行</span><br>    <span class="hljs-keyword">return</span> ERROR_SUCCESS;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-异常处理回调"><a href="#5-异常处理回调" class="headerlink" title="5. 异常处理回调"></a>5. 异常处理回调</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 异常处理回调</span><br><span class="hljs-function">LONG CALLBACK <span class="hljs-title">ExceptionHandler</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">PEXCEPTION_POINTERS ExceptionInfo</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 恶意代码执行</span><br>    <span class="hljs-keyword">return</span> EXCEPTION_EXECUTE_HANDLER;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="回调函数使用案例"><a href="#回调函数使用案例" class="headerlink" title="回调函数使用案例"></a>回调函数使用案例</h1><h2 id="使用SetTimer实现延迟执行"><a href="#使用SetTimer实现延迟执行" class="headerlink" title="使用SetTimer实现延迟执行"></a>使用SetTimer实现延迟执行</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-comment">// 恶意代码函数</span><br><span class="hljs-function">DWORD WINAPI <span class="hljs-title">MaliciousCode</span><span class="hljs-params">(LPVOID lpParam)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">MessageBox</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-string">L&quot;恶意代码通过定时器回调执行&quot;</span>, <span class="hljs-string">L&quot;警告&quot;</span>, MB_OK);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-comment">// 定时器回调函数</span><br><span class="hljs-function">VOID CALLBACK <span class="hljs-title">TimerCallback</span><span class="hljs-params">(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 创建线程执行恶意代码</span><br>    <span class="hljs-built_in">CreateThread</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, MaliciousCode, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>);<br>    <br>    <span class="hljs-comment">// 停止定时器</span><br>    <span class="hljs-built_in">KillTimer</span>(hwnd, idEvent);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 设置定时器，5秒后触发回调</span><br>    <span class="hljs-built_in">SetTimer</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-number">1</span>, <span class="hljs-number">5000</span>, TimerCallback);<br>    <br>    <span class="hljs-comment">// 模拟正常程序行为</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;程序正在运行...\n&quot;</span>);<br>    <br>    <span class="hljs-comment">// 消息循环</span><br>    MSG msg;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">GetMessage</span>(&amp;msg, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)) &#123;<br>        <span class="hljs-built_in">TranslateMessage</span>(&amp;msg);<br>        <span class="hljs-built_in">DispatchMessage</span>(&amp;msg);<br>    &#125;<br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用EnumWindows隐藏执行"><a href="#使用EnumWindows隐藏执行" class="headerlink" title="使用EnumWindows隐藏执行"></a>使用EnumWindows隐藏执行</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><br><span class="hljs-comment">// 恶意代码</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ExecuteMaliciousCode</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 这里可以放置各种恶意操作</span><br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;notepad.exe&quot;</span>);<br>&#125;<br><br><span class="hljs-comment">// 窗口枚举回调</span><br><span class="hljs-function">BOOL CALLBACK <span class="hljs-title">EnumWindowsProc</span><span class="hljs-params">(HWND hwnd, LPARAM lParam)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">static</span> BOOL executed = FALSE;<br><br>    <span class="hljs-keyword">if</span> (!executed) &#123;<br>        executed = TRUE;<br>        <span class="hljs-built_in">ExecuteMaliciousCode</span>();<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> TRUE; <span class="hljs-comment">// 继续枚举</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 通过枚举窗口触发回调</span><br>    <span class="hljs-built_in">EnumWindows</span>(EnumWindowsProc, <span class="hljs-number">0</span>);<br><br>    <span class="hljs-comment">// 正常程序逻辑</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;窗口枚举完成\n&quot;</span>);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用文件监控回调"><a href="#使用文件监控回调" class="headerlink" title="使用文件监控回调"></a>使用文件监控回调</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br>HANDLE hDir;<br>OVERLAPPED overlapped;<br><br><span class="hljs-comment">// 文件监控回调</span><br><span class="hljs-function">VOID CALLBACK <span class="hljs-title">FileIOCompletionRoutine</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">DWORD dwErrorCode,</span></span><br><span class="hljs-params"><span class="hljs-function">DWORD dwNumberOfBytesTransfered,</span></span><br><span class="hljs-params"><span class="hljs-function">LPOVERLAPPED lpOverlapped</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (dwErrorCode == <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-comment">// 恶意代码执行</span><br>        <span class="hljs-built_in">MessageBox</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-string">L&quot;文件监控触发恶意代码&quot;</span>, <span class="hljs-string">L&quot;警告&quot;</span>, MB_OK);<br>    &#125;<br><br>    <span class="hljs-comment">// 继续监控</span><br>    <span class="hljs-built_in">ReadDirectoryChangesW</span>(<br>        hDir,<br>        <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>,<br>        TRUE,<br>        FILE_NOTIFY_CHANGE_FILE_NAME,<br>        <span class="hljs-literal">NULL</span>,<br>        &amp;overlapped,<br>        FileIOCompletionRoutine<br>        );<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">// 打开目录进行监控</span><br>    hDir = <span class="hljs-built_in">CreateFileW</span>(<br>        <span class="hljs-string">L&quot;C:\\&quot;</span>,<br>        FILE_LIST_DIRECTORY,<br>        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,<br>        <span class="hljs-literal">NULL</span>,<br>        OPEN_EXISTING,<br>        FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,<br>        <span class="hljs-literal">NULL</span><br>        );<br><br>    <span class="hljs-keyword">if</span> (hDir != INVALID_HANDLE_VALUE) &#123;<br>        <span class="hljs-comment">// 开始监控</span><br>        <span class="hljs-built_in">ReadDirectoryChangesW</span>(<br>            hDir,<br>            <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>,<br>            TRUE,<br>            FILE_NOTIFY_CHANGE_FILE_NAME,<br>            <span class="hljs-literal">NULL</span>,<br>            &amp;overlapped,<br>            FileIOCompletionRoutine<br>            );<br><br>        <span class="hljs-comment">// 等待</span><br>        <span class="hljs-built_in">Sleep</span>(<span class="hljs-number">10000</span>);<br>        <span class="hljs-built_in">CloseHandle</span>(hDir);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://marcoramilli.substack.com/p/running-shellcode-through-windows-callbacks">https://marcoramilli.substack.com/p/running-shellcode-through-windows-callbacks</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/aahmad097/AlternativeShellcodeExec">https://github.com/aahmad097/AlternativeShellcodeExec</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ChaitanyaHaritash/Callback_Shellcode_Injection">https://github.com/ChaitanyaHaritash/Callback_Shellcode_Injection</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="print-no-link">#免杀对抗</a>
+      
+        <a href="/tags/callbacks/" class="print-no-link">#callbacks</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>回调函数Callbacks</div>
+      <div>http://candyb0x.github.io/2025/10/09/回调函数Callbacks/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/12/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E6%89%8B%E6%90%93C2-%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="从0开始手搓C2 - 基础架构">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">从0开始手搓C2 - 基础架构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/27/allsafe-android%E9%9D%B6%E5%9C%BA/" title="allsafe-android靶场">
+                        <span class="hidden-mobile">allsafe-android靶场</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

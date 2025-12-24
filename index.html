@@ -253,6 +253,666 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/12/24/%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E5%89%8D%E7%AB%AF%E6%BC%8F%E6%B4%9E%E5%AE%89%E5%85%A8%EF%BC%88XSS%E3%80%81CSRF%EF%BC%89/" target="_self">
+          深入研究前端漏洞安全（XSS、CSRF）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/24/%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E5%89%8D%E7%AB%AF%E6%BC%8F%E6%B4%9E%E5%AE%89%E5%85%A8%EF%BC%88XSS%E3%80%81CSRF%EF%BC%89/" target="_self">
+        <div>
+          前言emmmm…..学习安全也有很长一段时间了，我都没有对这两个漏洞进行过深入的研究（说白了，我就是看不起这两个漏洞，不能 rce 就算了，想要实现信息获取还得靠钓鱼，那我为啥不直接写免杀马钓鱼呢？回答我……） 然而，人在屋檐下，不得不低头，该学的还是得学….. 跨站脚本攻击（XSS, Cross-Site Scripting）1. 基础概念XSS（跨站脚本攻击，Cross-Site Script
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-24 21:47" pubdate>
+              2025-12-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/">#攻防渗透</a>
+            
+              <a href="/tags/XSS/">#XSS</a>
+            
+              <a href="/tags/CSRF/">#CSRF</a>
+            
+              <a href="/tags/%E5%89%8D%E7%AB%AF%E5%AE%89%E5%85%A8/">#前端安全</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/12/20/%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5-Reflective-DLL-Injection/" target="_self">
+          反射DLL注入 (Reflective DLL Injection)
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/20/%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5-Reflective-DLL-Injection/" target="_self">
+        <div>
+          反射DLL注入是一种高级的注入技术，其核心在于完全在内存中模拟 Windows 加载器（PE Loader）的行为。与传统的 LoadLibrary 注入不同，它不需要将 DLL 文件保存在磁盘上，从而实现了“无文件落地”攻击，规避了基于文件的静态检测。 本文档包含完整的反射注入实现代码，分为两部分：  ReflectiveLoader: 编写在 DLL 内部的自举导出函数，负责将自身正确加载到内
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-20 12:01" pubdate>
+              2025-12-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
+            
+              <a href="/tags/%E5%8F%8D%E5%B0%84Dll/">#反射Dll</a>
+            
+              <a href="/tags/dll/">#dll</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/12/05/React-%E6%A1%86%E6%9E%B6-CVE-2025-55182-CVE-2025-66478-RCE%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" target="_self">
+          React 框架 CVE-2025-55182 CVE-2025-66478 RCE漏洞复现
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/05/React-%E6%A1%86%E6%9E%B6-CVE-2025-55182-CVE-2025-66478-RCE%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" target="_self">
+        <div>
+          漏洞概述React Server Components 19.0.0、19.1.0、19.1.1 和 19.2.0，包括 react-server-dom-parcel、react-server-dom-turbopack 和 react-server-dom-webpack 以及所有 Next.js 15&#x2F;16 项目存在远程代码执行漏洞，该漏洞由对 Server Function 端点
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-05 23:30" pubdate>
+              2025-12-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">#漏洞复现</a>
+            
+              <a href="/tags/Node-js/">#Node.js</a>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/RCE/">#RCE</a>
+            
+              <a href="/tags/CVE/">#CVE</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/12/05/%E8%8B%A5%E4%BE%9D4-8-1-%E5%90%8E%E5%8F%B0SSTI%E6%B3%A8%E5%85%A5RCE%E5%92%8C%E6%B3%84%E9%9C%B2ShiroKey%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" target="_self">
+          若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/05/%E8%8B%A5%E4%BE%9D4-8-1-%E5%90%8E%E5%8F%B0SSTI%E6%B3%A8%E5%85%A5RCE%E5%92%8C%E6%B3%84%E9%9C%B2ShiroKey%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" target="_self">
+        <div>
+          SSTI 注入 RCE漏洞复现 jdk8u152（据作者所说当 jdk8u300+后盖 ssti 注入 rce 漏洞无法实现）  12345678910111213141516171819202122POST /monitor/cache/getNames HTTP/1.1Host: localhostContent-Length: 360sec-ch-ua-platform: &quot;Win
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-05 23:16" pubdate>
+              2025-12-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="category-chain-item">代码审计</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">#代码审计</a>
+            
+              <a href="/tags/RCE/">#RCE</a>
+            
+              <a href="/tags/%E8%8B%A5%E4%BE%9D/">#若依</a>
+            
+              <a href="/tags/SSTI/">#SSTI</a>
+            
+              <a href="/tags/ruoyi/">#ruoyi</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/11/09/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%90%84%E7%A7%8D%E5%93%88%E5%B8%8C%E5%80%BC%E7%9A%84%E4%BD%9C%E7%94%A8%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_self">
+          域渗透各种哈希值的作用与利用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/11/09/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%90%84%E7%A7%8D%E5%93%88%E5%B8%8C%E5%80%BC%E7%9A%84%E4%BD%9C%E7%94%A8%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_self">
+        <div>
+          在此之前也写过一篇过于 NTLM 认证相关的文章，可以参考Windows的NTLM认证和hash攻击 （这篇文章中存在错误，将在本文中进行更正） 本文主要是想把所有的 hash 都给总结起来，然后总结一下可以攻击利用的方向。就我目前学习到的知识内容来看，密码喷洒和哈希传递攻击在域渗透占据至关重要的位置，对各种 hash 的理解越深刻，在域环境渗透中可能就有越发多的攻击面。 1 hash 一览表
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-11-09 17:01" pubdate>
+              2025-11-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/NTLM/">#NTLM</a>
+            
+              <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">#域渗透</a>
+            
+              <a href="/tags/hash/">#hash</a>
+            
+              <a href="/tags/%E5%93%88%E5%B8%8C/">#哈希</a>
+            
+              <a href="/tags/Kerberos/">#Kerberos</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/10/29/2025%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%88%9D%E8%B5%9Bweb%E6%96%B9%E5%90%91%E9%83%A8%E5%88%86wp/" target="_self">
+          2025强网拟态初赛web方向部分wp
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/10/29/2025%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%88%9D%E8%B5%9Bweb%E6%96%B9%E5%90%91%E9%83%A8%E5%88%86wp/" target="_self">
+        <div>
+          smallcodeWGETRC 是 Wget 工具的配置文件，允许用户通过环境变量或文件自定义 Wget 的行为。因此通过指定WGETRC环境变量到1.txt文件进行相关配置； 通过在1.txt中写入代理，让wget通过代理请求hhhh，我们启动服务端监听端口作为代理端，只要是请求hhhh域名的地址返回指定内容。 在1.txt中在配置输出文件的名称为1.php，因此可以实现任意文件上传，写入一句话
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-10-29 14:51" pubdate>
+              2025-10-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/CTF/">#CTF</a>
+            
+              <a href="/tags/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81/">#强网拟态</a>
+            
+              <a href="/tags/2025/">#2025</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/10/15/Windows%E7%B3%BB%E7%BB%9Fshellcode%E5%BC%80%E5%8F%91/" target="_self">
+          Windows系统shellcode开发
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/10/15/Windows%E7%B3%BB%E7%BB%9Fshellcode%E5%BC%80%E5%8F%91/" target="_self">
+        <div>
+          以前完全没有接触过该领域的知识和内容，可以说目前是一个从零开始学习的状态。汇编能看懂，但是不会写。学习目标是能够实现自定义的 shellcode，编写自己想要的功能。let’s go! 学习方式主要是参考 one day 师傅的三篇文章（放参考链接啦），本文主要是记录一下自己的学习内容，方便后续查阅，学习的话建议直接看 one day 师傅的文章。 一、基础概念shellcode 是一段精心编写的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-10-15 15:08" pubdate>
+              2025-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/shellcode/">#shellcode</a>
+            
+              <a href="/tags/Windows%E7%BC%96%E7%A8%8B/">#Windows编程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/10/12/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E6%89%8B%E6%90%93C2-%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" target="_self">
+          从0开始手搓C2 - 基础架构
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/10/12/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E6%89%8B%E6%90%93C2-%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" target="_self">
+        <div>
+          对于一个项目的开发我个人觉得最关键的还是整体架构的设计，如果不在一开始确定的话，后续开发很容易出现功能重叠或者分工不明的情况发生。与此同时，在确定一些基础模块的功能设计思路和目标，这样一个整体架构就简单的设计出来，后续根据这个基础架构进行拓展即可。对于一些 UML 图和 api 接口文档等，那还是算了，我又不需要完成作业或者公司业务，这种东西不需要，自己后续清楚即可。 一、系统总体目标对于初期设计
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-10-12 17:34" pubdate>
+              2025-10-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/C2/">#C2</a>
+            
+              <a href="/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/">#安全开发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/10/09/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0Callbacks/" target="_self">
+          回调函数Callbacks
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/10/09/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0Callbacks/" target="_self">
+        <div>
+          回调函数基础概念回调函数（Callback Function）是一种编程模式，指的是将一个函数作为参数传递给另一个函数，并在特定条件满足时被调用的函数。在Windows API中，回调函数被广泛用于事件处理、异步操作等场景。 12345// 回调函数的基本定义typedef BOOL (WINAPI *CALLBACK_FUNCTION)(LPVOID lpParameter);// 使用回调函数
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-10-09 16:43" pubdate>
+              2025-10-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
+            
+              <a href="/tags/callbacks/">#callbacks</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/09/27/allsafe-android%E9%9D%B6%E5%9C%BA/" target="_self">
+          allsafe-android靶场
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/09/27/allsafe-android%E9%9D%B6%E5%9C%BA/" target="_self">
+        <div>
+          1 Insecure Logging(不安全的日志记录)1.1 漏洞复现1234adb shellps -ef | grep &#x27;allsafe&#x27;pidof infosecadventures.allsafelogcat --pid 2153 | grep secret    1.2 漏洞总结对于该类型的 Android 漏洞挖掘，个人的感觉可以在一些的 app 操作之后将 ap
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-09-27 16:36" pubdate>
+              2025-09-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">#渗透测试</a>
+            
+              <a href="/tags/APK/">#APK</a>
+            
+              <a href="/tags/app/">#app</a>
+            
+              <a href="/tags/%E9%80%86%E5%90%91/">#逆向</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/09/02/Spectre-BHI-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E5%88%86%E6%9E%90/" target="_self">
           Spectre-BHI 漏洞复现分析
         </a>
@@ -450,6 +1110,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/08/23/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8B%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" target="_self">
+          Java代码审计之反序列化
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/23/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8B%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" target="_self">
+        <div>
+          1. 概述本文档详细介绍了Java中各种序列化&#x2F;反序列化方式的漏洞成因和代码特征。 2. 序列化&#x2F;反序列化方式2.1 原生Java序列化原生Java序列化使用 ObjectOutputStream &#x2F; ObjectInputStream，基于 Serializable 接口的二进制协议。 特点：  Java原生支持 格式是JVM私有的二进制  常见漏洞：  Comm
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-23 10:57" pubdate>
+              2025-08-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="category-chain-item">代码审计</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java%E5%AE%89%E5%85%A8/">#Java安全</a>
+            
+              <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">#反序列化</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">#代码审计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/08/23/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" target="_self">
           Fastjson反序列化漏洞
         </a>
@@ -625,6 +1350,8 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">#代码审计</a>
+            
               <a href="/tags/web%E6%94%BB%E9%98%B2/">#web攻防</a>
             
               <a href="/tags/Java/">#Java</a>
@@ -632,8 +1359,6 @@
               <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">#文件上传</a>
             
               <a href="/tags/ruoyi/">#ruoyi</a>
-            
-              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">#代码审计</a>
             
               <a href="/tags/sql%E6%B3%A8%E5%85%A5/">#sql注入</a>
             
@@ -716,6 +1441,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/08/10/VEH-Hook-vs-Inline-Hook-vs-IAT-Hook/" target="_self">
+          VEH Hook vs Inline Hook vs IAT Hook
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/VEH-Hook-vs-Inline-Hook-vs-IAT-Hook/" target="_self">
+        <div>
+          VEH Hook Windows 有异常处理机制（SEH &#x2F; VEH），可以在访问非法内存、执行非法指令时触发。 VEH Hook 的思路是：故意在目标函数入口插入一个“非法指令”（比如 INT 3 或无效操作码），当程序执行到这里时，会触发异常。 我们提前注册一个 VEH Handler（异常处理函数），在异常里拦截执行流程，转到我们的 Hook Handler。  123456789
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 22:45" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
+            
+              <a href="/tags/Hook/">#Hook</a>
+            
+              <a href="/tags/Windows-API/">#Windows API</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/07/19/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%85%AD%EF%BC%89BasicLoader/" target="_self">
           免入土（六）BasicLoader
         </a>
@@ -775,795 +1565,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/18/(%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90)FPVI-SCSB%E6%BC%8F%E6%B4%9E%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/" target="_self">
-          (论文解析)FPVI+SCSB漏洞论文解析
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/18/(%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90)FPVI-SCSB%E6%BC%8F%E6%B4%9E%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/" target="_self">
-        <div>
-          论文核心内容这篇论文的核心贡献在于，它将研究视角从基于已知瞬态执行窗口（如分支预测错误）开发新攻击，转向了深入探索瞬态执行本身的根源 。论文系统性地研究了“机器清除”这一大类此前未被充分探索的“错误推测”（Bad Speculation）事件 。 通过逆向工程，论文详细分析了四种未曾被深入研究的机器清除原因：  浮点（Floating Point, FP）机器清除 自修改代码（Self-Modif
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-18 19:24" pubdate>
-              2025-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%A7%91%E7%A0%94%E5%B7%A5%E4%BD%9C/" class="category-chain-item">科研工作</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A4%84%E7%90%86%E5%99%A8%E6%BC%8F%E6%B4%9E/">#处理器漏洞</a>
-            
-              <a href="/tags/CPU/">#CPU</a>
-            
-              <a href="/tags/%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/">#论文解析</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/17/CVE-2023-20569-Inception%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" target="_self">
-          (CVE-2023-20569)Inception漏洞复现
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/17/CVE-2023-20569-Inception%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" target="_self">
-        <div>
-          内容来源：  https://www.usenix.org/conference/usenixsecurity23/presentation/trujillo https://comsec.ethz.ch/research/microarch/inception/ https://github.com/comsec-group/inception   1 复现环境 CPU：AMD EPYC 72
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-17 22:52" pubdate>
-              2025-07-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%A7%91%E7%A0%94%E5%B7%A5%E4%BD%9C/" class="category-chain-item">科研工作</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A4%84%E7%90%86%E5%99%A8%E6%BC%8F%E6%B4%9E/">#处理器漏洞</a>
-            
-              <a href="/tags/CPU/">#CPU</a>
-            
-              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">#漏洞复现</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/" target="_self">
-          免入土（五）绕过 IAT Hook / Inline Hook 实现SafeGetProcAddress
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/13/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%94%EF%BC%89%E7%BB%95%E8%BF%87-IAT-Hook-Inline-Hook-%E5%AE%9E%E7%8E%B0SafeGetProcAddress/" target="_self">
-        <div>
-          一、概述无论是刚学习免杀对抗的时候，还是再后期制作免杀木马的时候，都难免接触到一些名词，如自实现 API、IAT 绕过等等，说的都是关于 Windows 官方的 API，这些 API 函数最后会呈现在导入表中，容易被杀软检测。 在日常开发免杀木马的时候，想要动态调用模块里的函数，一般都是通过LoadLibrary 加载模块，再使用GetProcAddress 根据名字获取函数地址进行调用，这就十分
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-13 18:24" pubdate>
-              2025-07-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Bypass/">#Bypass</a>
-            
-              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
-            
-              <a href="/tags/Windows-Api/">#Windows Api</a>
-            
-              <a href="/tags/IAT-Hook/">#IAT Hook</a>
-            
-              <a href="/tags/Inline-Hook/">#Inline Hook</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/07/%E8%A7%A3%E5%86%B3Windows%E7%B3%BB%E7%BB%9FBurpSuite%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA%E6%A1%86%E6%A1%86-%E5%8F%A3%E5%8F%A3/" target="_self">
-          解决Windows系统BurpSuite中文显示框框&lt;口口&gt;
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/07/%E8%A7%A3%E5%86%B3Windows%E7%B3%BB%E7%BB%9FBurpSuite%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA%E6%A1%86%E6%A1%86-%E5%8F%A3%E5%8F%A3/" target="_self">
-        <div>
-          一、引言本文的主要目的就是为了彻底性的解决 Windows 系统 burpsuite 中文显示框框&lt;口口&gt;的问题（任何字体均能够显示中文，不强制要求某种字体）。 不想自己做字体的，也有我这边做好的，放文章末尾了，自行下载按照第四章节替换系统字体即可； 对了，Mac 没有这种问题哟，Mac 各方面上都太优秀了（除了不能畅玩游戏）  这时候有人几句要说了，“改成能够显示中文的字体不就行了吗
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-07 21:30" pubdate>
-              2025-07-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">#工具配置</a>
-            
-              <a href="/tags/BurpSuite%E9%85%8D%E7%BD%AE/">#BurpSuite配置</a>
-            
-              <a href="/tags/%E5%AD%97%E4%BD%93/">#字体</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/" target="_self">
-          免入土（四）静态免杀
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/06/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/" target="_self">
-        <div>
-          一、前言在免杀上也学习了一段时间，也是做出了几个不错的免杀马，是时候把静态免杀上的内容写一下了。 在静态免杀层面上，要做的工作就是尽可能使杀软不能够从字符串（shellcode和各种字符串）层面检测到，所以只要把字符串的工作做好，基本过静态就没什么问题；剩下的就是锦上添花，增加程序可信度和反调试、反沙箱的工作。 本文主要是给出学习过程中遇到的一些好用的工具，以及在静态免杀上所需要做的一些工作。 静
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-06 20:20" pubdate>
-              2025-07-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
-            
-              <a href="/tags/%E9%9D%99%E6%80%81%E5%85%8D%E6%9D%80/">#静态免杀</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%B8%89%EF%BC%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" target="_self">
-          免入土（三）编译工具配置
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%B8%89%EF%BC%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" target="_self">
-        <div>
-          一、前言本文主要介绍的内容是关于 Visual Studio 配置和对程序的一些处理，主要是为了防止生成的免杀木马容易被溯源或者被查杀软件查杀。 二、Visual Studio 配置 生成 release 的时候使用 MT，不要使用多线程 DLL(&#x2F;MD)    关闭生成编译信息（防止溯源定位）  如果不关闭该选项的话可能会导致生成的 exe 文件中包含编译路径和相关计算机的用户名
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-12 14:08" pubdate>
-              2025-06-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">#工具配置</a>
-            
-              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
-            
-              <a href="/tags/Visual-Studio/">#Visual Studio</a>
-            
-              <a href="/tags/%E9%98%B2%E6%BA%AF%E6%BA%90/">#防溯源</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89windows%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/" target="_self">
-          免入土（二）windows编程基础
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/12/%E5%85%8D%E5%85%A5%E5%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89windows%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/" target="_self">
-        <div>
-          免杀从入门到入土（二）windows 基础编程 主要聚焦于对 PE 文件结构的学习、Windows 的基础编程方式以及如何修改 PE 文件的执行流程； （对于一些文件结构的解析呢，这里不会写太多的内容，都是一些死东西，也有很多师傅做过非常细致的研究，文章中会摆一些我个人觉得写得比较好的一些师傅的链接，也是我学习的时候参考的链接） 为什么我不细致的写，主要也是因为我个人觉得自己可能学得不是那么到位，
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-12 13:44" pubdate>
-              2025-06-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/">#免杀对抗</a>
-            
-              <a href="/tags/PE%E6%96%87%E4%BB%B6/">#PE文件</a>
-            
-              <a href="/tags/Windows%E7%BC%96%E7%A8%8B/">#Windows编程</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/05/07/API%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8BjQuery-XSS%E6%B5%8B%E8%AF%95HTMl%E6%A8%A1%E6%9D%BF/" target="_self">
-          API接口测试之jQuery XSS测试HTMl模板
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/05/07/API%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8BjQuery-XSS%E6%B5%8B%E8%AF%95HTMl%E6%A8%A1%E6%9D%BF/" target="_self">
-        <div>
-          网上流传的对jQuery XSS测试的模板都是需要对源码的 src api 进行修改，对大量测试来说还是比较麻烦； 因此，这边直接加入了一个输入框进行输入相应的 api 接口，实现无需打开 html 源码修改，更加简便；  1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-05-07 10:46" pubdate>
-              2025-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/API%E6%B5%8B%E8%AF%95/">#API测试</a>
-            
-              <a href="/tags/HTML%E6%A8%A1%E6%9D%BF/">#HTML模板</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/05/07/API%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8B%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RFC1867%E5%8D%8F%E8%AE%AE-HTMl%E6%A8%A1%E6%9D%BF/" target="_self">
-          API接口测试之文件上传(RFC1867协议)HTMl模板
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/05/07/API%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8B%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RFC1867%E5%8D%8F%E8%AE%AE-HTMl%E6%A8%A1%E6%9D%BF/" target="_self">
-        <div>
-          通过构建一个 html 的文件上传模板进行文件上传对接口进行测试； 之前测试RFC1867协议的文件上传也是通过 html 进行文件上传模板进行测试，但是由于每次对不同的借口进行文件上传测试都需要打开一下文本编辑，然后在修改，真的很麻烦，所以就产生了以下的内容； 通过加入输入框输入接口 URL 和自定义请求头防止需要低权限认证的情况，基本解决了大部分的问题，还有小部分的问题就是RFC1867协议自
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-05-07 10:30" pubdate>
-              2025-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/API%E6%B5%8B%E8%AF%95/">#API测试</a>
-            
-              <a href="/tags/HTML%E6%A8%A1%E6%9D%BF/">#HTML模板</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/05/05/(%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB)Prime+Reset_%20Introducing%20A%20Novel%20Cross-World%20%20Covert-Channel%20Through%20Comprehensive%20Security%20%20Analysis%20on%20ARM%20TrustZone/" target="_self">
-          (论文解读)Prime+Reset_ Introducing A Novel Cross-World  Covert-Channel Through Comprehensive Security  Analysis on ARM TrustZone
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/05/05/(%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB)Prime+Reset_%20Introducing%20A%20Novel%20Cross-World%20%20Covert-Channel%20Through%20Comprehensive%20Security%20%20Analysis%20on%20ARM%20TrustZone/" target="_self">
-        <div>
-          一、基础介绍ARM TrustZone 是一种强大的安全机制，旨在通过将片上系统硬件和软件划分为两个不同的世界（即正常世界和安全世界）来防范各种威胁。然而，安全世界仍然容易受到恶意攻击，包括侧信道和隐蔽信道漏洞。 本文的主要工作是逆向了 L2 预取器并设计了一种新的跨内核和跨界的隐蔽信道攻击方法，成为 Prime+Reset。该跨界攻击与 其他的隐蔽信道攻击相比，Prime+Reset 是一种与缓
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-05-05 00:11" pubdate>
-              2025-05-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%A7%91%E7%A0%94%E5%B7%A5%E4%BD%9C/" class="category-chain-item">科研工作</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/stride%E9%A2%84%E5%8F%96%E5%99%A8/">#stride预取器</a>
-            
-              <a href="/tags/ARM-TrustZone/">#ARM TrustZone</a>
-            
-              <a href="/tags/%E9%A2%84%E5%8F%96%E5%99%A8/">#预取器</a>
-            
-              <a href="/tags/Prefetcher/">#Prefetcher</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/04/13/%E4%BE%9B%E5%BA%94%E9%93%BE%E6%94%BB%E5%87%BB/" target="_self">
-          供应链攻击
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/13/%E4%BE%9B%E5%BA%94%E9%93%BE%E6%94%BB%E5%87%BB/" target="_self">
-        <div>
-          一、前言为什么会写这么一篇文章呢？是因为自己还是个小白，懂得东西确实不多，每次说到攻防的时候，问大师傅怎么打点？大师傅都会提到供应链攻击，自己听的时候确实也不太清楚是什么，但是又不太好意思继续问了，那就自己思考一下，写个介绍吧！ 去网上查相关资料，全是一些高层次、讲得很泛的一些文章，在攻防中的攻击面拓展不大，所以自己在阅读了一些文章然后结合一些自己的思考写下了这篇文章。 本文中可能会参杂一下个人的
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-13 21:16" pubdate>
-              2025-04-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">#信息收集</a>
-            
-              <a href="/tags/%E4%BE%9B%E5%BA%94%E9%93%BE/">#供应链</a>
-            
-              <a href="/tags/%E9%92%93%E9%B1%BC/">#钓鱼</a>
-            
-              <a href="/tags/%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/">#基础介绍</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/03/17/CPU%E7%9A%84%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/" target="_self">
-          CPU的分支预测
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/17/CPU%E7%9A%84%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/" target="_self">
-        <div>
-          一、基础介绍1.1 概念分支预测（Branch Prediction）是现代CPU中用于优化指令流水线性能的关键技术，旨在解决条件分支指令（如 if-else、循环等）导致的流水线停顿问题。 1.2 为什么需要分支预测 流水线技术：现代CPU通过流水线（Pipeline）并行处理指令，每个时钟周期完成一条指令的不同阶段（取指、解码、执行等）。 分支带来的问题：当遇到条件分支（如 if (x &gt
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-03-17 17:41" pubdate>
-              2025-03-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%A7%91%E7%A0%94%E5%B7%A5%E4%BD%9C/" class="category-chain-item">科研工作</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CPU/">#CPU</a>
-            
-              <a href="/tags/%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/">#分支预测</a>
-            
-              <a href="/tags/%E7%A1%AC%E4%BB%B6%E5%AE%89%E5%85%A8/">#硬件安全</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

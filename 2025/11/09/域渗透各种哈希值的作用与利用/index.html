@@ -1,0 +1,1080 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在此之前也写过一篇过于 NTLM 认证相关的文章，可以参考Windows的NTLM认证和hash攻击 （这篇文章中存在错误，将在本文中进行更正） 本文主要是想把所有的 hash 都给总结起来，然后总结一下可以攻击利用的方向。就我目前学习到的知识内容来看，密码喷洒和哈希传递攻击在域渗透占据至关重要的位置，对各种 hash 的理解越深刻，在域环境渗透中可能就有越发多的攻击面。 1 hash 一览表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="域渗透各种哈希值的作用与利用">
+<meta property="og:url" content="http://candyb0x.github.io/2025/11/09/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%90%84%E7%A7%8D%E5%93%88%E5%B8%8C%E5%80%BC%E7%9A%84%E4%BD%9C%E7%94%A8%E4%B8%8E%E5%88%A9%E7%94%A8/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="在此之前也写过一篇过于 NTLM 认证相关的文章，可以参考Windows的NTLM认证和hash攻击 （这篇文章中存在错误，将在本文中进行更正） 本文主要是想把所有的 hash 都给总结起来，然后总结一下可以攻击利用的方向。就我目前学习到的知识内容来看，密码喷洒和哈希传递攻击在域渗透占据至关重要的位置，对各种 hash 的理解越深刻，在域环境渗透中可能就有越发多的攻击面。 1 hash 一览表">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1732929603535-03476dc6-0714-4a66-80af-2398f407ff3d.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1732931169127-1dd0c0a4-59f2-4fea-b0d9-3125f6f90914.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/9adf394a7e4f678268ac08853fb9a079.svg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/18b8f65514394d1a38b1ffd20a7d8b4b.svg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/adc604169152bf44e8277c394937ef08.svg">
+<meta property="article:published_time" content="2025-11-09T09:01:47.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:47:16.908Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="NTLM">
+<meta property="article:tag" content="域渗透">
+<meta property="article:tag" content="hash">
+<meta property="article:tag" content="哈希">
+<meta property="article:tag" content="Kerberos">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1732929603535-03476dc6-0714-4a66-80af-2398f407ff3d.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>域渗透各种哈希值的作用与利用 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="域渗透各种哈希值的作用与利用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-11-09 17:01" pubdate>
+          2025年11月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          61 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">域渗透各种哈希值的作用与利用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在此之前也写过一篇过于 NTLM 认证相关的文章，可以参考<a href="https://candyb0x.github.io/2024/11/30/Windows%E7%9A%84NTLM%E8%AE%A4%E8%AF%81%E5%92%8Chash%E6%94%BB%E5%87%BB/">Windows的NTLM认证和hash攻击</a> （这篇文章中存在错误，将在本文中进行更正）</p>
+<p>本文主要是想把所有的 hash 都给总结起来，然后总结一下可以攻击利用的方向。就我目前学习到的知识内容来看，密码喷洒和哈希传递攻击在域渗透占据至关重要的位置，对各种 hash 的理解越深刻，在域环境渗透中可能就有越发多的攻击面。</p>
+<h1 id="1-hash-一览表"><a href="#1-hash-一览表" class="headerlink" title="1 hash 一览表"></a>1 hash 一览表</h1><table>
+<thead>
+<tr>
+<th align="left"><strong>凭据&#x2F;哈希</strong></th>
+<th align="left"><strong>生成位置</strong></th>
+<th align="left"><strong>主要功能&#x2F;协议</strong></th>
+<th align="left"><strong>可落地攻击</strong></th>
+<th align="left"><strong>常用工具</strong></th>
+<th align="left"><strong>检测&#x2F;加固要点</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>LM Hash</strong></td>
+<td align="left">旧版 Windows SAM、NTDS</td>
+<td align="left">兼容性登录</td>
+<td align="left">离线暴力破解、协议降级</td>
+<td align="left"><code>secretsdump.py</code>、<code>hashcat -m 3000</code></td>
+<td align="left">GPO 禁用LM；监控明文 &lt;&#x3D;7 字符密码</td>
+</tr>
+<tr>
+<td align="left"><strong>NT Hash (NTLM)</strong></td>
+<td align="left">SAM、NTDS、LSASS</td>
+<td align="left">默认口令表示、NTLM 认证</td>
+<td align="left">Pass-the-Hash、金&#x2F;银票、离线破解</td>
+<td align="left"><code>mimikatz</code>, <code>NanoDump</code>, <code>crackmapexec</code>, <code>hashcat -m 1000</code></td>
+<td align="left">监控 LSASS 访问、禁用 SMBv1、启用 LSA 保护</td>
+</tr>
+<tr>
+<td align="left"><strong>Net-NTLMv1&#x2F;v2</strong></td>
+<td align="left">SMB&#x2F;HTTP&#x2F;LDAP 挑战-响应</td>
+<td align="left">无需传输明文即可认证</td>
+<td align="left">LLMNR&#x2F;NBNS 捕获、NTLM Relay、离线破解</td>
+<td align="left"><code>Responder</code>, <code>Inveigh</code>, <code>mitm6</code>, <code>ntlmrelayx</code>, <code>hashcat -m 5500/5600</code></td>
+<td align="left">禁用LLMNR&#x2F;NBNS、启用 SMB 签名、EPA</td>
+</tr>
+<tr>
+<td align="left"><strong>MSCache (DCC2)</strong></td>
+<td align="left"><code>HKLM\SECURITY\Cache</code></td>
+<td align="left">离线登录缓存</td>
+<td align="left">定向 GPU 破解获取域密码</td>
+<td align="left"><code>mimikatz lsadump::cache</code>, <code>secretsdump.py</code>, <code>hashcat -m 2100</code></td>
+<td align="left">减少缓存条数、加强移动端口令策略</td>
+</tr>
+<tr>
+<td align="left"><strong>Kerberos 密钥 (krbtgt&#x2F;服务)</strong></td>
+<td align="left">NTDS、LSASS、复制流量</td>
+<td align="left">TGT&#x2F;TGS 加密材料</td>
+<td align="left">Pass-the-Key、金票&#x2F;银票、Overpass</td>
+<td align="left"><code>mimikatz dcsync</code>, <code>Rubeus asktgt</code>, <code>kekeo</code></td>
+<td align="left">监控 DCSync、定期滚动 krbtgt 密钥</td>
+</tr>
+<tr>
+<td align="left"><strong>Kerberoast TGS 哈希</strong></td>
+<td align="left">SPN 服务票据</td>
+<td align="left">Kerberos 服务认证</td>
+<td align="left">Kerberoasting、离线破解服务账号</td>
+<td align="left"><code>GetUserSPNs.py</code>, <code>Rubeus kerberoast</code>, <code>hashcat -m 13100/19700</code></td>
+<td align="left">服务账号最小权限、复杂密码、AES-only</td>
+</tr>
+<tr>
+<td align="left"><strong>AS-REP Roast 哈希</strong></td>
+<td align="left">禁用预认证账户</td>
+<td align="left">Kerberos 初始认证</td>
+<td align="left">AS-REP Roasting、破解敏感账户</td>
+<td align="left"><code>GetNPUsers.py</code>, <code>Rubeus asreproast</code>, <code>hashcat -m 18200</code></td>
+<td align="left">禁用 <code>DONT_REQ_PREAUTH</code>、监控 4768 失败</td>
+</tr>
+<tr>
+<td align="left"><strong>LSA Secrets &#x2F; DPAPI MasterKey</strong></td>
+<td align="left">SECURITY hive、LSASS、DPAPI 存储</td>
+<td align="left">储存服务口令、浏览器&#x2F;VPN 凭据</td>
+<td align="left">解密服务账号、获取 VPN&#x2F;浏览器密码</td>
+<td align="left"><code>mimikatz lsadump::lsa</code>, <code>SharpSecDump</code>, <code>SharpDPAPI</code></td>
+<td align="left">LAPS&#x2F; gMSA 管理、限制本地管理员分发</td>
+</tr>
+</tbody></table>
+<h1 id="2-LM-Hash"><a href="#2-LM-Hash" class="headerlink" title="2 LM Hash"></a>2 LM Hash</h1><h2 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h2><p>LM Hash 的全称为 LAN Manager Hash（局域网管理哈希），是Windows操作系统使用的最早的密码存储机制之一。在 Windows Vista&#x2F;Server 2008 开始默认不在使用 LM Hash 作为密码存储机制。<br>LM Hash 主要存储在 Windows SAM 数据库和域控制器 NTDS.DIT 数据库中。</p>
+<p><strong>LM Hash的计算方式如下：</strong></p>
+<ol>
+<li>LM Hash 的用户密码最长为 14 个字符，不足 14 个字符将会使用 NULL 补齐</li>
+<li>将密码字符串分成 7 字节的两个部分。</li>
+<li>分别使用 key 为<code>KGS!@#$%</code>进行 DES 加密</li>
+<li>将加密后的两组拼接在一起，得到最终的 LM Hash 值；</li>
+</ol>
+<p>根据上述的计算方法可以知道，如果采用暴力破解的方案，则是需要对两组 7 个字符的 hash 进行破解，复杂度远小于对 14 个字符哈希的破解，这种计算方式导致了暴力破解 LM Hash 成为可能。</p>
+<p>在不采用 LM Hash 存储或者空密码的情况下，抓取到的 LM Hash 值为<code>aad3b435b514a4eeaad3b935b51304fe</code>，这是一个需要注意的点，如果在实战环境中碰到这个 hash 值，也不在需要进行爆破了。</p>
+<p>因此，目前这种 Hash 已经不在推荐使用，但是目前依旧有系统在使用这种密码的存储方式。如果确实碰到，而且没有其他办法入手的时候（例如一些其他获取权限或 shell 的方式），则尝试爆破获取到的 LM Hash。</p>
+<h2 id="2-2-利用思路"><a href="#2-2-利用思路" class="headerlink" title="2.2 利用思路"></a>2.2 利用思路</h2><p><strong>收集渠道</strong>：获得 SYSTEM&#x2F;Domain Admin 后，可通过 <code>reg save SAM/SECURITY/SYSTEM</code> + <code>secretsdump.py</code>、<code>pwdump</code>、<code>mimikatz lsadump::sam</code> 或 DCSync 导出 LM Hash；也可拷贝卷影副本、备份镜像离线挂载 <code>C:\Windows\System32\config</code> 目录获取 hive。</p>
+<p><strong>拆分破解</strong>：LM 将密码切成两个 7 字节块，结合 <code>hashcat -m 3000</code>、<code>john --format=lm</code>、RainbowTable 等 GPU&#x2F;彩虹表资源进行掩码、字典或暴力破解，重点尝试“常用词+年份”“短 PIN”“补零凑 7 位”等模式。</p>
+<p><strong>明文复用</strong>：拿到明文后可直接通过 <code>runas /netonly</code>、<code>psexec</code>、<code>wmiexec</code>、<code>evil-winrm</code> 等工具横向登录，或在目标主机上修改密码生成新的 NT Hash；遇到仍支持 LM&#x2F;NTLMv1 的老服务时也能重放响应。</p>
+<p><strong>协议降级</strong>：借助中间人对 SMB&#x2F;HTTP&#x2F;LDAP 协议协商过程的篡改或利用旧式打印机、NAS、嵌入式设备，诱导客户端回退到 LM&#x2F;NTLMv1，从而捕获可破解的 LM Hash 再转化为更高价值的凭据。</p>
+<h2 id="2-3-防御建议"><a href="#2-3-防御建议" class="headerlink" title="2.3 防御建议"></a>2.3 防御建议</h2><ul>
+<li>启用 “Network security: Do not store LAN Manager hash value on next password change”，统一改密<strong>清除历史 LM Hash</strong>，确保<strong>新密码只生成 NT Hash</strong>。</li>
+<li>将 “Network security: LAN Manager authentication level” 设为 “Send NTLMv2 response only. Refuse LM &amp; NTLM”，并<strong>禁用 SMBv1&#x2F;NTLMv1</strong>，减少协议降级空间。</li>
+<li>通过 LAPS&#x2F;gMSA 管理本地管理员，密码长度 &gt;&#x3D;15 位且按策略滚动，避免 7 字节拆分暴力破解。</li>
+<li>打开 Credential Guard、LSASS 受保护进程 (RunAsPPL) 或部署 EDR，阻断未签名代码访问 SAM&#x2F;LSASS 内存。</li>
+<li>利用 <code>Event ID 4624/4776</code> 里 <code>LmPackageName=NTLM V1</code>、<code>AuthenticationPackage=MICROSOFT_AUTHENTICATION_PACKAGE_V1_0</code> 等特征建立告警，定位仍残留 LM 的资产及时淘汰。</li>
+</ul>
+<h1 id="3-NT-Hash（NTLM）"><a href="#3-NT-Hash（NTLM）" class="headerlink" title="3 NT Hash（NTLM）"></a>3 NT Hash（NTLM）</h1><h2 id="3-1-概述"><a href="#3-1-概述" class="headerlink" title="3.1 概述"></a>3.1 概述</h2><p>NT 局域网管理器（NT LAN Manager, NTLM）在 Windows NT 3.1 中引入，从 Windows Vista&#x2F;Server 2008 开始默认使用 NTLM 作为密码的存储机制。</p>
+<p>生成的 Hash 存储在本地 SAM 数据库或域控制器的 NTDS.DIT 数据库文件中，初代的 NTLM 还可能存储在 LSASS 中，在 <strong>Net-NTLMv1、Net-NTLMv2</strong> 中则只可能在在本地 SAM 数据库和域控制器的 NTDS.DIT 数据库中。</p>
+<p>由于 NTLM 支持全部的 Unicode 字符集 65536 个字符，虽然依旧可以使用 Hashcat 等工具进行暴力破解，但是复杂度与 LM Hash 已经不在同一个层次，想要强行爆破密码的可能性不是非常大（这取决于密码的复杂度），不到迫不得已在 NTLM Hash 中则不采用暴力破解攻击。</p>
+<p>NTLM 容易受到哈希传递攻击，通过成功攻击获取到的 NTLM Hash 值去认证目标系统中的服务。</p>
+<h2 id="3-2-NTLM-Hash-格式"><a href="#3-2-NTLM-Hash-格式" class="headerlink" title="3.2 NTLM Hash 格式"></a>3.2 NTLM Hash 格式</h2><p>格式：<code>username:RID:LM Hash:NT Hash:::</code></p>
+<h2 id="3-3-利用思路"><a href="#3-3-利用思路" class="headerlink" title="3.3 利用思路"></a>3.3 利用思路</h2><ol>
+<li><strong>获取 Hash</strong>：通过 <code>mimikatz sekurlsa::logonpasswords</code>、<code>nanodump</code>、<code>Invoke-DCSync</code>、<code>secretsdump.py -sam/-ntds</code> 等手段从 LSASS、SAM、NTDS 或备份&#x2F;休眠文件中导出 NT Hash；虚拟机镜像、卷影副本同样可以被离线解析。</li>
+<li><strong>Pass-the-Hash 横向移动</strong>：把 NT Hash 直接注入到 <code>impacket-psexec/wmiexec/smbexec/atexec</code>、<code>crackmapexec smb</code>、<code>evil-winrm</code>、<code>winrs</code> 等工具中，快速访问 SMB、WMI、WinRM、RPC、MSSQL、RDP Restricted Admin 等服务。</li>
+<li><strong>Overpass-the-Hash &#x2F; Pass-the-Key</strong>：在本地伪造 Kerberos 票据，使用 <code>mimikatz sekurlsa::pth</code>、<code>Rubeus asktgt /ptt</code>、<code>kekeo</code> 等把 NT Hash 转成 TGT&#x2F;TGS，从而在要求 Kerberos 的服务（LDAP&#x2F;HTTP&#x2F;SMB）上绕过 NTLM 限制。</li>
+<li><strong>离线破解与凭据喷洒</strong>：针对关键账户将 Hash 导入 <code>hashcat -m 1000</code>、<code>john --format=NT</code> 进行掩码&#x2F;规则&#x2F;组合攻击，结合内网定制字典或数据泄露库提升命中率，之后可在 VPN、VDI、邮件或 SaaS 上重放。</li>
+<li><strong>持久化与凭据打包</strong>：利用已获得的 Hash 注入访问令牌、添加计划任务或导出 DPAPI MasterKey，进一步窃取浏览器 Cookie、SSH key、API token，形成链式扩散。</li>
+</ol>
+<h2 id="3-4-防御要点"><a href="#3-4-防御要点" class="headerlink" title="3.4 防御要点"></a>3.4 防御要点</h2><ul>
+<li>在所有服务器&#x2F;高敏主机<strong>启用 Credential Guard、LSASS RunAsPPL、WDAC&#x2F;CFG</strong>，降低 LSASS 被转储和内核注入的概率。</li>
+<li>通过 LAPS&#x2F;gMSA、AESA 分层模式管理管理员账号，避免密码复用并确保长度 &gt;14 位，辅以<strong>强制历史密码不重复和频繁轮换</strong>。</li>
+<li>利用 “Network security: Restrict NTLM” 策略在域控、服务器上<strong>限制或拒绝 NTLM</strong>，配合 SMB&#x2F;LDAP 签名、Kerberos 约束委派和禁用 <code>LocalAccountTokenFilterPolicy=1</code>，减少 Hash 可直接认证的面。</li>
+<li>监控 <code>Event ID 4624/4648/4776/8004</code>、NTLM 审计日志和 Sysmon Event 1&#x2F;3&#x2F;10，将异常的 NTLM Type 3、远程执行进程与网络会话关联告警。</li>
+<li>采用分层管理 (Tier Model)、Just Enough Admin&#x2F;Just-in-Time (JEA&#x2F;JIT) 等策略，把高权限操作限定在受控主机上，缩短 Hash 被窃取后的可利用窗口。</li>
+</ul>
+<h1 id="4-Net-NTLMv1"><a href="#4-Net-NTLMv1" class="headerlink" title="4 Net-NTLMv1"></a>4 Net-NTLMv1</h1><h2 id="4-1-概述"><a href="#4-1-概述" class="headerlink" title="4.1 概述"></a>4.1 概述</h2><p> NTLMv1 基于挑战&#x2F;响应，使用 NT 哈希（NT hash）派生出 3 个 DES 密钥去加密服务器 challenge，得到 24 字节的响应。  </p>
+<p>在 <strong>Net-NTLMv1、Net-NTLMv2</strong> 中则只可能在在本地 SAM 数据库和域控制器的 NTDS.DIT 数据库中。</p>
+<p><strong>Net-NTLMv1 算法描述：</strong></p>
+<ol>
+<li>客户端计算 NT 哈希：<code>NT_hash = MD4(UTF-16LE(password))</code>（16 字节）</li>
+<li>把 <code>NT_hash</code> 后面补 5 个 0，得到 21 字节；分成三段（每段 7 字节）：<code>K1 | K2 | K3</code>。<br>每段 7 字节被转换为 8 字节 DES 密钥（奇偶校验位扩展）。  </li>
+<li>服务器发送 8 字节<code>server_challenge</code>（随机）。</li>
+<li>客户端计算响应：<br><code>response = DES_encrypt(K1, server_challenge) || DES_encrypt(K2, server_challenge) || DES_encrypt(K3, server_challenge)</code>（共 24 字节）  </li>
+<li>将 <code>response</code> 发回服务器用于验证。 </li>
+<li>（可选）双方基于响应&#x2F;哈希派生会话密钥（用于签名&#x2F;加密）。</li>
+</ol>
+<h2 id="4-2-Net-NTLM-工作组身份认证"><a href="#4-2-Net-NTLM-工作组身份认证" class="headerlink" title="4.2 Net-NTLM 工作组身份认证"></a>4.2 Net-NTLM 工作组身份认证</h2><p>NTLM 的身份认证可以用以下的图片进行概述</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1732929603535-03476dc6-0714-4a66-80af-2398f407ff3d.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>客户端向服务器发出 Type1 消息（Negotiate），表明它希望使用 NTLM 进行认证，并在消息中包含协商的选项标志（negotiate flags）、可选的域名（Domain）与工作站名（Workstation），以告诉服务器客户端支持的功能（比如是否支持 NTLMv2、是否要求加密会话等）。</li>
+<li>服务端接收到客户端发送过来的 Type1 消息后，会读取其中的内容，并从中选择出自己所能接受的服务内容、加密等级、安全服务等，传入 <strong>NTLM SSP</strong>，得到 <strong>Type2 Challenge</strong> 消息（被称为 Challenge 挑战消息），并将此 Type2 消息发回给客户端。 Type2 消息至少包含：随机的 8 字节<code>server_challenge</code>（或称 nonce），以及可选的<code>target name</code>&#x2F;<code>target info</code>（AV-pairs，服务器可提供的额外信息，用于 NTLMv2 的 blob）。Type2 用来向客户端发出本次会话的随机 challenge。服务器会记下&#x2F;保持此 challenge 以便后续验证。  </li>
+<li>客户端收到 Type2 后，使用本地保存的用户凭据（基于用户密码计算的 NT 哈希，或 NTLMv2_hash 的派生值）与 challenge 结合，生成认证响应 **Net-**<strong>NTLM-Hash</strong>，最后将 **Net-**<strong>NTLM-Hash</strong> 封装到 Type 3 Authenticate 消息中（被称为 Authenticate 认证消息），发往服务端。 Type3 消息通常包含：用户名、目标域名、工作站名、以及计算出的 LM&#x2F;NTLM 响应（而不是明文密码或直接的哈希值）。客户端把 Type3 发回服务器以供验证。  </li>
+<li>服务器收到 Type3 后，从它自己的账户数据库（例如域控 AD&#x2F;NTDS）读取该用户的凭据（例如 NT 哈希，或在 Kerberos&#x2F;策略下不同），然后使用相同的算法将 <code>server_challenge</code>（和blob&#x2F;client_challenge&#x2F;时间戳等）与该凭据结合计算<strong>期望响应</strong>。将计算得到的期望响应与客户端在 Type3 中提供的响应字节逐位比较：相同则认证通过，否则失败。</li>
+</ol>
+<blockquote>
+<ol>
+<li>SSPI</li>
+</ol>
+<p>SSPI（Security Support Provider Interface），即 <strong>安全服务提供接口</strong>，这是 Windows 定义的一套接口，该接口定义了与安全有关的功能<a target="_blank" rel="noopener" href="https://marketing.csdn.net/p/3127db09a98e0723b83b2914d9256174?pId=2782?utm_source=glcblog&spm=1001.2101.3001.7020">函数</a>，包含但不限于：</p>
+<ul>
+<li>身份验证机制</li>
+<li>信息完整性</li>
+<li>为其他协议提供的会话安全机制</li>
+</ul>
+<ol start="2">
+<li>SSP</li>
+</ol>
+<p>SSP（Security Service Provider），即 <strong>安全服务提供</strong>，它是 SSPI 的实现者，是对 SSPI 相关功能函数的具体实现。微软自己实现了如下的 SSP，用于提供安全功能：</p>
+<p>NTLM SSP</p>
+<p>Kerberos</p>
+<p>Digest SSP</p>
+<p>Cred SSP</p>
+<p>……</p>
+<p>在系统层面，SSP 就是一个 dll，来实现身份验证等安全功能，实现的身份验证机制是不一样的。比如 NTLM SSP 实现的就是一种 <strong>Challenge&#x2F;Response 验证</strong>机制。而 Kerberos SSP 实现的就是<strong>基于 ticket 的身份验证</strong>机制。我们可以编写自己的 SSP，然后注册到操作系统中，让操作系统支持更多的自定义的身份验证方法。</p>
+</blockquote>
+<h2 id="4-3-Net-NTLM-域环境身份认证"><a href="#4-3-Net-NTLM-域环境身份认证" class="headerlink" title="4.3 Net-NTLM 域环境身份认证"></a>4.3 Net-NTLM 域环境身份认证</h2><p>NTLM 在域环境中的认证的前三步与NTLM 在工作组环境中的认证是一样的，不同的地方开始出现在第四步：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/1732931169127-1dd0c0a4-59f2-4fea-b0d9-3125f6f90914.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>首先，若客户端要访问服务器上的某项需要认证的服务，客户端会发起认证协商。客户端向服务器发送 <strong>Type 1 (Negotiate)</strong> 消息，表明自己支持的认证选项（negotiate flags），并可选地包含客户端的域名（Domain）与工作站名（Workstation）。  </li>
+<li>服务端接收到客户端发送过来的 Type1 消息后，会读取其中的内容，并从中选择出自己所能接受的服务内容、加密等级、安全服务等，传入 <strong>NTLM SSP</strong>，得到 <strong>Type2 Challenge</strong> 消息（被称为 Challenge 挑战消息），并将此 Type2 消息发回给客户端。 Type2 至少包含由服务器生成的随机 <code>server_challenge</code>（通常 8 字节），并可包含 <code>target name</code> &#x2F; <code>target info</code>（AV-pairs，用于 NTLMv2 的 blob）。服务器应保存该 <code>server_challenge</code> 以便后续验证（或将其与会话关联）。</li>
+<li>客户端收到 Type2 后，使用本地的凭据（即基于用户明文密码派生的 NT 哈希，或进一步派生出的 NTLMv2_hash）与 <code>server_challenge</code> 及（若为 NTLMv2）自身生成的 client_challenge、时间戳与 target_info 一起计算认证响应（LM&#x2F;NT&#x2F;NTLMv2 response）。计算完成后，客户端把 <strong>Type 3 (Authenticate)</strong> 消息发回服务器；Type3 包含用户名、域名、工作站名以及计算出的响应。  </li>
+<li>服务器接收到 Type3 后，开始验证该请求。若要验证的账户为本地账户，服务器可直接使用本地 SAM 中存储的哈希重新计算期望响应并比对；若为域用户（常见场景），服务器会将需要验证的信息（通常是从 Type3 中提取的用户名&#x2F;域&#x2F;response&#x2F;原始 challenge 等）转发给域控制器（Domain Controller，DC）进行验证。****</li>
+<li>域控制器收到服务器的验证请求后，使用其存储的该用户凭据（例如 AD 中的 NT 哈希）按相同的协议算法计算期望响应（对 NTLMv2 包括对 challenge||blob 的 HMAC_MD5 等），并将比对结果（通过&#x2F;失败）和相关会话密钥（如果协商）返回给请求的服务器。若比对成功，DC 可返回认证成功并帮助派生会话密钥；若比对失败，则返回失败。  </li>
+<li>服务器根据域控制器返回的结果决定是否允许客户端访问，并与客户端建立后续会话（若协商了签名&#x2F;加密，则使用派生的会话密钥对会话进行保护）。服务器同时记录认证结果以便审计与后续授权决策。</li>
+</ol>
+<h2 id="4-4-NTLMv1-利用思路"><a href="#4-4-NTLMv1-利用思路" class="headerlink" title="4.4 NTLMv1 利用思路"></a>4.4 NTLMv1 利用思路</h2><p>格式：<code>username:domain:LM Hash:NT Hash:challenge</code></p>
+<p>由于响应依赖服务器的随机 challenge，所以直接使用 NT Hash 无法构造合法的响应，因此无法通过哈希传递实现攻击利用，但是依旧可以使用中继攻击利用。攻击者可中间人转发 challenge&#x2F;response，或实时使用被窃取的哈希在可接受 NTLM 的服务上完成认证（具体场景取决于目标服务接受的认证形式）。</p>
+<ol>
+<li><strong>诱导客户端发起 NTLM 认证</strong>：通过 LLMNR&#x2F;NBNS&#x2F;WPAD&#x2F;MDNS 欺骗 (<code>Responder</code>、<code>Inveigh</code>)、恶意 SCF&#x2F;URL 文件、PrinterBug&#x2F;PetitPotam&#x2F;DFSCoerce 等手段向攻击者主机发起 SMB&#x2F;HTTP 请求，从而拿到 NTLMv1 challenge-response。</li>
+<li><strong>协议降级</strong>：在中间人场景操控协商标志，关闭或篡改 <code>NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY</code>，或针对只支持 NTLMv1&#x2F;LM 的老旧设备&#x2F;域成员制造兼容性场景，让客户端退回 NTLMv1。</li>
+<li><strong>离线破解</strong>：捕获到的 <code>Net-NTLMv1</code> 可放入 <code>hashcat -m 5500</code>、<code>john --format=netntlm</code> 配合掩码&#x2F;规则&#x2F;彩虹表进行破解，利用 56-bit DES keyspace 较小的特点快速还原明文。</li>
+<li><strong>中继利用</strong>：当目标服务器未启用 SMB&#x2F;LDAP 签名时，可以 <code>ntlmrelayx --no-smb-signing --lm</code>、<code>impacket-ntlmrelayx</code> 把 NTLMv1 响应中继到 SMB、LDAP、ADCS、SQL、WinRM，执行命令、创建本地管理员或写入计算机对象；也可将 NTLMv1 转换成 Kerberos PAC 伪造，进一步扩展权限。</li>
+<li><strong>链式打通</strong>：破解或中继获得的凭据常用于添加域管理员、修改 GPO、部署服务端 payload，或与 RBCD&#x2F;Shadow Credentials 结合实现持久化。</li>
+</ol>
+<h2 id="4-5-防御建议"><a href="#4-5-防御建议" class="headerlink" title="4.5 防御建议"></a>4.5 防御建议</h2><ul>
+<li>将 “Network security: LAN Manager authentication level” 设为 “<strong>Send NTLMv2 response only.</strong> Refuse LM &amp; NTLM”，同时在域控启用 “Restrict NTLM: NTLM authentication in this domain &#x3D; Deny all”。</li>
+<li>对 SMB&#x2F;LDAP&#x2F;LDAPS&#x2F;HTTP 启用签名或 Extended Protection (EPA)、Channel Binding Token、MIC，强制客户端使用 NTLMv2 并验证服务器身份，防止中继。</li>
+<li>关闭 LLMNR、NBNS、mDNS 与 WPAD，结合 DNS Suffix、静态代理、802.1X 限制局域网欺骗触发的认证流量。</li>
+<li>在 DC&#x2F;服务器上开启 NTLM Auditing（如 Event ID 8001~8004）与 <code>Event ID 4624</code> 里的 <code>LmPackageName=NTLM V1</code> 告警，发现遗留资产并限期整改。</li>
+<li>定期安全评估 SMBv1&#x2F;老旧打印机、NAS 等设备，迁移或隔离只能使用 NTLMv1&#x2F;LM 的系统，避免成为协议降级突破口。</li>
+</ul>
+<h1 id="5-Net-NTLMv2"><a href="#5-Net-NTLMv2" class="headerlink" title="5 Net-NTLMv2"></a>5 Net-NTLMv2</h1><h2 id="5-1-概述"><a href="#5-1-概述" class="headerlink" title="5.1 概述"></a>5.1 概述</h2><p>NTLMv2协议最初在Windows NT 4.0 SP4中引入，作为NTLMv1的更强大的替代品。自从2000服务器版以来，它一直是Windows的默认设置。它增强了对NTLMv1易受攻击的某些欺骗攻击的防护。NTLMv2 在 NTLMv1 基础上大幅改进，使用 HMAC-MD5 结构、绑定用户名&#x2F;域名、包含时间戳和 target info（服务器提供），更难重放和离线破解。  </p>
+<p>在 <strong>Net-NTLMv1、Net-NTLMv2</strong> 中只可能在在本地 SAM 数据库和域控制器的 NTDS.DIT 数据库中。</p>
+<p><strong>Net-NTLMv2 算法描述：</strong></p>
+<ol>
+<li>客户端计算 NT 哈希：<code>NT_hash = MD4(UTF-16LE(password))</code>（16 字节）  </li>
+<li>派生 NTLMv2 哈希（又称 NTLMv2_hash）：<code>NTLMv2_hash = HMAC_MD5(key=NT_hash, msg=UpperCase(Username) || Domain)</code>（注意用户名大写与域名一起作为消息）   </li>
+<li>服务器发送 8 字节 <code>server_challenge</code>（随机）并可能提供 <code>target_info</code>（AV pairs）。  </li>
+<li>客户端构造 <code>blob</code>（client challenge blob），常包含：</li>
+</ol>
+<ul>
+<li>Blob signature（固定）</li>
+<li>Timestamp（文件时间格式）</li>
+<li>Client challenge（8 字节随机）</li>
+<li>Target info（来自服务器，可为空）</li>
+<li>Blob terminator</li>
+</ul>
+<ol start="5">
+<li>计算 NTLMv2 响应（NT proof + blob）：<code>NTProofStr = HMAC_MD5(key=NTLMv2_hash, msg=server_challenge || blob)``NTLMv2_response = NTProofStr || blob</code>（最终响应长度可变，前 16 字节为 proof，后面为 blob）  </li>
+<li>服务器用相同方法校验 NTProofStr 是否匹配，匹配则认证通过。  </li>
+<li>会话密钥（session key）可由 <code>NTLMv2_hash</code> 与 <code>NTProofStr</code> 等派生出来，用于签名&#x2F;加密。</li>
+</ol>
+<h2 id="5-2-Net-NTLMv2-利用思路"><a href="#5-2-Net-NTLMv2-利用思路" class="headerlink" title="5.2 Net-NTLMv2 利用思路"></a>5.2 Net-NTLMv2 利用思路</h2><p>格式：<code>username:domain:challenge:NT Hash response:other info</code></p>
+<p>NTLMv2_hash 绑定用户名与域名，难以直接用哈希在其他上下文重用（提高针对离线攻击的难度）。响应包含时间戳、随机 client_challenge 与 server target_info，使得简单的重放&#x2F;预计算变得困难。</p>
+<p>如果攻击者能把认证请求中继到另一个可接受 NTLM 的服务（目标服务不要求 channel binding 或强验证），那么中继仍然能完成认证（NTLMv2 证明是在两个端的实时对话中生成的）。</p>
+<ol>
+<li><strong>触发客户端认证</strong>：通过 LLMNR&#x2F;NBNS&#x2F;WPAD 欺骗、恶意 UNC&#x2F;SCF、钓鱼宏、WebDAV、PrinterBug&#x2F;PetitPotam&#x2F;DFSCoerce&#x2F;MS-EFSRPC、<code>mitm6</code> 等方式诱导受害者向攻击者服务器发起 SMB&#x2F;HTTP&#x2F;LDAP 请求，收集 Net-NTLMv2 challenge-response。</li>
+<li><strong>NTLM Relay</strong>：将捕获到的会话实时转发至未开启签名的 SMB&#x2F;LDAP&#x2F;LDAPS&#x2F;ADCS&#x2F;WinRM&#x2F;MSSQL 服务 (<code>ntlmrelayx</code>, <code>cme smb --relay</code>)，借机写入本地管理员、修改 gMSA&#x2F;LAPS 密码、创建&#x2F;修改计算机对象或为目标账户添加 SPN。</li>
+<li><strong>衍生利用</strong>：利用中继权限进一步执行 RBCD、Shadow Credentials、GenericWrite、ADCS ESC8&#x2F;ESC11（请求可导出私钥的证书），或通过 LDAP 修改用户属性、组成员，最终获取更高等级的 Kerberos 凭据。</li>
+<li><strong>离线破解</strong>：将 <code>username:domain:challenge:response</code> 导入 <code>hashcat -m 5600</code>、<code>john --format=netntlmv2</code>，结合掩码、规则和泄露词库尝试还原明文，在 VPN&#x2F;邮件&#x2F;云服务等其他入口重复使用。</li>
+<li><strong>凭据重放与会话劫持</strong>：在部分老旧服务上直接重放捕获到的 Net-NTLMv2 响应，或结合 SMB 会话密钥劫持 <code>NTLMSSP Session Key</code>，进一步获取文件系统与服务令牌。</li>
+</ol>
+<h2 id="5-3-防御建议"><a href="#5-3-防御建议" class="headerlink" title="5.3 防御建议"></a>5.3 防御建议</h2><ul>
+<li>在域控启用 “Restrict NTLM” 系列策略（Audit&#x2F;Block domain accounts、Incoming NTLM Traffic），并为关键服务器配置 AllowList，逐步消除 NTLM 依赖。</li>
+<li>强制 SMB&#x2F;LDAP&#x2F;LDAPS&#x2F;HTTP&#x2F;ADCS 使用签名或 Extended Protection，开启 Channel Binding、MIC、”Require NTLMv2 session security”，从根源上阻断 NTLM Relay。</li>
+<li>关闭 LLMNR&#x2F;NBNS&#x2F;WPAD，推送静态代理&#x2F;DNS 后缀，结合 <code>WPAD</code> 注册表 <code>AllowAutodiscovery=0</code>，减少可被诱导的认证流量。</li>
+<li>对 ADCS&#x2F;WEB Enrollment、IIS、Exchange、SCCM 等常被中继的服务启用 Kerberos Only&#x2F;证书身份验证，并限制具有 ESC 漏洞模板的注册权限。</li>
+<li>监测 <code>Event ID 4624 (LogonType=3, AuthenticationPackage=NTLM)</code>、<code>4648</code>、<code>8002/8004</code>、ADCS <code>4886/4887</code> 等日志，结合 PCAP&#x2F;Zeek 检测异常的 NTLM 流量与未知主机的身份验证。</li>
+</ul>
+<h1 id="6-MSCache-DCC2"><a href="#6-MSCache-DCC2" class="headerlink" title="6 MSCache (DCC2)"></a>6 <strong>MSCache (DCC2)</strong></h1><h2 id="6-1-概述与存储位置"><a href="#6-1-概述与存储位置" class="headerlink" title="6.1 概述与存储位置"></a>6.1 概述与存储位置</h2><p>MSCache（Domain Cached Credentials，简称 DCC）用于便携设备在脱机时完成域登录。</p>
+<p>Windows XP&#x2F;2003 使用 DCCv1（<code>mscash</code>），Vista 及以后使用 DCCv2（<code>mscash2</code>），后者默认缓存最近 10 组域凭据。缓存内容位于 <code>HKLM\SECURITY\Cache\NL$1...NL$10</code>，配置信息位于 <code>NL$Control</code>，解密依赖 SYSTEM hive 中的 BootKey。</p>
+<p>在线状态下，LSASS 内存同样持有 DCC 结果，可被 <code>mimikatz sekurlsa::logonpasswords</code> 直接读取。</p>
+<p><strong>MSCache 算法描述：</strong></p>
+<ol>
+<li>将用户密码转成 UTF-16LE，计算 NT Hash：<code>NT = MD4(UTF-16LE(password))</code>取用户名（默认大写）作为 salt，执行 10240 次 PBKDF2： </li>
+<li>DCC2 &#x3D; PBKDF2(HMAC-SHA1, NT, UpperCase(username), 10240, 16)</li>
+<li>将 DCC2、域 SID、时间戳等封装到缓存条目中</li>
+</ol>
+<h2 id="6-3-获取方式"><a href="#6-3-获取方式" class="headerlink" title="6.3 获取方式"></a>6.3 获取方式</h2><ul>
+<li><strong>在线注入</strong>：<code>mimikatz lsadump::cache /inject</code> 或 <code>sekurlsa::logonpasswords</code>。 </li>
+<li><strong>本地离线</strong>：<code>reg save HKLM\SYSTEM system.hiv</code> 与 <code>reg save HKLM\SECURITY security.hiv</code> 后，<code>secretsdump.py -system system.hiv -security security.hiv -just-dc-cache</code>。 </li>
+<li><strong>远程 DC</strong>：对域控执行 <code>secretsdump.py &lt;domain&gt;/&lt;user&gt;:&lt;pass&gt;@dc -just-dc-cache</code> 或使用 <code>crackmapexec smb --lsa</code>。</li>
+</ul>
+<h2 id="6-4-利用思路"><a href="#6-4-利用思路" class="headerlink" title="6.4 利用思路"></a>6.4 利用思路</h2><ol>
+<li><strong>离线爆破</strong>：DCC2 无法像 NTLM 那样直接 Pass-the-Hash，必须解出明文或导出可复用的 NT Hash；适合 GPU 集群长时间爆破，常配合集中策略中“永不过期&#x2F;弱口令”账户。 </li>
+<li><strong>旁路字典</strong>：将已知的组织口令策略（季节+年份等）投喂 <code>hashcat -m 2100 -a 6</code>&#x2F;<code>-a 7</code>，命中后即得到明文，可用于 VPN、RDP、Kerberos。 </li>
+<li><strong>蹭缓存</strong>：针对笔记本或工作组 DMZ 主机，物理访问后离线提取 hive，恢复密码用于远程横向。 </li>
+<li><strong>配合 DCSync</strong>：若仅能拿到缓存而无 NTDS，可先爆破出明文，再借此账户远程执行 DCSync&#x2F;提权。</li>
+</ol>
+<h2 id="6-5-防御建议"><a href="#6-5-防御建议" class="headerlink" title="6.5 防御建议"></a>6.5 防御建议</h2><ul>
+<li>将 <code>HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\cachedlogonscount</code> 设为最小值甚至 <code>0</code>； </li>
+<li>对本地管理员开启 LAPS&#x2F;GMSA，降低缓存价值； </li>
+<li>通过 Credential Guard、LSA 保护模式限制 LSASS 内存读取； </li>
+<li>针对 <code>Event ID 4624/4768</code> 中的 <code>LogonType=11</code>（缓存登录）做异常检测，关注长期脱网终端。</li>
+</ul>
+<h1 id="7-Kerberos-密钥-krbtgt-服务"><a href="#7-Kerberos-密钥-krbtgt-服务" class="headerlink" title="7 Kerberos 密钥 (krbtgt&#x2F;服务)"></a>7 Kerberos 密钥 (krbtgt&#x2F;服务)</h1><h2 id="7-1-密钥类型与位置"><a href="#7-1-密钥类型与位置" class="headerlink" title="7.1 密钥类型与位置"></a>7.1 密钥类型与位置</h2><ul>
+<li><strong>krbtgt 账户密钥</strong>：域根账号，密钥（RC4-HMAC、AES128、AES256）保存在 NTDS.DIT 中，LSASS 持有当前与上一次版本，用于加密&#x2F;签名 TGT。 </li>
+<li><strong>服务&#x2F;SPN 账户密钥</strong>：注册了 SPN 的用户&#x2F;服务账号（如 SQLSvc&#x2F;HTTPSvc），密钥用于解密针对该 SPN 的 TGS。 </li>
+<li><strong>票据缓存</strong>：客户端 <code>lsass.exe</code> 会缓存 TGT&#x2F;TGS；<code>klist</code> 或 <code>Rubeus triage</code> 可查看。夺取任意一种密钥都能伪造票据或派生更多凭据，因此 Kerberos 密钥是横向移动的核心资产。</li>
+</ul>
+<h2 id="7-2-Kerberos-身份验证流程"><a href="#7-2-Kerberos-身份验证流程" class="headerlink" title="7.2 Kerberos 身份验证流程"></a>7.2 Kerberos 身份验证流程</h2><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/9adf394a7e4f678268ac08853fb9a079.svg" srcset="/img/loading.gif" lazyload></p>
+<p>图中三类密钥分别兑现为：客户端口令派生出的预身份验证密钥、KDC 持有的 <code>krbtgt</code> 密钥、目标服务&#x2F;计算机账户密钥。攻击者只要能替代任一环节，即可伪造票据或冒用身份。</p>
+<h2 id="7-3-常见利用思路"><a href="#7-3-常见利用思路" class="headerlink" title="7.3 常见利用思路"></a>7.3 常见利用思路</h2><ol>
+<li><strong>DCSync + Golden Ticket</strong><ul>
+<li>使用 <code>mimikatz lsadump::dcsync /domain:&lt;d&gt; /user:krbtgt</code> 导出 krbtgt RC4&#x2F;AES； </li>
+<li><code>mimikatz kerberos::golden /user:&lt;u&gt; /domain:&lt;d&gt; /sid:&lt;SID&gt; /krbtgt:&lt;NT&gt;</code> 生成自定义 TGT，甚至可将票据有效期设置为多年； </li>
+<li>利用 <code>misc::cmd</code>&#x2F;<code>sekurlsa::pth</code> 注入票据，永续域管理员。</li>
+</ul>
+</li>
+<li><strong>Silver Ticket &#x2F; Pass-the-Key</strong><ul>
+<li>针对单个服务账号（如 <code>HTTP/iis01.lab.local</code>）获取其 NT hash，即可离线伪造 TGS； </li>
+<li><code>mimikatz kerberos::golden /ticket:... /target:http/iis01</code> 直接访问服务，无需与 KDC 通讯，适合绕过 KDC 审计。</li>
+</ul>
+</li>
+<li><strong>Overpass-the-Hash (Pass-the-Key)</strong><ul>
+<li>以 NT Hash&#x2F;AES Key 请求合法 TGT：<code>mimikatz sekurlsa::pth /user:u /domain:d /ntlm:&lt;hash&gt; /run:cmd</code>； </li>
+<li>结合 <code>Rubeus asktgt /aes256</code> 支持仅 AES 的现代域。</li>
+</ul>
+</li>
+<li><strong>Pass-the-Ticket</strong><ul>
+<li>将窃取到的 <code>.kirbi</code> 注入当前会话：<code>Rubeus ptt /ticket:xxx.kirbi</code>； </li>
+<li>常用于委派&#x2F;中继场景，例如从 SQL Server <code>SETSPN</code> 获得的 TGS 直接注入访问后台。</li>
+</ul>
+</li>
+<li><strong>Skeleton Key &#x2F; 域内后门</strong><ul>
+<li>向 LSASS 注入通用口令（<code>mimikatz misc::skeleton</code>），任意用户使用预设口令即可通过 Kerberos，典型持久化手段。</li>
+</ul>
+</li>
+</ol>
+<h2 id="7-4-常用工具与命令"><a href="#7-4-常用工具与命令" class="headerlink" title="7.4 常用工具与命令"></a>7.4 常用工具与命令</h2><ul>
+<li><code>mimikatz lsadump::dcsync</code> &#x2F; <code>kerberos::golden</code> &#x2F; <code>kerberos::ptt</code></li>
+<li><code>Rubeus dump / asktgt / tgtdeleg / harvest / s4u</code></li>
+<li><code>kekeo</code> 生成自定义 AP-REQ&#x2F;TGS </li>
+<li><code>Impacket</code>：<code>ticketer.py</code>、<code>getTGT.py</code>、<code>getST.py</code></li>
+<li>检查票据：<code>klist</code>, <code>Invoke-Kerberoast -Ticket</code>, <code>Get-KerberosTicket</code>。</li>
+</ul>
+<h2 id="7-5-安全加固"><a href="#7-5-安全加固" class="headerlink" title="7.5 安全加固"></a>7.5 安全加固</h2><ul>
+<li>定期轮换 <code>krbtgt</code>（两次以上），并监控 <code>4624(4768)</code> 中异常长的 TicketAge； </li>
+<li>限制 DCSync 权限（仅授予 <code>Enterprise/Domain Admins</code>），开启 LAPS&#x2F;ESAE 管理模型； </li>
+<li>对启用委派的计算机启用 <code>Kerberos Armoring</code>&#x2F;<code>FAST</code> 与 <code>SIDHistory</code> 审计； </li>
+<li>通过 <code>Event ID 4769/4771</code> + PAC 验证失败来发现伪造票据。</li>
+</ul>
+<h1 id="8-Kerberoast-TGS-哈希"><a href="#8-Kerberoast-TGS-哈希" class="headerlink" title="8 Kerberoast TGS 哈希"></a>8 Kerberoast TGS 哈希</h1><h2 id="8-1-概述"><a href="#8-1-概述" class="headerlink" title="8.1 概述"></a>8.1 概述</h2><p>Kerberoasting 针对启用 SPN 的服务账户。攻击者使用任意普通域用户向 KDC 请求目标 SPN 的 TGS，然后离线破解 TGS 中的服务密钥（RC4&#x2F;AES）。一旦还原明文口令，即可接管服务或进一步提权。</p>
+<h2 id="8-2-攻击流程图"><a href="#8-2-攻击流程图" class="headerlink" title="8.2 攻击流程图"></a>8.2 攻击流程图</h2><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/18b8f65514394d1a38b1ffd20a7d8b4b.svg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="8-3-hash-格式"><a href="#8-3-hash-格式" class="headerlink" title="8.3 hash 格式"></a>8.3 hash 格式</h2><ul>
+<li><strong>RC4-HMAC（type 23）</strong>：兼容旧系统，<code>hashcat -m 13100</code>，最易破解； </li>
+<li><strong>AES128&#x2F;AES256（type 17&#x2F;18）</strong>：<code>hashcat -m 19700/-m 19800</code>，对口令复杂度要求高； </li>
+<li>输出格式通常为：<code>$krb5tgs$23$*account$REALM$spn*$checksum$data...</code>。</li>
+</ul>
+<h2 id="8-4-利用链"><a href="#8-4-利用链" class="headerlink" title="8.4 利用链"></a>8.4 利用链</h2><ol>
+<li>枚举 SPN：<code>GetUserSPNs.py lab.local/user:pass -dc-ip x.x.x.x</code> 或 <code>SetSPN -Q */*</code>； </li>
+<li>请求票据：<code>Rubeus kerberoast /domain:lab.local /nowrap</code>、<code>Add-Type ...; Request-SPNTicket</code>； </li>
+<li>处理结果：<code>hashcat -m 13100 hashes.txt -a 0 rockyou.txt --force</code>； </li>
+<li>登录&#x2F;横向：明文口令可用于 WinRM、MSSQL、IIS，或进一步 DCSync。若命中托管服务账户（gMSA）或高权限服务，常可直达域控权限。</li>
+</ol>
+<h2 id="8-5-变种与扩展"><a href="#8-5-变种与扩展" class="headerlink" title="8.5 变种与扩展"></a>8.5 变种与扩展</h2><ul>
+<li><strong>目标 AES-only</strong>：<code>Rubeus kerberoast /aes</code>，或 <code>GetUserSPNs.py --request --aes</code>； </li>
+<li><strong>隐蔽收集</strong>：<code>Rubeus harvest /interval:30</code> 定期请求 TGS； </li>
+<li><strong>影子委派</strong>：联合资源委派（Resource-Based Constrained Delegation）获得服务票据后，使用 <code>s4u</code> 代发票据； </li>
+<li><strong>Kerberoast + Relay</strong>：将 TGS 转发到其它服务（如 LDAP）进行 S4U2Self&#x2F;Proxy 滥用。</li>
+</ul>
+<h2 id="8-6-防御建议"><a href="#8-6-防御建议" class="headerlink" title="8.6 防御建议"></a>8.6 防御建议</h2><ul>
+<li>强制服务账户使用复杂随机口令，优先 gMSA； </li>
+<li>禁止不必要的 SPN，删除过期服务账户； </li>
+<li>监控 <code>4769</code> 事件中来自非服务主体的大量 TGS 请求； </li>
+<li>开启 AES-only 并禁用 RC4，缩小爆破面。</li>
+</ul>
+<h1 id="9-AS-REP-Roast-哈希"><a href="#9-AS-REP-Roast-哈希" class="headerlink" title="9 AS-REP Roast 哈希"></a>9 AS-REP Roast 哈希</h1><h2 id="9-1-概述"><a href="#9-1-概述" class="headerlink" title="9.1 概述"></a>9.1 概述</h2><p>AS-REP Roasting 针对禁用预身份验证 (<code>DONT_REQ_PREAUTH</code>) 的域账户。无需有效密码即可请求 AS-REP，KDC 会直接使用账户密钥加密回复，攻击者离线破解即可。</p>
+<h2 id="9-2-攻击步骤"><a href="#9-2-攻击步骤" class="headerlink" title="9.2 攻击步骤"></a>9.2 攻击步骤</h2><ol>
+<li>列举目标：<code>GetNPUsers.py lab.local/ -dc-ip x.x.x.x -usersfile users.txt</code>，或 LDAP 过滤 <code>userAccountControl:1.2.840.113556.1.4.803:=4194304</code>； </li>
+<li>发送 AS-REQ，不包含 PA-ENC-TIMESTAMP； </li>
+<li>接收 AS-REP（<code>EncPart</code> 由用户密钥加密），保存为哈希。</li>
+</ol>
+<h2 id="9-3-hash-格式"><a href="#9-3-hash-格式" class="headerlink" title="9.3 hash 格式"></a>9.3 hash 格式</h2><ul>
+<li>RC4（etype 23）对应 <code>hashcat -m 18200</code>； </li>
+<li>AES128&#x2F;AES256（etype 17&#x2F;18）分别使用 <code>hashcat -m 19800/19900</code>； </li>
+<li>格式例：<code>$krb5asrep$23$user@REALM:checksum$data...</code>。</li>
+</ul>
+<h2 id="9-4-利用路线"><a href="#9-4-利用路线" class="headerlink" title="9.4 利用路线"></a>9.4 利用路线</h2><ol>
+<li>获取 AS-REP：<code>GetNPUsers.py</code>、<code>Rubeus asreproast /format:hashcat /outfile:hashes.txt</code>； </li>
+<li>GPU 爆破明文； </li>
+<li>使用明文进行 VPN&#x2F;RDP&#x2F;Pass-the-Hash； </li>
+<li>若账户自带高权限，可直接 DCSync；若为普通用户，可结合 Kerberoast、ACL 提权。AS-REP hash 不需要事先域凭据，适合渗透初期信息搜集。</li>
+</ol>
+<h2 id="9-5-防护措施"><a href="#9-5-防护措施" class="headerlink" title="9.5 防护措施"></a>9.5 防护措施</h2><ul>
+<li>禁用 <code>DONT_REQ_PREAUTH</code>，除非与某些旧系统兼容，否则无任何理由启用； </li>
+<li>监控 <code>Event ID 4768</code> 中 <code>Pre-Authentication Type = 0</code>、<code>Status = 0x18/0x19</code> 的失败日志； </li>
+<li>利用 <code>Fine-Grained Password Policy</code> 强制弱口令账户过期； </li>
+<li>对暴力破解告警（Kerberos 错误 4771）做阈值监控。</li>
+</ul>
+<h1 id="10-LSA-Secrets-DPAPI-MasterKey"><a href="#10-LSA-Secrets-DPAPI-MasterKey" class="headerlink" title="10 LSA Secrets &#x2F; DPAPI MasterKey"></a>10 LSA Secrets &#x2F; DPAPI MasterKey</h1><h2 id="10-1-概述"><a href="#10-1-概述" class="headerlink" title="10.1 概述"></a>10.1 概述</h2><p>LSA Secrets 存放在本地 <code>SECURITY</code> hive 的 Policy\Secrets 下，内容包括自动登录口令、服务账户密码、RDP 共享密钥等；DPAPI（Data Protection API）通过 MasterKey 派生 session key 用于保护系统&#x2F;用户级凭据，如浏览器密码、Chrome Cookies、远程桌面凭据。它们常常与域 hash 联动：只要掌握系统&#x2F;用户口令或其哈希，即可还原 DPAPI 解密链。</p>
+<h2 id="10-2-存储位置"><a href="#10-2-存储位置" class="headerlink" title="10.2 存储位置"></a>10.2 存储位置</h2><ul>
+<li><code>HKLM\SECURITY\Policy\Secrets\*</code>：<code>L$HYDRA</code>（IIS）、<code>_SC_&lt;Service&gt;</code>（服务账号），<code>DefaultPassword</code>（自动登录）； </li>
+<li><code>HKLM\SYSTEM\CurrentControlSet\Control\Lsa\JD/Skew1/GBG/Data</code>：LSA Key, DPAPI System Key； </li>
+<li><code>%APPDATA%\Microsoft\Protect\&lt;SID&gt;\*</code>：用户 MasterKey； </li>
+<li><code>%ProgramData%\Microsoft\Crypto\SystemKeys</code>：本地系统 MasterKey。</li>
+</ul>
+<h2 id="10-3-导出方式"><a href="#10-3-导出方式" class="headerlink" title="10.3 导出方式"></a>10.3 导出方式</h2><ul>
+<li><strong>在线注入</strong>：<code>mimikatz lsadump::lsa /patch</code>、<code>sekurlsa::dpapi</code>； </li>
+<li><strong>离线导出</strong>：<code>reg save HKLM\SYSTEM system.hiv</code>、<code>reg save HKLM\SECURITY security.hiv</code>、<code>reg save HKLM\SOFTWARE software.hiv</code>，随后 <code>secretsdump.py -system system.hiv -security security.hiv -sam sam.hiv</code>； </li>
+<li><strong>DPAPI 解密</strong>：<code>SharpDPAPI masterkeys</code> &#x2F; <code>credentials</code> &#x2F; <code>rdg</code> &#x2F; <code>browser</code>，或 <code>DPAPIPeep</code>。</li>
+</ul>
+<h2 id="10-4-DPAPI-解密链路"><a href="#10-4-DPAPI-解密链路" class="headerlink" title="10.4 DPAPI 解密链路"></a>10.4 DPAPI 解密链路</h2><p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/adc604169152bf44e8277c394937ef08.svg" srcset="/img/loading.gif" lazyload></p>
+<p>若为计算机账号（如 SYSTEM）创建的凭据，则需要 DPAPI System Key；若为域用户登录产生的 MasterKey，还可使用 Domain Backup Key（DCK）脱机解密。</p>
+<h2 id="10-5-攻击场景"><a href="#10-5-攻击场景" class="headerlink" title="10.5 攻击场景"></a>10.5 攻击场景</h2><ul>
+<li><strong>服务账号&#x2F;计划任务</strong>：读取 <code>_SC_service</code>、<code>L$SECRETS</code> 以获得明文，随后横向； </li>
+<li><strong>RDP&#x2F;RemoteApp</strong>：<code>mimikatz dpapi::rdg</code> 还原 <code>.rdp</code> 文件保存的凭据； </li>
+<li><strong>浏览器&#x2F;密码管理器</strong>：利用 <code>SharpChromium</code> + DPAPI MasterKey dump 出 Cookie&#x2F;Token； </li>
+<li><strong>VPN&#x2F;Wi-Fi</strong>：<code>mimikatz dpapi::wifi</code>&#x2F;<code>::cred</code> 获取企业 VPN 账户； </li>
+<li><strong>gMSA&#x2F;LAPS</strong>：LSA Secrets 包含明文 gMSA 密码历史，可复用到域控服务。</li>
+</ul>
+<h2 id="10-6-防御措施"><a href="#10-6-防御措施" class="headerlink" title="10.6 防御措施"></a>10.6 防御措施</h2><ul>
+<li>启用 Credential Guard&#x2F;LSA 保护，阻断未签名驱动注入； </li>
+<li>对服务器启用 BitLocker 或 VBS，防止离线拷贝 hive； </li>
+<li>监控 <code>Event ID 4656/4663</code> 针对 <code>SECURITY</code> hive 的读取行为； </li>
+<li>定期轮换 LSA Secrets（自动登录、服务账户）并优先使用 gMSA、证书认证； </li>
+<li>对浏览器&#x2F;密码库引导用户使用 YubiKey&#x2F;FIDO 等多因素，降低 DPAPI 泄露敏感度。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%94%BB%E9%98%B2%E6%B8%97%E9%80%8F/" class="category-chain-item">攻防渗透</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/NTLM/" class="print-no-link">#NTLM</a>
+      
+        <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/" class="print-no-link">#域渗透</a>
+      
+        <a href="/tags/hash/" class="print-no-link">#hash</a>
+      
+        <a href="/tags/%E5%93%88%E5%B8%8C/" class="print-no-link">#哈希</a>
+      
+        <a href="/tags/Kerberos/" class="print-no-link">#Kerberos</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>域渗透各种哈希值的作用与利用</div>
+      <div>http://candyb0x.github.io/2025/11/09/域渗透各种哈希值的作用与利用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年11月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/05/%E8%8B%A5%E4%BE%9D4-8-1-%E5%90%8E%E5%8F%B0SSTI%E6%B3%A8%E5%85%A5RCE%E5%92%8C%E6%B3%84%E9%9C%B2ShiroKey%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">若依4.8.1 后台SSTI注入RCE和泄露ShiroKey漏洞复现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/29/2025%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%88%9D%E8%B5%9Bweb%E6%96%B9%E5%90%91%E9%83%A8%E5%88%86wp/" title="2025强网拟态初赛web方向部分wp">
+                        <span class="hidden-mobile">2025强网拟态初赛web方向部分wp</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

