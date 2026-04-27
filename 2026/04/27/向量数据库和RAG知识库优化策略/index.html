@@ -1,0 +1,736 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="最近也是一直在做 Agent 开发设计相关的工作和相关内容的优化方案设计，其中就涉及到 RAG 知识库和记忆系统使用到的向量数据库检索的相关内容，然后就一直在思考怎么提升 RAG 知识库和向量数据库的检索效果，最近与朋友讨论以及一些相关的信息阅读检索得到以后文章的内容。 以下内容的场景均针对于自动化渗透测试智能体或者自动化攻防渗透智能体进行设计和相关说明，本质上也只是对 RAG 知识库和向量数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="向量数据库和RAG知识库优化策略">
+<meta property="og:url" content="http://candyb0x.github.io/2026/04/27/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8CRAG%E7%9F%A5%E8%AF%86%E5%BA%93%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="最近也是一直在做 Agent 开发设计相关的工作和相关内容的优化方案设计，其中就涉及到 RAG 知识库和记忆系统使用到的向量数据库检索的相关内容，然后就一直在思考怎么提升 RAG 知识库和向量数据库的检索效果，最近与朋友讨论以及一些相关的信息阅读检索得到以后文章的内容。 以下内容的场景均针对于自动化渗透测试智能体或者自动化攻防渗透智能体进行设计和相关说明，本质上也只是对 RAG 知识库和向量数据库">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-27T07:10:07.000Z">
+<meta property="article:modified_time" content="2026-04-27T07:11:45.126Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="向量数据库">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="知识库">
+<meta property="article:tag" content="Agent">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>向量数据库和RAG知识库优化策略 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="向量数据库和RAG知识库优化策略"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-27 15:10" pubdate>
+          2026年4月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">向量数据库和RAG知识库优化策略</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>最近也是一直在做 Agent 开发设计相关的工作和相关内容的优化方案设计，其中就涉及到 RAG 知识库和记忆系统使用到的向量数据库检索的相关内容，然后就一直在思考怎么提升 RAG 知识库和向量数据库的检索效果，最近与朋友讨论以及一些相关的信息阅读检索得到以后文章的内容。</p>
+<p>以下内容的场景均针对于自动化渗透测试智能体或者自动化攻防渗透智能体进行设计和相关说明，本质上也只是对 RAG 知识库和向量数据库构建上的设计，只不过会将其在相应的场景中进行一些解释。</p>
+<h2 id="1-基础概念"><a href="#1-基础概念" class="headerlink" title="1. 基础概念"></a>1. 基础概念</h2><h3 id="1-1-基础介绍"><a href="#1-1-基础介绍" class="headerlink" title="1.1 基础介绍"></a>1.1 基础介绍</h3><p><strong>向量数据库</strong>：在传统数据库（如 MySQL、ElasticSearch）中，我们搜索内容往往依赖“精确匹配”或“关键词频次”。但人类的语言充满了同义词和多义词。向量数据库就是为了解决“语义搜索”而诞生的。</p>
+<ul>
+<li><strong>工作原理：</strong> 它借助一种叫做 Embedding（嵌入）的技术，将文本、图像或声音转换成一串长长的数字（高维向量）。在这个多维度的数学空间里，<strong>语义相近的内容，它们在空间中的坐标距离就越近</strong>。</li>
+</ul>
+<p><strong>RAG知识库</strong>：RAG（检索增强生成，Retrieval-Augmented Generation）本身并不是一个具体的数据库软件，而是一套工作流或架构方案。它的出现是为了解决大语言模型（LLM）的两大痛点：“幻觉”和“私有数据”。</p>
+<ul>
+<li><strong>工作流程：</strong> 1. <strong>R (Retrieval) 检索：</strong> 接收到用户问题后，先去一个外部存储（通常就是向量数据库）里搜索相关的参考资料。 2. <strong>A (Augmented) 增强：</strong> 把搜到的参考资料连同用户的原始问题，打包拼接到一起。 3. <strong>G (Generation) 生成：</strong> 把这个巨大的“资料包”扔给大语言模型，让大模型基于这些资料进行阅读理解，生成最终的答案。</li>
+</ul>
+<p>根据上述的概念解析可以知道，向量数据库是 RAG 知识库的核心组成部分，驱动 RAG 知识库的核心引擎之一。</p>
+<p>想要 RAG 知识库架构跑起来，它的第一步“检索（Retrieval）”必须足够精准。目前业界构建 RAG 知识库时，绝大多数情况都会采用向量数据库作为底层的知识存储载体，因为它对非结构化数据（如各种内部文档、PDF）的语义匹配效果最好。</p>
+<p>如果没有 RAG 架构的大模型生成能力，向量数据库查出来的结果只是一堆生硬的文本片段，用户体验很差。RAG 架构的系统通过将这些生硬的文本片段或者原文内容交给大语言模型LLM，为你提供总结得出一个完整意义上的答案，实现完整意义上的知识问答。</p>
+<h3 id="1-2-场景介绍"><a href="#1-2-场景介绍" class="headerlink" title="1.2 场景介绍"></a>1.2 场景介绍</h3><p>对于向量数据库和 RAG 知识库的应用场景可以进行粗略的划分：</p>
+<ul>
+<li><strong>在数据量级较大、需要规范化输出结果的场景下，采用 RAG 知识库一般能够获取更好的效果</strong>。例如：在自动化渗透测试过程中遇到一个可能存在诸多高危漏洞的指纹信息，需要获取相应版本的历史漏洞的poc信息，由于涉及到大量信息的检索和规范化，需要完整的poc可验证脚本，因此采用 RAG 知识库会更加合适。</li>
+<li><strong>在数据量级较小、且无需过于规范化的数据，仅需关键词获取，部分关键内容提取的场景下，采用向量数据库可能效果更优</strong>。例如：在渗透测试过程中，发现碰到了 WAF 或者一些防御手段导致漏洞无法验证或者利用，此时需要进行绕过 Bypass 或者逃逸 Evasion，需要对payload进行编码或者异形处理，对于这种编码操作和相关的异形操作只需要提取部分关键方式即可，通过向量数据库提取相应的方式再交给大语言模型 LLM 进行优化处理，可能会有更好的效果。</li>
+</ul>
+<blockquote>
+<p>当然，以上都是个人的理解，如果有什么不对的地方，敬请指正。<br> 目前对于Agent开发设计方面的方法论和理论都并未完全成熟，大家的理解肯定也各不相同，能够达成最好的效果的方式就是最好的方法和理论。</p>
+</blockquote>
+<h2 id="2-向量数据库-RAG-知识库的优化策略"><a href="#2-向量数据库-RAG-知识库的优化策略" class="headerlink" title="2. 向量数据库 &amp; RAG 知识库的优化策略"></a>2. 向量数据库 &amp; RAG 知识库的优化策略</h2><p>本文中的一个向量数据库和 RAG 知识库的优化策略主要是数据构建、索引向量优化、检索优化、检索结果处理四个方面进行说明，分别说明这四个方面都能够做哪些工作进行优化搭建的向量数据库和 RAG 知识库的效果。</p>
+<h3 id="2-1-数据构建与处理优化"><a href="#2-1-数据构建与处理优化" class="headerlink" title="2.1 数据构建与处理优化"></a>2.1 数据构建与处理优化</h3><p>高质量的检索建立在高质量的数据基础之上。如果输入的是“垃圾”，检索出的依然是“垃圾”。</p>
+<ol>
+<li><strong>智能文档解析</strong><br> 对于PDF、Word等复杂格式的文本数据，处理提取内容的纯文本内容以外，对于其中存在的表格、图像和标题格式等，都需要进行解析以及标题层级解析。保证后续检索得到的内容具有分级以及标题等内容保证大语言模型的识别效果。<br> 很多关键信息存在于表格结构或段落层级中。保留文档的 DOM&#x2F;视觉结构，可以避免语义在强制转为纯文本时发生断裂。</li>
+<li><strong>优化分块策略</strong><br> 采用<strong>滑动窗口分块（带重叠度）</strong>、<strong>按文档结构分块</strong>（按段落&#x2F;标题）或<strong>语义分块（Semantic Chunking）</strong>。文本块太小会导致上下文丢失，太大则会引入过多噪音（稀释了向量表征的准确度）。语义分块通过判断句子间的相似度来决定切分边界，保证每一个 Chunk 都是一个完整的语义单元。</li>
+<li><strong>元数据提取与附加</strong><br> 在将文本存入向量数据库时，附加上丰富的元数据（如：文档标题、作者、时间、类别、关键字等）。向量检索擅长处理“模糊的语义相似度”，但不擅长处理绝对的逻辑条件。利用元数据进行<strong>标量预过滤</strong>，可以大幅缩小向量检索的范围，既提高了准确率，又提升了检索速度。</li>
+</ol>
+<h3 id="2-2-索引与向量化优化"><a href="#2-2-索引与向量化优化" class="headerlink" title="2.2 索引与向量化优化"></a>2.2 索引与向量化优化</h3><ol>
+<li><strong>领域微调嵌入模型</strong><br> 可以使用领域内的正负样本对 Embedding 模型进行微调（这个方式从理论问说应该是能够实现最好的效果的方式，但是从工程和经济上来说，完全没必要）</li>
+<li><strong>父子文档&#x2F;层级索引</strong><br> 检索时使用颗粒度很小的数据块，但返回给 LLM 的是该小数据块所在的“父级大文本块”。小文本块的向量表征更精准，更容易与用户的简短 Query 匹配上；但 LLM 生成回答时需要完整的上下文。这种“小切口检索，大面积喂给大模型”的策略完美平衡了<strong>检索精度</strong>与<strong>上下文丰富度</strong>。</li>
+</ol>
+<h3 id="2-3-检索阶段优化"><a href="#2-3-检索阶段优化" class="headerlink" title="2.3 检索阶段优化"></a>2.3 检索阶段优化</h3><ol>
+<li><strong>混合检索</strong><br> 结合<strong>关键词检索</strong>（BM25&#x2F;TF-IDF）和<strong>稠密向量检索</strong>（Dense Vector Retrieval），并将两者得分进行归一化和加权（如 RRF 算法，倒数排名融合）。<br> 向量检索擅长找“同义词”和“上下文”，但对于专有名词、序列号、产品代码等（如“iPhone 15 Pro Max 错误码 0x800”）极易失效。BM25 这种基于词频的稀疏检索能精准捕获这些关键词。两者互补是目前生产环境的标配。</li>
+<li><strong>查询充血 &#x2F; 扩展</strong><br> 在检索前，先让 LLM 把用户的 Query 重写为更丰富、更清晰的多个 Query，然后再去各自检索，最后合并结果。<br> 用户的原始问题可能存在歧义或指代不清（例如用户问“它怎么配置？”，LLM 根据历史记录重写为“Nginx服务器如何配置？”）。多角度展开问题可以增加命中目标知识的概率。</li>
+<li><strong>假设性文档嵌入</strong><br> 面对用户的 Query，先让 LLM 凭空“瞎编”一个答案，然后用这个“编出来的答案”去向量数据库里做相似度检索。<br> 用户的 Query 通常很短（问题空间），而知识库里的文本很长（答案空间），两者在向量空间中的分布不对齐。LLM 编造的答案虽然可能在事实上是错的，但其<strong>句法结构、词汇分布</strong>与真实的文档非常相似，从而大幅提高了命中率。</li>
+</ol>
+<h3 id="2-4-结果优化与后处理"><a href="#2-4-结果优化与后处理" class="headerlink" title="2.4 结果优化与后处理"></a>2.4 结果优化与后处理</h3><ol>
+<li><strong>重排序</strong><br> 向量检索初筛出 Top-50 个结果后，引入专门的重排模型（Cross-encoder，如 Cohere Rerank、BGE-Reranker）对 Query 和这 50 个文档进行逐一交叉打分，重新排序，最终只取 Top-5 给 LLM。<br> 双塔模型（Bi-encoder，即普通向量检索）因为要把文本压缩成固定维度的向量，丢失了词汇间细粒度的交互信息；而交叉编码器会让 Query 和 Document 在模型的底层就进行注意力机制的交互，判断极其精准，但算力消耗极大。因此采用“向量粗排 + 重排模型精排”的漏斗模式。</li>
+<li><strong>上下文压缩与过滤</strong><br> 剔除检索回来的 Chunk 中与 Query 不相关的句子（如使用 LLMLingua 等提示词压缩技术）。<br> 哪怕是相关性很高的 Chunk，其中也可能包含废话。压缩上下文既能帮公司省去大量 LLM 调用的 API Token 费用，又能减少大模型的“注意力分散”，降低幻觉。</li>
+</ol>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>本文对向量数据库与 RAG 知识库进行了简单的介绍，并且对这两者的关系进行了简单的梳理和相关说明，对于不同的情况下选择性采用向量数据库与 RAG 知识库，实现对 Agent 开发设计的完整补充。</p>
+<p>本文从四个方面介绍对于向量数据库和 RAG 知识库的优化策略，分别是数据构建与处理优化、索引与向量化优化、检索阶段优化、结果优化与后处理四个方面进行详细的说明，并且对其中说明了原理方法以及相关的实现方式。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Agent%E5%BC%80%E5%8F%91/" class="category-chain-item">Agent开发</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#向量数据库</a>
+      
+        <a href="/tags/RAG/" class="print-no-link">#RAG</a>
+      
+        <a href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" class="print-no-link">#知识库</a>
+      
+        <a href="/tags/Agent/" class="print-no-link">#Agent</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>向量数据库和RAG知识库优化策略</div>
+      <div>http://candyb0x.github.io/2026/04/27/向量数据库和RAG知识库优化策略/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年4月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/24/%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E5%89%8D%E7%AB%AF%E6%BC%8F%E6%B4%9E%E5%AE%89%E5%85%A8%EF%BC%88XSS%E3%80%81CSRF%EF%BC%89/" title="深入研究前端漏洞安全（XSS、CSRF）">
+                        <span class="hidden-mobile">深入研究前端漏洞安全（XSS、CSRF）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

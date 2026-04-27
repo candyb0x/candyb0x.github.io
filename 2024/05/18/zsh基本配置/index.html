@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/candy.png">
+  <link rel="icon" href="/img/candy.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#1b1b26">
+  <meta name="author" content="Candy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 下载安装zsh sudo apt install zsh  设置终端默认启动zsh 12345chsh -s &#x2F;bin&#x2F;zshchsh -s &#96;which zsh&#96;#如果要切换回去bash：chsh -s &#x2F;bin&#x2F;bash  2. 安装oh-my-zsh git clone https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh.git  cd oh-my-zs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zsh基本配置">
+<meta property="og:url" content="http://candyb0x.github.io/2024/05/18/zsh%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Welcome Candy Box">
+<meta property="og:description" content="1. 下载安装zsh sudo apt install zsh  设置终端默认启动zsh 12345chsh -s &#x2F;bin&#x2F;zshchsh -s &#96;which zsh&#96;#如果要切换回去bash：chsh -s &#x2F;bin&#x2F;bash  2. 安装oh-my-zsh git clone https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh.git  cd oh-my-zs">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850505.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850135.png">
+<meta property="article:published_time" content="2024-05-18T13:46:47.000Z">
+<meta property="article:modified_time" content="2026-04-27T06:33:12.645Z">
+<meta property="article:author" content="Candy">
+<meta property="article:tag" content="环境搭建">
+<meta property="article:tag" content="工具配置">
+<meta property="article:tag" content="美化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850505.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>zsh基本配置 - Welcome Candy Box</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"candyb0x.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":false},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Candy</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/essay/" target="_self">
+                <i class="iconfont icon-note"></i>
+                <span>随笔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Bannerimg.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="zsh基本配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Candy
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-18 21:46" pubdate>
+          2024年5月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">zsh基本配置</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-下载安装zsh"><a href="#1-下载安装zsh" class="headerlink" title="1. 下载安装zsh"></a>1. 下载安装zsh</h1><blockquote>
+<p>sudo apt install zsh</p>
+</blockquote>
+<p>设置终端默认启动zsh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">chsh -s /bin/zsh<br>chsh -s `<span class="hljs-built_in">which</span> zsh`<br><br><span class="hljs-comment">#如果要切换回去bash：</span><br>chsh -s /bin/bash<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-安装oh-my-zsh"><a href="#2-安装oh-my-zsh" class="headerlink" title="2. 安装oh-my-zsh"></a>2. 安装oh-my-zsh</h1><blockquote>
+<p>git clone <a target="_blank" rel="noopener" href="https://github.com/robbyrussell/oh-my-zsh.git">https://github.com/robbyrussell/oh-my-zsh.git</a> </p>
+<p>cd oh-my-zsh</p>
+<p>cd tools</p>
+<p>.&#x2F;install.sh</p>
+</blockquote>
+<h1 id="3-配置主题"><a href="#3-配置主题" class="headerlink" title="3. 配置主题"></a>3. 配置主题</h1><p>oh-my-zsh 集成了大量的主题, 位于<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes">Themes · ohmyzsh&#x2F;ohmyzsh Wiki (github.com)</a></p>
+<p>配置主题, 可以通过修改<code>~/.zshrc</code>中的环境变量<code>ZSH_THEME</code>实现更换主题</p>
+<blockquote>
+<p>ZSH_THEME&#x3D;”bira”</p>
+</blockquote>
+<p>如果觉得主题太多，可以选择使用随机模式, 不过这就比较刺激了。</p>
+<blockquote>
+<p>SH_THEME&#x3D;”random”</p>
+</blockquote>
+<h1 id="4-on-my-zsh自动补全插件"><a href="#4-on-my-zsh自动补全插件" class="headerlink" title="4. on-my-zsh自动补全插件"></a>4. on-my-zsh自动补全插件</h1><p>将相应的插件<code>git</code>克隆<code>zsh-autosuggestions</code>仓库到你的本地<code>.oh-my-zsh/custom/plugins</code>目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions<br></code></pre></td></tr></table></figure>
+
+<p>然后修改本地的<code>~/.zshrc</code>文件中的<code>plugins</code>选项，加入<code>zsh-autosuggestions</code>，如图所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim ~/.zshrc<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850505.png" srcset="/img/loading.gif" lazyload alt="image-20240601185003427"></p>
+<p>然后在运行以下命令，重新加载当前用户的 <code>~/.zshrc</code> 文件即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
+
+<h1 id="5-on-my-zsh高亮插件"><a href="#5-on-my-zsh高亮插件" class="headerlink" title="5. on-my-zsh高亮插件"></a>5. on-my-zsh高亮插件</h1><p>将相应的插件<code>git</code>克隆<code>zsh-syntax-highlighting</code>仓库到你的本地<code>.oh-my-zsh/custom/plugins</code>目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-syntax-highlighting<br></code></pre></td></tr></table></figure>
+
+<p>然后修改本地的<code>~/.zshrc</code>文件中的<code>plugins</code>选项，加入<code>zsh-syntax-highlighting</code>，如图所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim ~/.zshrc<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/candyb0x/PicgoBed@main/typoraImg/202406011850135.png" srcset="/img/loading.gif" lazyload alt="image-20240601185043104"></p>
+<p>然后在运行以下命令，重新加载当前用户的 <code>~/.zshrc</code> 文件即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
+
+<h1 id="6-zsh导致的问题"><a href="#6-zsh导致的问题" class="headerlink" title="6.zsh导致的问题"></a>6.zsh导致的问题</h1><h2 id="文件名解析错误"><a href="#文件名解析错误" class="headerlink" title="文件名解析错误"></a>文件名解析错误</h2><h3 id="zsh-no-matches-found-list-fullordering"><a href="#zsh-no-matches-found-list-fullordering" class="headerlink" title="zsh: no matches found: list[fullordering]"></a>zsh: no matches found: list[fullordering]</h3><p>在使用 Zsh（Z shell）时，如果你看到错误消息 <code>zsh: no matches found: list[fullordering]</code>，这通常是由于 Zsh 的文件名模式匹配（globbing）功能导致的。当你在命令行中使用方括号（<code>[]</code>）时，Zsh 会尝试将其解释为文件名模式匹配，而不是你可能预期的普通字符串或数组访问。</p>
+<p>可以通过在<code>~/.zshrc</code>文件中添加以下内容解决</p>
+<blockquote>
+<p>set noglob	#禁用文件名模式匹配</p>
+</blockquote>
+<p>除了上述的解决方法还有</p>
+<p>通过转义中括号的方法，还没有尝试可行性</p>
+<blockquote>
+<p>执行命令时，将list[fullordering]，写成list\[fullordering\]</p>
+</blockquote>
+<h1 id="一键搭建脚本"><a href="#一键搭建脚本" class="headerlink" title="一键搭建脚本"></a>一键搭建脚本</h1><p>该脚本包含了对tmux的搭建部署以及Powerlevel10k主题的搭建</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><br><span class="hljs-comment"># 定义颜色输出</span><br>GREEN=<span class="hljs-string">&#x27;\033[0;32m&#x27;</span><br>BLUE=<span class="hljs-string">&#x27;\033[0;34m&#x27;</span><br>YELLOW=<span class="hljs-string">&#x27;\033[0;33m&#x27;</span><br>NC=<span class="hljs-string">&#x27;\033[0m&#x27;</span> <span class="hljs-comment"># No Color</span><br><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;BLUE&#125;</span>=== 开始环境搭建: Tmux + Zsh + Powerlevel10k ===<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><br><span class="hljs-comment"># 1. 检查并安装必要软件</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[1/7] 更新软件源并安装 zsh, tmux, git...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><span class="hljs-keyword">if</span> [ -x <span class="hljs-string">&quot;<span class="hljs-subst">$(command -v apt)</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>    sudo apt update<br>    sudo apt install -y zsh tmux git curl vim<br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;错误: 未检测到 apt 包管理器，本脚本仅支持 Debian/Ubuntu 系系统，或请手动安装 zsh, tmux, git。&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 2. 安装 Oh My Zsh</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[2/7] 安装 Oh My Zsh...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.oh-my-zsh&quot;</span> ]; <span class="hljs-keyword">then</span><br>    git <span class="hljs-built_in">clone</span> https://github.com/robbyrussell/oh-my-zsh.git <span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.oh-my-zsh&quot;</span><br>    <span class="hljs-built_in">cp</span> <span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.oh-my-zsh/templates/zshrc.zsh-template&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.zshrc&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Oh My Zsh 安装完成。&quot;</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Oh My Zsh 已存在，跳过安装。&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 3. 安装 Powerlevel10k 主题</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[3/7] 安装 Powerlevel10k 主题...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>ZSH_CUSTOM=<span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.oh-my-zsh/custom&quot;</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_CUSTOM</span>/themes/powerlevel10k&quot;</span> ]; <span class="hljs-keyword">then</span><br>    git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_CUSTOM</span>/themes/powerlevel10k&quot;</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Powerlevel10k 已存在，跳过下载。&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 4. 安装 Zsh 插件</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[4/7] 安装 Zsh 插件 (autosuggestions &amp; syntax-highlighting)...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><span class="hljs-comment"># 安装 zsh-autosuggestions</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions&quot;</span> ]; <span class="hljs-keyword">then</span><br>    git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions&quot;</span><br><span class="hljs-keyword">fi</span><br><span class="hljs-comment"># 安装 zsh-syntax-highlighting</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_CUSTOM</span>/plugins/zsh-syntax-highlighting&quot;</span> ]; <span class="hljs-keyword">then</span><br>    git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_CUSTOM</span>/plugins/zsh-syntax-highlighting&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 5. 配置 .zshrc</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[5/7] 配置 .zshrc (应用 p10k 主题, 启用插件, noglob)...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>ZSHRC=<span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.zshrc&quot;</span><br><br><span class="hljs-comment"># 修改主题为 Powerlevel10k</span><br><span class="hljs-comment"># 使用 sed 匹配以 ZSH_THEME 开头的行并替换</span><br>sed -i <span class="hljs-string">&#x27;s/^ZSH_THEME=.*/ZSH_THEME=&quot;powerlevel10k\/powerlevel10k&quot;/&#x27;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span><br><br><span class="hljs-comment"># 修改插件设置</span><br><span class="hljs-keyword">if</span> ! grep -q <span class="hljs-string">&quot;zsh-autosuggestions&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span>; <span class="hljs-keyword">then</span><br>    sed -i <span class="hljs-string">&#x27;s/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/&#x27;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 解决文件名解析错误 (set noglob)</span><br><span class="hljs-keyword">if</span> ! grep -q <span class="hljs-string">&quot;set noglob&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span>; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span> &gt;&gt; <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;# 禁用文件名模式匹配，解决 zsh: no matches found 问题&quot;</span> &gt;&gt; <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;set noglob&quot;</span> &gt;&gt; <span class="hljs-string">&quot;<span class="hljs-variable">$ZSHRC</span>&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 6. 配置 .tmux.conf</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[6/7] 配置 .tmux.conf (Ctrl+a 前缀, Vim 风格按键)...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>TMUX_CONF=<span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.tmux.conf&quot;</span><br>ZSH_PATH=$(<span class="hljs-built_in">command</span> -v zsh)<br><br><span class="hljs-built_in">cat</span> &gt; <span class="hljs-string">&quot;<span class="hljs-variable">$TMUX_CONF</span>&quot;</span> &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string"># --- tmux基本配置 (Generated by setup script) ---</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 1. 修改前缀命令为 Ctrl+a</span><br><span class="hljs-string">set -g prefix C-a</span><br><span class="hljs-string">unbind C-b</span><br><span class="hljs-string">bind C-a send-prefix</span><br><span class="hljs-string">set -g mouse on</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 2. 修改新增面板指令</span><br><span class="hljs-string">unbind &#x27;&quot;&#x27;</span><br><span class="hljs-string">bind - splitw -v -c &#x27;#&#123;pane_current_path&#125;&#x27; # 垂直方向新增面板 (-)</span><br><span class="hljs-string">unbind %</span><br><span class="hljs-string">bind | splitw -h -c &#x27;#&#123;pane_current_path&#125;&#x27; # 水平方向新增面板 (|)</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 3. 修改面板切换指令 (hjkl)</span><br><span class="hljs-string">bind -r k select-pane -U # k 为上</span><br><span class="hljs-string">bind -r j select-pane -D # j 为下</span><br><span class="hljs-string">bind -r h select-pane -L # h 为左</span><br><span class="hljs-string">bind -r l select-pane -R # l 为右</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 4. 修改面板大小调整指令 (Ctrl + hjkl)</span><br><span class="hljs-string">bind -r ^k resizep -U 10 # Ctrl+k 向上调整</span><br><span class="hljs-string">bind -r ^j resizep -D 10 # Ctrl+j 向下调整</span><br><span class="hljs-string">bind -r ^h resizep -L 10 # Ctrl+h 向左调整</span><br><span class="hljs-string">bind -r ^l resizep -R 10 # Ctrl+l 向右调整</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 5. 设置 tmux 默认终端为 zsh</span><br><span class="hljs-string">set -g default-shell $&#123;ZSH_PATH&#125;</span><br><span class="hljs-string">EOF</span><br><br><span class="hljs-comment"># 7. 设置默认 Shell</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>[7/7] 设置默认 Shell 为 zsh...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_PATH</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;❌ 未检测到 zsh 可执行文件，请确认安装成功并重试！&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;检测到 zsh 路径: <span class="hljs-variable">$ZSH_PATH</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;将使用 chsh 将默认 Shell 设置为 zsh（需输入密码）&quot;</span><br>chsh -s <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_PATH</span>&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$USER</span>&quot;</span><br><br><span class="hljs-keyword">if</span> [ $? -eq 0 ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;🎉 默认 Shell 已成功切换为 zsh！&quot;</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;⚠️ chsh 执行失败，请手动执行以下命令：&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;    chsh -s \&quot;<span class="hljs-variable">$ZSH_PATH</span>\&quot; \&quot;<span class="hljs-variable">$USER</span>\&quot;&quot;</span><br><span class="hljs-keyword">fi</span><br><br><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;BLUE&#125;</span>=== 环境搭建完成！ ===<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;YELLOW&#125;</span>重要提示：<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;1. 请重新登录终端或运行 &#x27;zsh&#x27; 生效。&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;2. 首次进入 zsh 时，Powerlevel10k 会启动配置向导，请按照提示选择你喜欢的样式。&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;3. 为了获得最佳体验（显示图标），请确保你的终端软件（如 iTerm2, Windows Terminal, XShell）使用 &#x27;Nerd Font&#x27; 字体（推荐 MesloLGS NF）。&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>参考链接：<a target="_blank" rel="noopener" href="https://yuyucong.github.io/linux/2018/02/08/shell/">Tmux &#x2F; zsh &#x2F; oh-my-zsh教程 - 风车车的博客 | Windmill Blog (yuyucong.github.io)</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">环境搭建</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="print-no-link">#环境搭建</a>
+      
+        <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" class="print-no-link">#工具配置</a>
+      
+        <a href="/tags/%E7%BE%8E%E5%8C%96/" class="print-no-link">#美化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>zsh基本配置</div>
+      <div>http://candyb0x.github.io/2024/05/18/zsh基本配置/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Candy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月18日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年4月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/23/dc-3%E6%89%93%E9%9D%B6%E6%97%A5%E8%AE%B0/" title="dc-3打靶日记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">dc-3打靶日记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/18/tmux%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="tmux基本使用">
+                        <span class="hidden-mobile">tmux基本使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Candy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
